@@ -1,0 +1,112 @@
+/* Importa o añade el CSS de detailsprac.css aquí si no quieres dos archivos */
+/* Si ya lo enlazas en el HTML, no es necesario copiarlo, solo añadir lo nuevo */
+
+/* Estilos para los campos de formulario */
+.form-group {
+    margin-bottom: 15px; /* Espacio entre cada grupo de label/input */
+    display: flex;
+    align-items: center; /* Alinea verticalmente label e input */
+    position: relative; /* Para posicionar el icono del calendario */
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+    width: 180px; /* Un poco más de ancho para las etiquetas en edición */
+    flex-shrink: 0;
+    margin-right: 10px; /* Espacio entre el label y el input */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select {
+    flex-grow: 1; /* Permite que el input o select ocupe el espacio restante */
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Bordes redondeados como en la imagen de registro */
+    font-size: 16px;
+    outline: none; /* Quita el contorno al hacer focus */
+    transition: border-color 0.2s; /* Transición suave para el borde */
+    min-width: 0; /* Permite que el input se encoja si el flex container es pequeño */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #d3bc68; /* Color de borde al enfocar, similar a tus botones */
+}
+
+/* Estilo para el icono del calendario dentro del input de fecha */
+.form-group .calendar-icon {
+    position: absolute;
+    right: 15px; /* Posición dentro del input */
+    color: #888;
+    pointer-events: none; /* Para que no interfiera con el click en el input */
+}
+
+/* Ajustes para el botón Añadir imagen */
+.add-image-button {
+    background-color: transparent;
+    border: 1px solid #999;
+    color: #555;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    /* Ajusta el ancho si es necesario para que sea similar al de la imagen */
+    width: 150px; /* Ejemplo, ajusta según el diseño */
+    text-align: center; /* Centra el texto del botón */
+    display: block; /* Para que ocupe todo el ancho definido */
+    margin-bottom: 10px; /* Espacio debajo del botón */
+}
+
+/* Ocultar el input type="file" real y usar el label como botón */
+.add-image-input {
+    display: none;
+}
+
+/* Estilos para los botones de acción (Guardar/Cancelar) */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 30px; /* Espacio superior para separar de los campos */
+}
+
+.save-button,
+.cancel-button {
+    padding: 12px 25px;
+    border-radius: 20px; /* Bordes redondeados */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    border: none; /* Elimina el borde por defecto */
+}
+
+.save-button {
+    background-color: #d3bc68; /* Tu color de acento */
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #c0a855; /* Un tono un poco más oscuro al pasar el ratón */
+}
+
+.cancel-button {
+    background-color: #e0e0e0; /* Un gris claro */
+    color: #555;
+    border: 1px solid #ccc;
+}
+
+.cancel-button:hover {
+    background-color: #d0d0d0;
+}
+
+/* Asegurarse de que el padding-right del scrollable-content tenga espacio para la scrollbar */
+.practicante-scrollable-content {
+    /* ... (tus estilos existentes) ... */
+    padding-right: 50px; /* Mantén o ajusta este valor como hicimos antes para la scrollbar */
+}

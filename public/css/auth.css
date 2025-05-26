@@ -1,0 +1,74 @@
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.login-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+}
+
+.btn-custom {
+    background-color: #ceb15d !important;
+    color: white !important;
+    border: 2px solid #474747 !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+    min-width: 220px; /* Ancho mínimo para consistencia */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.btn-custom:hover {
+    background-color: #bd7c02 !important;
+    color: white !important;
+    border-color: #474747 !important;
+}
+
+/* Cambia el color del borde al enfocar los inputs */
+.form-control:focus {
+    border-color: #ceb15d !important; /* Color dorado similar a tu botón */
+    box-shadow: 0 0 0 0.25rem rgba(206, 177, 93, 0.25) !important;
+    outline: 0;
+}
+
+/* Opcional: Estilo para los inputs en general */
+.form-control {
+    border-radius: 50px; /* Forma de píldora */
+    padding: 0.5rem 1rem;
+    border: 1px solid #ced4da;
+}
+
+/* Para igualar el tamaño de fuente */
+#current-time,
+#current-date {
+    font-size: 1.5rem; /* Igual que h2 */
+    color: #212529; /* Color oscuro similar al h2 */
+}
+
+.btn-custom2 {
+    background-color: #a7a7a7 !important;
+    color: white !important;
+    border: 2px solid #474747 !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+    min-width: 120px; /* Ancho mínimo para consistencia */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.btn-custom2:hover {
+    background-color: #ffffff !important;
+    color: rgb(0, 0, 0) !important;
+    border-color: 583811 !important;
+}
