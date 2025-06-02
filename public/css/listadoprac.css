@@ -39,8 +39,8 @@ body {
     transition: 0.3s;
 }
 
-.back-button:hover{
-    background-color: #c0a855; 
+.back-button:hover {
+    background-color: #c0a855;
     font-size: 20px;
     width: 50px;
     height: 50px;
@@ -71,8 +71,8 @@ body {
     transition: 0.3s;
 }
 
-.menu-button:hover{
-    background-color: #c0a855; 
+.menu-button:hover {
+    background-color: #c0a855;
     font-size: 20px;
     width: 50px;
     height: 50px;
@@ -170,7 +170,6 @@ body {
     box-sizing: border-box; /* Incluye padding y border en el ancho/alto */
 }
 
-
 .filter-popup.show {
     display: flex; /* Muestra el pop-up */
 }
@@ -224,7 +223,7 @@ body {
 .apply-filter-button {
     background-color: #d3bc68;
     color: white;
-    transition:0.5s;
+    transition: 0.5s;
 }
 
 .apply-filter-button:hover {
@@ -237,7 +236,7 @@ body {
     background-color: #f0f0f0;
     color: #555;
     border: 1px solid #f0f0f0;
-    transition:0.5s;
+    transition: 0.5s;
 }
 
 .clear-filter-button:hover {
@@ -245,11 +244,10 @@ body {
     border-color: #c2c2c2;
 }
 
-
 /* Estilos de la tabla */
 .table-container {
     width: 100%;
-    max-width: 1000px; /* Ancho máximo de la tabla */
+    max-width: 1150px; /* Ancho máximo de la tabla */
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -260,14 +258,14 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 800px; /* Asegura que la tabla no sea demasiado estrecha */
+    min-width: 900px; /* Asegura que la tabla no sea demasiado estrecha */
 }
 
 thead th {
     background-color: #583811; /* Color de fondo de los encabezados */
     color: white;
     padding: 15px 10px;
-    text-align: left;
+    text-align: center;
     font-size: 15px;
     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
 }
@@ -278,6 +276,7 @@ tbody td {
     color: #333;
     font-size: 14px;
     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    text-align: center;
 }
 
 tbody tr:nth-child(even) {
@@ -296,15 +295,26 @@ tbody tr:nth-child(odd) {
     color: #333; /* Color del icono, similar al encabezado */
     font-size: 20px;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 5px;
     transition: 0.2s;
 }
 
 .admin-button:hover {
-    color: #583811; /* Cambia de color al pasar el ratón */
+    color: #534127; /* Cambia de color al pasar el ratón */
     font-size: 26px;
+}
 
+.review-button {
+    background-color: transparent;
+    border: none;
+    color: #333; /* Color del icono, similar al encabezado */
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    transition: 0.2s;
+}
+
+.review-button:hover {
+    color: #985900; /* Cambia de color al pasar el ratón */
+    font-size: 26px;
 }

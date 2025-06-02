@@ -21,19 +21,20 @@
 }
 
 .btn-custom {
-    background-color: #ceb15d !important;
+    background-color: #d3bc68 !important;
     color: white !important;
-    border: 2px solid #474747 !important;
     box-shadow: none !important;
     transition: all 0.3s ease;
     min-width: 220px; /* Ancho mínimo para consistencia */
     white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    transition: 0.3s;
 }
 
 .btn-custom:hover {
-    background-color: #bd7c02 !important;
+    background-color: #c0a855 !important;
     color: white !important;
-    border-color: #474747 !important;
+    border-color: #2c2516 !important;
+    font-size: 17px;
 }
 
 /* Cambia el color del borde al enfocar los inputs */
@@ -60,7 +61,7 @@
 .btn-custom2 {
     background-color: #a7a7a7 !important;
     color: white !important;
-    border: 2px solid #474747 !important;
+    border: 2px solid #a7a7a7 !important;
     box-shadow: none !important;
     transition: all 0.3s ease;
     min-width: 120px; /* Ancho mínimo para consistencia */
@@ -71,4 +72,6 @@
     background-color: #ffffff !important;
     color: rgb(0, 0, 0) !important;
     border-color: 583811 !important;
+        font-size: 17px;
+
 }

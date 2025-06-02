@@ -1,0 +1,297 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styles (similar to other views) */
+.header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 10;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header .back-button {
+    background-color: #d3bc68; /* Color de tu marca */
+    color: white;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    margin-right: 20px;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.3s;
+}
+.back-button:hover {
+    background-color: #c0a855;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+.header h1 {
+    margin: 0 auto;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Menu button in header (if you choose to include it) */
+.header .menu-button {
+    background-color: #d3bc68; /* Color de tu marca */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute; /* Posiciona absolutamente */
+    right: 20px; /* A la derecha */
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 0.3s;
+}
+.menu-button:hover {
+    background-color: #c0a855;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Main Content Wrapper for Centering Card */
+.main-content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Alinea arriba */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Review List Card Styles */
+.review-list-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    display: flex; /* Divide en dos columnas */
+    width: 90%; /* Ancho de la tarjeta */
+    max-width: 1100px; /* Ancho máximo para pantallas grandes */
+    overflow: hidden;
+}
+
+/* Practicante Info Sidebar (Left - similar to previous view) */
+.practicante-info-sidebar {
+    background-color: #f8f8f8;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 250px;
+    flex-shrink: 0;
+    border-right: 1px solid #eee;
+}
+
+.practicante-avatar {
+    width: 120px;
+    height: 120px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.practicante-avatar i.fa-user {
+    font-size: 70px;
+    color: #888;
+}
+
+.practicante-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.practicante-area {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px; /* Espacio antes del botón */
+}
+
+.add-review-button {
+    background-color: #d3bc68; /* Color dorado */
+    color: white;
+    border: 1px solid #c0ac5a;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+}
+
+.add-review-button:hover {
+    background-color: #c0ac5a;
+}
+
+/* Reviews Table Section (Right) */
+.reviews-table-section {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    padding: 20px; /* Menos padding para dar más espacio a la tabla */
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    overflow-x: auto; /* Permite scroll horizontal si la tabla es muy ancha */
+    max-height: 500px; /* Altura máxima para el scroll vertical */
+    overflow-y: auto; /* Permite scroll vertical para la tabla */
+     border-radius: 10px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px; /* Ancho mínimo para evitar que se aplaste */
+}
+
+thead th {
+    background-color: #583811; /* Color de fondo oscuro como en la imagen */
+    color: white;
+    padding: 15px 10px;
+    text-align: left; /* Alineado a la izquierda como en la imagen */
+    font-size: 15px;
+    white-space: nowrap;
+    position: sticky; /* Hace que el encabezado sea "pegajoso" al hacer scroll */
+    top: 0;
+    z-index: 1;
+}
+
+tbody td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 14px;
+    text-align: left; /* Alineado a la izquierda */
+    vertical-align: top; /* Alinea el contenido de la celda arriba */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ceb15d;
+}
+
+/* Estilo para las filas resaltadas (pares en este caso) */
+tbody tr.highlighted-row,
+tbody tr:nth-child(even) {
+    background-color: #f6e8d0; /* Color dorado más claro */
+}
+
+/* Estilo para la celda de evaluación y las estrellas */
+.rating-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el texto "2/5" y las estrellas */
+}
+
+.rating-cell span {
+    font-weight: bold;
+    color: #333;
+    font-size: 15px;
+}
+
+.mini-stars {
+    display: flex;
+    gap: 3px; /* Espacio pequeño entre las estrellas */
+}
+
+.mini-stars i.fa-star {
+    font-size: 18px; /* Tamaño de las estrellas pequeñas */
+    color: #ccc; /* Color por defecto (gris) */
+}
+
+.mini-stars i.fa-star.selected {
+    color: #985900; /* Color de las estrellas seleccionadas (dorado) */
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .review-list-card {
+        flex-direction: column; /* Apila las secciones en pantallas pequeñas */
+        width: 95%;
+    }
+
+    .practicante-info-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .reviews-table-section {
+        padding: 15px;
+    }
+
+    .table-container {
+        /* Permite scroll horizontal en móviles si la tabla es grande */
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .header h1 {
+        font-size: 20px;
+    }
+    .practicante-info-sidebar {
+        padding: 20px;
+    }
+    .practicante-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    .practicante-avatar i.fa-user {
+        font-size: 60px;
+    }
+    .practicante-name {
+        font-size: 18px;
+    }
+    .practicante-area {
+        font-size: 14px;
+    }
+    .add-review-button {
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+    thead th,
+    tbody td {
+        font-size: 13px;
+        padding: 10px 8px;
+    }
+    .mini-stars i.fa-star {
+        font-size: 16px;
+    }
+}

@@ -1,0 +1,83 @@
+/* Estilos del Modal del Menú */
+.menu-modal {
+    position: fixed; /* Fijo en la ventana de visualización */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end; /* Alinea el contenido del menú a la derecha */
+    align-items: flex-start; /* Alinea el contenido del menú arriba */
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    visibility: hidden; /* Oculto por defecto */
+    opacity: 0; /* Totalmente transparente por defecto */
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* Transición para aparecer/desaparecer */
+}
+
+.menu-modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Overlay para oscurecer el fondo */
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Gris oscuro semi-transparente */
+    cursor: pointer; /* Indica que es clicable */
+}
+
+/* Contenido del menú desplegable */
+.menu-content {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 20px 0; /* Padding vertical para los ítems */
+    width: 280px; /* Ancho del menú como en la imagen */
+    margin-top: 100px; /* Espacio desde la parte superior, alineado con el botón */
+    margin-right: 30px; /* Espacio desde el borde derecho */
+    transform: translateX(100%); /* Inicia fuera de la vista a la derecha */
+    opacity: 0; /* Inicia transparente */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Animación de entrada/salida */
+    position: relative; /* Para que z-index funcione si hay otros elementos en el modal */
+    z-index: 1001; /* Ligeramente por encima del overlay */
+}
+
+.menu-modal.show .menu-content {
+    transform: translateX(0); /* Vuelve a su posición original */
+    opacity: 1; /* Se vuelve opaco */
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+}
+
+.menu-item .item-text {
+    flex-grow: 1; /* Permite que el texto ocupe el espacio */
+    margin-right: 15px; /* Espacio entre el texto y el icono */
+}
+
+.menu-item .menu-icon {
+    font-size: 24px; /* Tamaño de los iconos, como en la imagen */
+    color: #5c4f30; /* Color de los iconos, similar a tus encabezados de tabla */
+}
+
+/* Líneas divisorias */
+.menu-divider {
+    height: 1px;
+    background-color: #eee;
+    margin: 5px 0; /* Pequeño margen vertical */
+}

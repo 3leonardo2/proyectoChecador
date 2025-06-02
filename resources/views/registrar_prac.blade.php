@@ -72,6 +72,10 @@
                     <label for="numero_seguro">Número de seguro:</label>
                     <input type="text" id="numero_seguro" name="numero_seguro" placeholder="Número de seguro...">
                 </div>
+                <div class="form-group">
+                    <label for="numero_seguro">CURP:</label>
+                    <input type="text" id="curp" name="curp" placeholder="CURP...">
+                </div>
 
                 <h2>Información institucional:</h2>
                 <div class="form-group">
@@ -109,6 +113,7 @@
                 <div class="form-group">
                     <label for="estado_practicas">Estado:</label>
                     <select id="estado_practicas" name="estado_practicas">
+                        <option value="Seleccione una opción">Selecciona una opción</option>
                         <option value="ACTIVO">ACTIVO</option>
                         <option value="INACTIVO">INACTIVO</option>
                         <option value="FINALIZADO">FINALIZADO</option>

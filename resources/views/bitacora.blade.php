@@ -75,8 +75,9 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 mx-auto" style="max-width: 400px;"> <input type="text"
-                            class="form-control rounded-pill py-2" placeholder="Ingresa tu código..."> </div>
+                    <div class="mb-3 mx-auto" style="max-width: 400px;"> 
+                        <input type="text" class="form-control rounded-pill py-2" placeholder="Ingresa tu código..."> 
+                    </div>
 
                     <div class="d-flex justify-content-center">
                         <div class="d-flex gap-1"> <button type="button" class="btn btn-custom rounded-pill py-2 px-3">

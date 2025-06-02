@@ -7,6 +7,7 @@
     <title>Listado de Practicantes</title>
     <link rel="stylesheet" href="css/listadoprac.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
 
 <body>
@@ -14,12 +15,14 @@
         <a href="#" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        
+
         <h1>Practicantes</h1>
-        <button class="menu-button">
+
+        <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
         </button>
     </div>
+    @include('partials.menu_modal')
 
     <div class="main-container">
         <div class="search-filter-section">
@@ -82,6 +85,7 @@
                         <th>ESTADO</th>
                         <th>Número</th>
                         <th>Administrar</th>
+                        <th>Ver revisiones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +100,7 @@
                         <td>ACTIVO</td>
                         <td>3339018808</td>
                         <td><button class="admin-button"><i class="fa-solid fa-user-gear"></i></button></td>
+                        <td><button class="review-button"><i class="fa-solid fa-star-half-stroke"></i></button></td>
                     </tr>
                     <tr class="practicante-row" data-name="Angel Hernán" data-code="AHAE"
                         data-lastname="Alatorre Esparza" data-area="Gastronomia" data-school="UTEJ"
@@ -109,9 +114,11 @@
                         <td>CONCLUIDO</td>
                         <td>3315487418</td>
                         <td><button class="admin-button"><i class="fa-solid fa-user-gear"></i></button></td>
+                        <td><button class="review-button"><i class="fa-solid fa-star-half-stroke"></i></button></td>
                     </tr>
-                    <tr class="practicante-row" data-name="Maria del Carmen" data-code="CAE" data-lastname="Alatorre Esparza"
-                        data-area="Gastronomia" data-school="UTZMG" data-estado="Conlcuido">
+                    <tr class="practicante-row" data-name="Maria del Carmen" data-code="CAE"
+                        data-lastname="Alatorre Esparza" data-area="Gastronomia" data-school="UTZMG"
+                        data-estado="Conlcuido">
                         <td>A003</td>
                         <td>CAE</td>
                         <td>Maria del Carmen</td>
@@ -121,83 +128,27 @@
                         <td>CONCLUIDO</td>
                         <td>3339018808</td>
                         <td><button class="admin-button"><i class="fa-solid fa-user-gear"></i></button></td>
+                        <td><button class="review-button"><i class="fa-solid fa-star-half-stroke"></i></button></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><a  href="/detallesprac" class="admin-button"><i class="fa-solid fa-user-gear"></i></a></td>
+                        <td><a href="/lista_revisiones" class="review-button"><i class="fa-solid fa-star-half-stroke"></i></a></td>
+
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
-    <script>
-        // Lógica para la búsqueda y filtro (JavaScript)
-        const searchInput = document.getElementById('searchInput');
-        const filterButton = document.getElementById('filterButton');
-        const filterPopup = document.getElementById('filterPopup');
-        const applyFilterButton = document.querySelector('.apply-filter-button');
-        const clearFilterButton = document.querySelector('.clear-filter-button');
-        const practicanteRows = document.querySelectorAll('.practicante-row');
-
-        // Función para aplicar filtros y búsqueda
-        function applyFilters() {
-            const searchText = searchInput.value.toLowerCase();
-            const filterCodigo = document.getElementById('filterCodigo').value.toLowerCase();
-            const filterArea = document.getElementById('filterArea').value.toLowerCase();
-            const filterEscuela = document.getElementById('filterEscuela').value.toLowerCase();
-            const filterEstado = document.getElementById('filterEstado').value.toLowerCase();
-
-            practicanteRows.forEach(row => {
-                const name = row.dataset.name.toLowerCase();
-                const code = row.dataset.code.toLowerCase();
-                const lastName = row.dataset.lastname
-            .toLowerCase(); // Asegúrate de que el data-lastname exista en tu HTML
-                const area = row.dataset.area.toLowerCase();
-                const school = row.dataset.school.toLowerCase();
-                const estado = row.dataset.estado.toLowerCase();
-
-                // Lógica de búsqueda mejorada: coincide con nombre, código O apellidos
-                const matchesSearch = name.includes(searchText) ||
-                    code.includes(searchText) ||
-                    lastName.includes(searchText);
-
-                const matchesCodigo = filterCodigo === '' || code.includes(filterCodigo);
-                const matchesArea = filterArea === '' || area.includes(filterArea);
-                const matchesEscuela = filterEscuela === '' || school.includes(filterEscuela);
-                const matchesEstado = filterEstado === '' || estado.includes(filterEstado);
-
-                if (matchesSearch && matchesCodigo && matchesArea && matchesEscuela && matchesEstado) {
-                    row.style.display = ''; // Muestra la fila
-                } else {
-                    row.style.display = 'none'; // Oculta la fila
-                }
-            });
-        }
-
-        // Event Listeners
-        searchInput.addEventListener('keyup', applyFilters); // Búsqueda en tiempo real
-        filterButton.addEventListener('click', () => {
-            filterPopup.classList.toggle('show'); // Muestra/oculta el pop-up
-        });
-
-        applyFilterButton.addEventListener('click', () => {
-            applyFilters();
-            filterPopup.classList.remove('show'); // Oculta el pop-up después de aplicar
-        });
-
-        clearFilterButton.addEventListener('click', () => {
-            document.getElementById('filterCodigo').value = '';
-            document.getElementById('filterArea').value = '';
-            document.getElementById('filterEscuela').value = '';
-            document.getElementById('filterEstado').value = '';
-            applyFilters(); // Aplica los filtros después de limpiar
-            filterPopup.classList.remove('show'); // Oculta el pop-up
-        });
-
-        // Ocultar el pop-up si se hace clic fuera de él
-        window.addEventListener('click', (event) => {
-            if (!filterPopup.contains(event.target) && !filterButton.contains(event.target)) {
-                filterPopup.classList.remove('show');
-            }
-        });
-    </script>
+    <script src="{{ asset('js/menu_modal.js') }}"></script>
+    <script src="{{ asset('js/lista_prac.js') }}"></script>
 </body>
 
 </html>

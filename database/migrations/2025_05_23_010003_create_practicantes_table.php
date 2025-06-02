@@ -18,10 +18,11 @@ return new class extends Migration
             $table->string('apellidos', 100)->notNullable();
             $table->date('fecha_nacimiento')->nullable();
             $table->char('sexo', 1)->nullable();
+            $table->string('curp', 18)->unique()->notNullable();
             $table->string('telefono_contacto', 20)->nullable();
             $table->string('nombre_emergencia', 200)->nullable();
             $table->string('telefono_emergencia', 20)->nullable();
-            $table->string('num_seguro', 50)->unique()->nullable();
+            $table->string('num_seguro', 11)->unique()->nullable();
             $table->integer('institucion_id');
             $table->integer('carrera_id');
             $table->string('nivel_estudios', 100)->nullable();

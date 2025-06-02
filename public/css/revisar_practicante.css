@@ -1,0 +1,239 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styles (similar to other views) */
+.header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 10;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header .back-button {
+    background-color: #d3bc68; /* Color de tu marca */
+    color: white;
+    border: 1px solid #474747;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    margin-right: 20px;
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header h1 {
+    margin: 0 auto;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Main Content Wrapper for Centering Card */
+.main-content-wrapper {
+    flex-grow: 1; /* Permite que ocupe el espacio restante */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra verticalmente la tarjeta */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Review Card Styles */
+.review-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    display: flex; /* Divide en dos columnas */
+    width: 80%; /* Ancho de la tarjeta */
+    max-width: 900px; /* Ancho máximo para pantallas grandes */
+    overflow: hidden; /* Asegura que los bordes redondeados se apliquen bien */
+}
+
+/* Practicante Info Sidebar (Left) */
+.practicante-info-sidebar {
+    background-color: #f8f8f8; /* Un fondo ligeramente diferente para la sidebar */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 250px; /* Ancho fijo de la sidebar */
+    flex-shrink: 0; /* Evita que se encoja */
+    border-right: 1px solid #eee;
+}
+
+.practicante-avatar {
+    width: 120px;
+    height: 120px;
+    background-color: #e0e0e0; /* Color gris claro para el fondo del avatar */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.practicante-avatar i.fa-user {
+    font-size: 70px; /* Tamaño del icono de usuario */
+    color: #888; /* Color gris del icono */
+}
+
+.practicante-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.practicante-area {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Review Form Section (Right) */
+.review-form-section {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre los grupos de formulario */
+}
+
+.form-group label {
+    display: block; /* Etiqueta en su propia línea */
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+    font-size: 16px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: calc(100% - 20px); /* Ocupa casi todo el ancho */
+    padding: 12px 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box; /* Incluye padding en el ancho */
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    border-color: #d3bc68; /* Color al enfocar */
+}
+
+.form-group textarea {
+    min-height: 100px; /* Altura mínima del textarea */
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+/* Stars Rating */
+.stars-rating {
+    display: flex;
+    gap: 5px; /* Espacio entre las estrellas */
+    cursor: pointer;
+}
+
+.stars-rating .star i.fa-star {
+    font-size: 28px; /* Tamaño de las estrellas */
+    color: #ccc; /* Color por defecto (gris) */
+    transition: color 0.2s;
+}
+
+.stars-rating .star i.fa-star.selected {
+    color: #d3bc68; /* Color de las estrellas seleccionadas (dorado) */
+}
+
+.stars-rating .star i.fa-star.unselected {
+    color: #ccc; /* Asegura que las no seleccionadas sean grises */
+}
+
+
+/* Form Actions Buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 15px; /* Espacio entre botones */
+    margin-top: 20px; /* Espacio encima de los botones */
+}
+
+.form-actions button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: bold;
+}
+
+.add-review-button {
+    background-color: #d3bc68; /* Color dorado */
+    color: white;
+    border: 1px solid #c0ac5a;
+}
+
+.add-review-button:hover {
+    background-color: #c0ac5a;
+}
+
+.cancel-review-button {
+    background-color: #e0e0e0; /* Color gris */
+    color: #555;
+    border: 1px solid #ccc;
+}
+
+.cancel-review-button:hover {
+    background-color: #d0d0d0;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .review-card {
+        flex-direction: column; /* Apila las secciones en pantallas pequeñas */
+        width: 95%;
+    }
+
+    .practicante-info-sidebar {
+        width: 100%; /* Ocupa todo el ancho */
+        border-right: none;
+        border-bottom: 1px solid #eee; /* Añade borde inferior */
+        padding-bottom: 20px;
+    }
+
+    .review-form-section {
+        padding: 20px;
+    }
+
+    .form-actions {
+        flex-direction: column; /* Apila los botones */
+        align-items: center;
+    }
+
+    .form-actions button {
+        width: 100%;
+        max-width: 250px;
+    }
+}

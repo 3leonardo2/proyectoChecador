@@ -8,7 +8,7 @@ body {
     height: 100vh; /* Ocupa el 100% del alto de la ventana */
     overflow: hidden; /* Evita el scroll del body */
 }
-a{
+a {
     text-decoration: none;
 }
 .header {
@@ -69,8 +69,8 @@ a{
     transition: 0.3s;
 }
 
-.back-button:hover{
-    background-color: #c0a855; 
+.back-button:hover {
+    background-color: #c0a855;
     font-size: 20px;
     width: 50px;
     height: 50px;
@@ -91,7 +91,7 @@ a{
     overflow: hidden; /* Importante para que el scroll se maneje internamente */
 }
 
-.practicante-info-wrapper {
+.registrar_insti-wrapper {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -107,7 +107,7 @@ a{
     /* O define una altura fija si es un componente dentro de una página más grande */
 }
 
-.practicante-fixed-elements {
+.institucion-fixed-elements {
     width: 200px; /* Ancho fijo para la sección de la imagen y el botón editar */
     flex-shrink: 0; /* Evita que se encoja */
     padding-right: 20px; /* Espacio entre la sección fija y el contenido que hace scroll */
@@ -119,7 +119,7 @@ a{
     align-self: flex-start; /* Se alinea al inicio del contenedor padre */
 }
 
-.practicante-profile-section {
+.institucion-profile-section {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -146,68 +146,13 @@ a{
     border-radius: 5px; /* Bordes ligeramente redondeados */
 }
 
-.add-image-button {
-    background-color: transparent;
-    border: 1px solid #999;
-    color: #555;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.practicante-codigo {
-    margin-top: 15px;
+.mensaje-opcional {
+    margin-top: 5px;
     font-size: 16px;
     color: #666;
 }
 
-.edit-button {
-    background-color: #d3bc68;
-    border: 1px solid #d3bc68; /* Color azul para el botón de editar */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Espacio entre el icono y el texto */
-    position: absolute; /* Posicionamiento absoluto dentro de .practicante-info-wrapper */
-    top: 20px; /* Distancia desde arriba */
-    right: 55px; /* Distancia desde la derecha */
-    transition: all 0.3s ease;
-}
-
-.edit-button:hover {
-    background-color: #c0a855 !important;
-    border:#c0a855; /* Color azul para el botón de editar */
-    color: white !important;
-    font-size: 18px;
-}
-
-.revision-button {
-    background-color: #3e8951;
-    border: 1px solid #3e8951; /* Color azul para el botón de editar */
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Espacio entre el icono y el texto */
-    position: absolute; /* Posicionamiento absoluto dentro de .practicante-info-wrapper */
-    top: 20px; /* Distancia desde arriba */
-    right: 170px; /* Distancia desde la derecha */
-    transition: all 0.3s ease;
-}
-.revision-button:hover {
-    background-color: #3c6d49; /* Color más oscuro al pasar el mouse */
-    border:#3c6d49; /* Color azul para el botón de editar */
-    font-size: 17px; /* Aumenta ligeramente el tamaño del texto */
-}
-.practicante-scrollable-content {
+.institucion-scrollable-content {
     flex-grow: 1; /* Ocupa el espacio restante */
     overflow-y: auto; /* ¡Esto es lo que hace que esta sección haga scroll! */
     padding-left: 20px; /* Espacio a la izquierda del contenido que hace scroll */
@@ -215,7 +160,7 @@ a{
     padding-top: 60px; /* Ajusta este valor para dejar espacio al botón "Editar" */
 }
 
-.practicante-scrollable-content h2 {
+.institucion-scrollable-content h2 {
     color: #333;
     font-size: 20px;
     margin-top: 0; /* Elimina el margen superior por defecto */
@@ -223,12 +168,12 @@ a{
     border-bottom: 1px solid #eee; /* Línea divisoria */
     padding-bottom: 5px;
 }
-.practicante-scrollable-content h2:not(:first-child) {
+.intsitucion-scrollable-content h2:not(:first-child) {
     margin-top: 30px; /* Ajusta este valor (ej: 30px, 40px) para el espacio deseado */
     /* Esto aplicará un margen superior solo a los h2 que no sean el primer hijo
-                         de .practicante-scrollable-content.
-                         Así, el primer h2 (Datos Generales) no tendrá un margen superior extra,
-                         lo cual es bueno ya que ya tienes padding-top en el contenedor. */
+    de .practicante-scrollable-content.
+    Así, el primer h2 (Datos Generales) no tendrá un margen superior extra,
+    lo cual es bueno ya que ya tienes padding-top en el contenedor. */
 }
 
 .data-item {
@@ -249,4 +194,160 @@ a{
     margin: 0;
     color: #333;
     flex-grow: 1; /* Permite que el párrafo ocupe el espacio restante */
+}
+.form-group {
+    margin-bottom: 15px; /* Espacio entre cada grupo de label/input */
+    display: flex;
+    align-items: center; /* Alinea verticalmente label e input */
+    position: relative; /* Para posicionar el icono del calendario */
+}
+.form-group label {
+    font-weight: bold;
+    color: #555;
+    width: 180px; /* Un poco más de ancho para las etiquetas en edición */
+    flex-shrink: 0;
+    margin-right: 10px; /* Espacio entre el label y el input */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group select {
+    flex-grow: 1; /* Permite que el input o select ocupe el espacio restante */
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Bordes redondeados como en la imagen de registro */
+    font-size: 16px;
+    outline: none; /* Quita el contorno al hacer focus */
+    transition: border-color 0.2s; /* Transición suave para el borde */
+    min-width: 0; /* Permite que el input se encoja si el flex container es pequeño */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #d3bc68; /* Color de borde al enfocar, similar a tus botones */
+}
+
+/* Estilo para el icono del calendario dentro del input de fecha */
+.form-group .calendar-icon {
+    position: absolute;
+    right: 15px; /* Posición dentro del input */
+    color: #888;
+    pointer-events: none; /* Para que no interfiera con el click en el input */
+}
+
+/* Ajustes para el botón Añadir imagen */
+.add-image-button {
+    background-color: transparent;
+    border: 1px solid #999;
+    color: #555;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    /* Ajusta el ancho si es necesario para que sea similar al de la imagen */
+    width: 150px; /* Ejemplo, ajusta según el diseño */
+    text-align: center; /* Centra el texto del botón */
+    display: block; /* Para que ocupe todo el ancho definido */
+    margin-bottom: 10px; /* Espacio debajo del botón */
+    transition: 0.3s;
+}
+.add-image-button:hover{
+    font-size:15px;
+}
+
+/* Ocultar el input type="file" real y usar el label como botón */
+.add-image-input {
+    display: none;
+}
+
+/* Estilos para los botones de acción (Guardar/Cancelar) */
+.form-actions {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 30px; /* Espacio superior para separar de los campos */
+}
+
+.save-button,
+.cancel-button {
+    padding: 12px 25px;
+    border-radius: 20px; /* Bordes redondeados */
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none; /* Elimina el borde por defecto */
+}
+
+.save-button {
+    background-color: #d3bc68; /* Tu color de acento */
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #c0a855; /* Un tono un poco más oscuro al pasar el ratón */
+    font-size: 17px;
+}
+
+.cancel-button {
+    background-color: #e0e0e0; /* Un gris claro */
+    color: #555;
+    border: 1px solid #ccc;
+}
+
+.cancel-button:hover {
+    background-color: #d0d0d0;
+    font-size: 17px;
+}
+
+.remove-career-button {
+    background-color: #f46936; /* Color rojo */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 15px; /* Espacio antes de la siguiente carrera o hr */
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+.remove-career-button:hover {
+    background-color: #d32f2f;
+}
+.carrera-block {
+    /* Un div para agrupar cada formulario de carrera y su botón de eliminar */
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+.carrera-block:first-child {
+    border-top: none; /* No mostrar borde superior para el primer bloque de carrera */
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.add-carrera {
+    padding: 12px 25px;
+    border-radius: 20px; /* Bordes redondeados */
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background-color: #28a745;
+    border:none;
+    color: white;
+    font-size: 16px;    
+}
+.add-carrera:hover {
+    background-color: #218739;
+    border-color: #218739;
+    color: white;
+    font-size: 17px;    
 }

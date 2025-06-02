@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de practicante</title>
-    <link rel="stylesheet" href="{{ asset('css/detailsprac.css') }}">
+    <link rel="stylesheet" href="css/detailsprac.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
 
 <body>
@@ -15,8 +16,12 @@
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Detalles de practicante</h1>
-    </div>
 
+        <button class="menu-button" id="menuButton">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+    @include('partials.menu_modal')
     <div class="main-container">
         <div class="practicante-info-wrapper">
             <div class="practicante-fixed-elements">
@@ -24,16 +29,18 @@
                     <div class="profile-image-container">
                         <img src="{{ asset('img_prac/leonardo.jfif') }}" alt="ImagenPracticante" class="profile-image">
                     </div>
-                    <button class="add-image-button">Añadir imagen...</button>
                     <div class="practicante-codigo">Código: LAE</div>
                 </div>
             </div>
-            <button class="edit-button">
+            <a href="/edit_prac" class="edit-button">
                 <i class="fa-solid fa-pen-to-square"></i>
                 Editar
+            </a>
+            <button class="revision-button">
+                <i class="fa-solid fa-ranking-star"></i> Ver revisiones
             </button>
             <div class="practicante-scrollable-content">
-<!-- ------------------------------------------------------ -->
+                <!-- ------------------------------------------------------ -->
                 <h2>Datos Generales</h2>
                 <div class="data-item">
                     <label>Nombre:</label>
@@ -71,7 +78,7 @@
                     <label>Número de seguro:</label>
                     <p>03190439202</p>
                 </div>
-<!-- ------------------------------------------------------ -->
+                <!-- ------------------------------------------------------ -->
                 <h2>Información institucional:</h2>
                 <div class="data-item">
                     <label>Escuela o institución:</label>
@@ -97,7 +104,7 @@
                     <label>Nivel de estudios:</label>
                     <p>Licenciatura</p>
                 </div>
-<!-- ------------------------------------------------------ -->
+                <!-- ------------------------------------------------------ -->
                 <h2>Información de prácticas:</h2>
                 <div class="data-item">
                     <label>Estado:</label>
@@ -134,6 +141,7 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/menu_modal.js') }}"></script>
 </body>
 
 </html>

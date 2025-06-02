@@ -16,7 +16,9 @@ return new class extends Migration
             $table->integer('id_admin');
             $table->integer('id_practicante');
             $table->date('fecha_evaluacion')->default(DB::raw('CURRENT_DATE'))->notNullable();
-            $table->text('opinion')->nullable();
+            $table->text('nombre_revision')->nullable();
+            $table->text('descripcion_revision')->nullable();
+            $table->text('evaluacion_gral')->nullable();
 
             $table->foreign('id_admin')->references('id_admin')->on('administradores');
             $table->foreign('id_practicante')->references('id_practicante')->on('practicantes');

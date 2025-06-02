@@ -22,7 +22,7 @@ Route::get('/edit_prac', function () {
 
 Route::get('/detallesprac', function () {
     return view('detallesprac');
-});
+})->name('practicantes.detalles');
 
 Route::get('/bitacora', function () {
     return view('bitacora');
@@ -36,6 +36,18 @@ Route::get('/registrar_prac', function () {
     return view('registrar_prac');
 });
 
+Route::get('/registrar_insti', function () {
+    return view('registrar_insti');
+});
+
 Route::get('/consulta_horas', function () {
     return view('consulta_horas');
+});
+
+Route::get('/revisar_practicante', function () {
+    return view('revisar_practicante');
+});
+
+Route::get('/lista_revisiones', function () {
+    return view('lista_revisiones');
 });
