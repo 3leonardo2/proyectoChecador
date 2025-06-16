@@ -207,6 +207,28 @@ a{
     border:#3c6d49; /* Color azul para el botón de editar */
     font-size: 17px; /* Aumenta ligeramente el tamaño del texto */
 }
+
+.credential-button {
+    margin-top: 30px;
+    background-color: #d3bc68;
+    border: 1px solid #d3bc68; /* Color azul para el botón de editar */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    align-items: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.credential-button:hover {
+    background-color: #c0a855 !important;
+    border:#c0a855; /* Color azul para el botón de editar */
+    color: white !important;
+    font-size: 18px;
+}
+
 .practicante-scrollable-content {
     flex-grow: 1; /* Ocupa el espacio restante */
     overflow-y: auto; /* ¡Esto es lo que hace que esta sección haga scroll! */

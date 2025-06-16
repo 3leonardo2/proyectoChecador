@@ -27,6 +27,11 @@
 
             <div class="review-form-section">
                 <div class="form-group">
+                    <label for="nombreRevision">Nombre de quién hará la revisión:</label>
+                    <input type="text" id="nombreRevision" placeholder="Escriba su nombre...">
+                </div>
+
+                <div class="form-group">
                     <label for="nombreRevision">Nombre de revisión:</label>
                     <input type="text" id="nombreRevision" placeholder="Escriba el nombre/tipo de su revisión...">
                 </div>

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Institución y/o Carrera</title>
     <link rel="stylesheet" href="css/registrar_insti.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Estilos adicionales para el botón de eliminar carrera */
-        
-    </style>
 </head>
+
 <body>
     <div class="header">
         <a href="#" class="back-button">
@@ -20,13 +18,16 @@
     </div>
 
     <div class="main-container">
-        <form action="#" method="POST" class="registrar_insti-wrapper">
+        <form action="{{ route('instituciones.store') }}" method="POST" class="registrar_insti-wrapper"
+            enctype="multipart/form-data">
+            @csrf
             <div class="institucion-fixed-elements">
                 <div class="institucion-profile-section">
                     <div class="profile-image-container">
 
                     </div>
-                    <input type="file" id="add-image-input" class="add-image-input" name="profile_image" accept="image/*" style="display: none;">
+                    <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
+                        accept="image/*" style="display: none;">
                     <label for="add-image-input" class="add-image-button">Añadir imagen...</label>
                     <div class="mensaje-opcional">(OPCIONAL) </div>
                 </div>
@@ -43,11 +44,11 @@
                 </div>
                 <div class="form-group">
                     <label for="telefono_ins">Teléfono de contacto*:</label>
-                    <input type="text" id="telefono_ins" name="telefono_ins" placeholder="Teléfono..." required>
+                    <input type="text" id="telefono_ins" name="telefono_ins" placeholder="Teléfono...">
                 </div>
                 <div class="form-group">
                     <label for="correo_ins">Dirección de correo electrónico*:</label>
-                    <input type="text" id="correo_ins" name="correo_ins" placeholder="Correo electrónico..." required>
+                    <input type="text" id="correo_ins" name="correo_ins" placeholder="Correo electrónico...">
                 </div>
 
                 <h2>Añadir carrera:</h2>
@@ -55,25 +56,29 @@
                     <div class="carrera-block" data-index="0">
                         <div class="form-group">
                             <label for="nombre_carr_0">Nombre:</label>
-                            <input type="text" id="nombre_carr_0" name="carreras[0][nombre_carr]" placeholder="Nombre de carrera...">
+                            <input type="text" id="nombre_carr_0" name="carreras[0][nombre_carr]"
+                                placeholder="Nombre de carrera...">
                         </div>
                         <div class="form-group">
                             <label for="gerente_carr_0">Gerente:</label>
-                            <input type="text" id="gerente_carr_0" name="carreras[0][gerente_carr]" placeholder="Gerente de carrera...">
+                            <input type="text" id="gerente_carr_0" name="carreras[0][gerente_carr]"
+                                placeholder="Gerente de carrera...">
                         </div>
                         <div class="form-group">
                             <label for="telefono_carr_0">Teléfono de contacto de carrera:</label>
-                            <input type="text" id="telefono_carr_0" name="carreras[0][telefono_carr]" placeholder="Teléfono de carrera...">
+                            <input type="text" id="telefono_carr_0" name="carreras[0][telefono_carr]"
+                                placeholder="Teléfono de carrera...">
                         </div>
                         <div class="form-group">
                             <label for="correo_carr_0">Correo de contacto de carrera:</label>
-                            <input type="text" id="correo_carr_0" name="carreras[0][correo_carr]" placeholder="Correo de carrera...">
+                            <input type="text" id="correo_carr_0" name="carreras[0][correo_carr]"
+                                placeholder="Correo de carrera...">
                         </div>
-                        </div>
+                    </div>
                 </div>
 
                 <button type="button" id="add-career-button" class="add-carrera"> Añadir otra carrera</button>
-                
+
                 <div class="form-actions">
                     <button type="submit" class="save-button">Guardar Institución</button>
                     <button type="button" class="cancel-button">Cancelar</button>
@@ -84,4 +89,5 @@
     </div>
     <script src="{{ asset('js/registrar_insti.js') }}"></script>
 </body>
+
 </html>

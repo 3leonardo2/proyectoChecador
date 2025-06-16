@@ -17,7 +17,6 @@ return new class extends Migration
             $table->date('fecha_asignacion')->default(DB::raw('CURRENT_DATE'))->notNullable();
             $table->date('fecha_finalizacion')->nullable();
             $table->string('rol_en_proyecto', 100)->nullable();
-
             $table->primary(['id_practicante', 'id_proyecto']); // Clave primaria compuesta
             $table->foreign('id_practicante')->references('id_practicante')->on('practicantes')->onDelete('cascade');
             $table->foreign('id_proyecto')->references('id_proyecto')->on('proyectos')->onDelete('cascade');

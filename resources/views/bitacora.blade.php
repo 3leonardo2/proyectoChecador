@@ -104,9 +104,9 @@
             <h1>Bienvenido UPPER !</h1>
         </div>
         <div style="text-align: right;">
-            <button type="button" class="btn btn-custom2 rounded-pill py-2 px-3">
+            <a href="/consulta_horas" type="button" class="btn btn-custom2 rounded-pill py-2 px-3">
                 Consulta tus horas
-            </button>
+            </a>
         </div>
     </div>
 

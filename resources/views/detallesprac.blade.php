@@ -2,10 +2,20 @@
 <html lang="es">
 
 <head>
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de practicante</title>
-    <link rel="stylesheet" href="css/detailsprac.css">
+    <link rel="stylesheet" href="{{asset('css/detailsprac.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
@@ -30,10 +40,14 @@
                         <img src="{{ asset('img_prac/leonardo.jfif') }}" alt="ImagenPracticante" class="profile-image">
                     </div>
                     <div class="practicante-codigo">Código: LAE</div>
+                    <button class="credential-button" id="credentialButton">
+                        <i class="fa-solid fa-id-card"></i>
+                        Credencial
+                    </button>
                 </div>
             </div>
-            <a href="/edit_prac" class="edit-button">
-                <i class="fa-solid fa-pen-to-square"></i>
+            <a href="{{ route('practicantes.edit', $practicante->id_practicante) }}" class="edit-button">
+            <i class="fa-solid fa-pen-to-square"></i>
                 Editar
             </a>
             <button class="revision-button">
@@ -44,99 +58,97 @@
                 <h2>Datos Generales</h2>
                 <div class="data-item">
                     <label>Nombre:</label>
-                    <p>Leonardo</p>
+                    <p>{{ $practicante->nombre }}</p>
                 </div>
                 <div class="data-item">
                     <label>Apellidos:</label>
-                    <p>Alatorre Esparza</p>
+                    <p>{{ $practicante->apellidos }}</p>
                 </div>
                 <div class="data-item">
                     <label>Fecha de nacimiento:</label>
-                    <p>13/06/2004</p>
+                    <p>{{ \Carbon\Carbon::parse($practicante->fecha_nacimiento)->format('d/m/Y') }}</p>
                 </div>
                 <div class="data-item">
                     <label>Sexo:</label>
-                    <p>Hombre</p>
+                    <p>{{ $practicante->sexo }}</p>
                 </div>
                 <div class="data-item">
                     <label>Correo electrónico personal:</label>
-                    <p>leoestudiosxd@gmail.com</p>
+                    <p>{{ $practicante->email_personal }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Teléfono personal:</label>
-                    <p>3339018808</p>
+                    <label>Número de teléfono personal:</label>
+                    <p>{{ $practicante->telefono_personal }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Nombre de emergéncia:</label>
-                    <p>Verenice Esparza Ruíz</p>
+                    <label>Contacto de emergencia:</label>
+                    <p>{{ $practicante->nombre_emergencia }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Teléfono de emergéncia:</label>
-                    <p>8884848488</p>
+                    <label>Teléfono de emergencia:</label>
+                    <p>{{ $practicante->telefono_emergencia }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Número de seguro:</label>
-                    <p>03190439202</p>
+                    <label>Número de teléfono personal:</label>
+                    <p>{{ $practicante->num_seguro }}</p>
                 </div>
-                <!-- ------------------------------------------------------ -->
+                <!-- Continúa con el resto de los campos de la misma manera -->
+
+                <!-- Información institucional -->
                 <h2>Información institucional:</h2>
                 <div class="data-item">
                     <label>Escuela o institución:</label>
-                    <p>UTZMG</p>
+                    <p>{{ $practicante->institucion->nombre }}</p>
                 </div>
                 <div class="data-item">
                     <label>Carrera:</label>
-                    <p>Ingeniería en Desarrollo de Software</p>
+                    <p>{{ $practicante->carrera->nombre_carr }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Correo:</label>
-                    <p>info@utzmg.edu.mx</p>
+                    <label>Correo de carrera:</label>
+                    <p>{{ $practicante->carrera->correo_carr }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Teléfono:</label>
-                    <p>33 1234 5678</p>
+                    <label>Teléfono de carrera:</label>
+                    <p>{{ $practicante->carrera->telefono_carr }}</p>
                 </div>
+                <!-- Continúa con el resto de los campos institucionales -->
+                <h2>Información de Prácticas:</h2>
                 <div class="data-item">
-                    <label>Dirección:</label>
-                    <p>Calle Falsa 123, Colonia Inventada, Zapopan, Jalisco</p>
-                </div>
-                <div class="data-item">
-                    <label>Nivel de estudios:</label>
-                    <p>Licenciatura</p>
-                </div>
-                <!-- ------------------------------------------------------ -->
-                <h2>Información de prácticas:</h2>
-                <div class="data-item">
-                    <label>Estado:</label>
-                    <p>ACTIVO</p>
+                    <label>Estado de prácticas:</label>
+                    <p>{{ $practicante->estado_practicas }}</p>
                 </div>
                 <div class="data-item">
                     <label>Área asignada:</label>
-                    <p>Sistemas</p>
+                    <p>{{ $practicante->area_asignada }}</p>
                 </div>
                 <div class="data-item">
                     <label>Fecha de inicio:</label>
-                    <p>28/08/2025</p>
+                    <p>{{ $practicante->fecha_inicio }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Fecha de cierre:</label>
-                    <p>N/E</p>
+                    <label>Fecha de finalización:</label>
+                    <p>{{ $practicante->fecha_final }}</p>
                 </div>
                 <div class="data-item">
                     <label>Hora de entrada:</label>
-                    <p>8:00 am</p>
+                    <p>{{ $practicante->hora_entrada }}</p>
                 </div>
                 <div class="data-item">
                     <label>Hora de salida:</label>
-                    <p>11:00 am</p>
+                    <p>{{ $practicante->hora_salida }}</p>
+                </div>
+                <div class="data-item">
+                    <label>Fecha de finalización:</label>
+                    <p>{{ $practicante->fecha_final }}</p>
                 </div>
                 <div class="data-item">
                     <label>Horas requeridas:</label>
-                    <p>252 </p>
+                    <p>{{ $practicante->horas_requeridas }}</p>
                 </div>
                 <div class="data-item">
-                    <label>Horas registradas:</label>
-                    <p>27 </p>
+                    <label>Horas acumuladas:</label>
+                    <p>{{ $practicante->horas_registradas }}</p>
                 </div>
             </div>
         </div>

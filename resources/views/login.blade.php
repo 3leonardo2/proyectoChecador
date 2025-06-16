@@ -36,7 +36,7 @@
                     </button>
 
                     <div class="text-center mt-3">
-                        <a  class="btn btn-secondary btn-lg "style="font-size: 1.1rem;" href="/edit_prac" >Ir a bitácora de practicantes</a>
+                        <a  class="btn btn-secondary btn-lg "style="font-size: 1.1rem;" href="/bitacora" >Ir a bitácora de practicantes</a>
                     </div>
                 </form>
             </div>

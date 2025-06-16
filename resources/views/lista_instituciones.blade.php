@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Practicantes</title>
-    <link rel="stylesheet" href="{{ asset('css/listadoprac.css') }}">
+    <title>Lista de Instituciones</title>
+    <link rel="stylesheet" href="css/listadoprac.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
@@ -15,7 +15,9 @@
         <a href="#" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h1>Practicantes</h1>
+
+        <h1>Instituciones y/o Escuelas</h1>
+
         <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
         </button>
@@ -23,12 +25,6 @@
     @include('partials.menu_modal')
 
     <div class="main-container">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="search-filter-section">
             <div class="search-bar-container">
                 <input type="text" id="searchInput" class="search-input"
@@ -74,6 +70,8 @@
             </div>
         </div>
 
+
+
         <div class="table-container">
             <table>
                 <thead>
@@ -85,37 +83,27 @@
                         <th>Área</th>
                         <th>Escuela o institución</th>
                         <th>ESTADO</th>
-                        <th>Acciones</th>
+                        <th>Número</th>
+                        <th>Administrar</th>
+                        <th>Ver revisiones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($practicantes as $index => $practicante)
-                        <tr class="practicante-row" data-name="{{ $practicante->nombre }}"
-                            data-code="{{ $practicante->codigo }}" data-lastname="{{ $practicante->apellidos }}"
-                            data-area="{{ $practicante->area_asignada }}"
-                            data-school="{{ $practicante->institucion->nombre }}"
-                            data-estado="{{ $practicante->estado_practicas }}">
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $practicante->codigo }}</td>
-                            <td>{{ $practicante->nombre }}</td>
-                            <td>{{ $practicante->apellidos }}</td>
-                            <td>{{ $practicante->area_asignada }}</td>
-                            <td>{{ $practicante->institucion->nombre }}</td>
-                            <td>
-                                <span class="status-badge {{ strtolower($practicante->estado_practicas) }}">
-                                    {{ $practicante->estado_practicas }}
-                                </span>
-                            </td>
-                            <td>
-                                @if (isset($practicante->id_practicante))
-                                    <a href="{{ route('practicantes.show', $practicante->id_practicante) }}" class="admin-button">
-                                        <i class="fa-solid fa-user-gear"></i>
-                                    </a>
-                                @endif
-                            </td>
-                            
-                        </tr>
-                    @endforeach
+                    <tr class="practicante-row" data-name="" data-code="" data-lastname=""
+                        data-area="" data-school="" data-estado="">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td><a  href="/detallesprac" class="admin-button"><i class="fa-solid fa-user-gear"></i></a></td>
+                        <td><a href="/lista_revisiones" class="review-button"><i class="fa-solid fa-star-half-stroke"></i></a></td>
+
+                    </tr>
                 </tbody>
             </table>
         </div>
