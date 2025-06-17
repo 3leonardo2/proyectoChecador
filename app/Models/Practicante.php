@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,7 @@ class Practicante extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        
+
         'nombre',
         'apellidos',
         'fecha_nacimiento',
@@ -48,15 +49,20 @@ class Practicante extends Model
         'horas_requeridas',
         'institucion_id',
         'carrera_id',
+        'horas_registradas',
     ];
     public function institucion()
-{
-    return $this->belongsTo(Institucion::class, 'institucion_id', 'id_institucion');
-}
+    {
+        return $this->belongsTo(Institucion::class, 'institucion_id', 'id_institucion');
+    }
 
-public function carrera()
-{
-    return $this->belongsTo(Carrera::class, 'carrera_id', 'id_carrera');
-}
+    public function carrera()
+    {
+        return $this->belongsTo(Carrera::class, 'carrera_id', 'id_carrera');
+    }
+    public function evaluaciones(): HasMany
+    {
+        return $this->hasMany(Evaluacion::class, 'id_practicante');
+    }
 
 }

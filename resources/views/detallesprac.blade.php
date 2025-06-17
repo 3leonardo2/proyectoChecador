@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de practicante</title>
-    <link rel="stylesheet" href="{{asset('css/detailsprac.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/detailsprac.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
@@ -47,12 +47,12 @@
                 </div>
             </div>
             <a href="{{ route('practicantes.edit', $practicante->id_practicante) }}" class="edit-button">
-            <i class="fa-solid fa-pen-to-square"></i>
+                <i class="fa-solid fa-pen-to-square"></i>
                 Editar
             </a>
-            <button class="revision-button">
+            <a href="{{ route('evaluaciones.index', $practicante->id_practicante) }}" class="revision-button">
                 <i class="fa-solid fa-ranking-star"></i> Ver revisiones
-            </button>
+            </a>
             <div class="practicante-scrollable-content">
                 <!-- ------------------------------------------------------ -->
                 <h2>Datos Generales</h2>

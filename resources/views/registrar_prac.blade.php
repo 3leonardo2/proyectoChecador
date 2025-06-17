@@ -130,7 +130,16 @@
                 </div>
                 <div class="form-group">
                     <label for="area_asignada">Área asignada:</label>
-                    <input type="text" id="area_asignada" name="area_asignada" placeholder="Área asignada...">
+                <select id="area_asignada" name="area_asignada">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Gastronomía">Gastronomía</option>
+                        <option value="Panadería">Panadería</option>
+                        <option value="Concierge">Concierge</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="LLamadas">Llamadas</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha de inicio*:</label>

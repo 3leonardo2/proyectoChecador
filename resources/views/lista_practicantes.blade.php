@@ -51,7 +51,12 @@
                         <select id="filterArea">
                             <option value="">Todas</option>
                             <option value="Sistemas">Sistemas</option>
-                            <option value="Gastronomia">Gastronomía</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Gastronomía">Gastronomía</option>
+                            <option value="Panadería">Panadería</option>
+                            <option value="Concierge">Concierge</option>
+                            <option value="Ventas">Ventas</option>
+                            <option value="LLamadas">Llamadas</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -108,12 +113,13 @@
                             </td>
                             <td>
                                 @if (isset($practicante->id_practicante))
-                                    <a href="{{ route('practicantes.show', $practicante->id_practicante) }}" class="admin-button">
+                                    <a href="{{ route('practicantes.show', $practicante->id_practicante) }}"
+                                        class="admin-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>
                                 @endif
                             </td>
-                            
+
                         </tr>
                     @endforeach
                 </tbody>

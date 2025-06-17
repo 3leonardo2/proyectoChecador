@@ -108,7 +108,7 @@ class PracticanteController extends Controller
 
             DB::commit(); // Si todo salió bien, confirma los cambios en la BD
 
-            return redirect()->route('practicantes.show', $practicante->id)
+            return redirect()->route('practicantes.show', $practicante->id_practicante)
                 ->with('success', 'Practicante registrado exitosamente con el código: ' . $codigo);
 
         } catch (\Exception $e) {
@@ -154,41 +154,56 @@ class PracticanteController extends Controller
             return response()->json(['error' => 'Error interno del servidor'], 500);
         }
     }
+    // En PracticanteController.php
     public function update(Request $request, $id)
     {
-        // Validación básica (puedes ajustarla según tus reglas)
+        // Validación (incluyendo la de CURP que ahora funcionará)
         $request->validate([
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-'curp' => 'required|string|min:18|max:18|unique:practicantes,curp,' . $id . ',id_practicante',
+            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp,' . $id . ',id_practicante',
             'fecha_nacimiento' => 'required|date',
             'institucion_nombre' => 'required|string|max:255',
             'carrera_nombre' => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-'email_personal' => 'nullable|email|unique:practicantes,email_personal,' . $id . ',id_practicante',
-            'telefono_personal' => 'nullable|string|max:15',
-            'nombre_emergencia' => 'nullable|string|max:100',
-            'telefono_emergencia' => 'nullable|string|max:15',
-            'num_seguro' => 'nullable|string|max:20',
-            'email_institucional' => 'nullable|email',
-            'telefono_institucional' => 'nullable|string|max:20',
-            'area_asignada' => 'nullable|string|max:100',
-            'hora_entrada' => 'nullable|string|max:10',
-            'hora_salida' => 'nullable|string|max:10',
-            'horas_requeridas' => 'nullable|integer|min:0',
-            'horas_registradas' => 'nullable|integer|min:0',
-
+            // ... resto de tus validaciones
         ]);
 
-        // Buscar practicante
-        $practicante = Practicante::findOrFail($id);
+        // Usar una transacción para seguridad
+        DB::beginTransaction();
+        try {
+            $practicante = Practicante::findOrFail($id);
 
-        // Actualizar campos
-        $practicante->update($request->all());
+            // 1. Gestionar Institución (Buscar o Crear)
+            $institucion = Institucion::firstOrCreate(
+                ['nombre' => $request->institucion_nombre]
+            );
 
-        // Redirigir a la vista de detalles
-        return redirect()->route('practicantes.show', $practicante->id_practicante)
-            ->with('success', 'Practicante actualizado correctamente.');
+            // 2. Gestionar Carrera (Buscar o Crear)
+            $carrera = Carrera::firstOrCreate(
+                [
+                    'id_institucion' => $institucion->id_institucion,
+                    'nombre_carr' => $request->carrera_nombre
+                ]
+            );
+
+            // 3. Actualizar los campos directos del practicante
+            $practicante->update($request->except(['institucion_nombre', 'carrera_nombre']));
+
+            // 4. Asignar los IDs de las relaciones y guardar
+            $practicante->institucion_id = $institucion->id_institucion;
+            $practicante->carrera_id = $carrera->id_carrera;
+            $practicante->save();
+
+            DB::commit(); // Confirmar los cambios
+
+            // Redirigir a la vista de detalles
+            return redirect()->route('practicantes.show', $practicante->id_practicante)
+                ->with('success', 'Practicante actualizado correctamente.');
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Revertir en caso de error
+            return back()->withErrors(['error' => 'Ocurrió un error al actualizar: ' . $e->getMessage()])->withInput();
+        }
     }
 
     public function show($id)
@@ -200,6 +215,12 @@ class PracticanteController extends Controller
     {
         $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
         return view('edit_prac', compact('practicante'));
+    }
+
+    public function showEvaluaciones($id_practicante)
+    {
+        $practicante = Practicante::with('evaluaciones')->findOrFail($id_practicante);
+        return view('lista_revisiones', compact('practicante'));
     }
 
 }

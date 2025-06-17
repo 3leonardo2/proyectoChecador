@@ -152,10 +152,15 @@ body {
     cursor: pointer;
     transition: background-color 0.2s;
     font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .add-review-button:hover {
-    background-color: #c0ac5a;
+    background-color: #c0a855 !important;
+    border:#c0a855;
+    color: white !important;
+    font-size: 17px;
 }
 
 /* Reviews Table Section (Right) */

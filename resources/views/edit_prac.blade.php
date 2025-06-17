@@ -52,6 +52,11 @@
                         value="{{ old('fecha_nacimiento', $practicante->fecha_nacimiento) }}">
                 </div>
                 <div class="form-group">
+                    <label for="curp">CURP*:</label>
+                    <input type="text" id="curp" name="curp" required
+                        value="{{ old('curp', $practicante->curp) }}" >
+                </div>
+                <div class="form-group">
                     <label for="sexo">Sexo:</label>
                     <select id="sexo" name="sexo">
                         <option value="">Seleccione una opción</option>
@@ -94,14 +99,14 @@
                 <h2>Información institucional:</h2>
                 <div class="form-group">
                     <label for="escuela">Escuela o institución:</label>
-                        <input type="text" name="institucion_nombre" 
-                            value="{{ old('institucion_nombre', optional($practicante->institucion)->nombre) }}">
+                    <input type="text" name="institucion_nombre"
+                        value="{{ old('institucion_nombre', optional($practicante->institucion)->nombre) }}">
 
                 </div>
                 <div class="form-group">
                     <label for="carrera">Carrera:</label>
-                       <input type="text" name="carrera_nombre" 
-                            value="{{ old('carrera_nombre', optional($practicante->carrera)->nombre_carr) }}">
+                    <input type="text" name="carrera_nombre"
+                        value="{{ old('carrera_nombre', optional($practicante->carrera)->nombre_carr) }}">
 
                 </div>
                 <div class="form-group">

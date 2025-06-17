@@ -71,4 +71,75 @@ class InstitucionController extends Controller
             return back()->withErrors(['error' => 'Ocurrió un error al guardar la institución.'])->withInput();
         }
     }
+
+    public function index()
+    {
+        $instituciones = Institucion::withCount('carreras')->orderBy('nombre')->get();
+        return view('lista_instituciones', compact('instituciones'));
+    }
+
+    public function getCarreras($id_institucion)
+    {
+        $carreras = Carrera::where('id_institucion', $id_institucion)->get();
+        return response()->json($carreras);
+    }
+
+    public function edit($id_institucion)
+{
+    $institucion = Institucion::with('carreras')->findOrFail($id_institucion);
+    return view('editar_institucion', compact('institucion'));
+}
+public function update(Request $request, $id_institucion)
+{
+    DB::beginTransaction();
+    try {
+        // 1. Actualizar la institución
+        $institucion = Institucion::findOrFail($id_institucion);
+        $institucion->update($request->only(['nombre', 'direccion', 'telefono', 'correo']));
+
+        // 2. Manejar carreras
+        if ($request->has('carreras')) {
+            foreach ($request->carreras as $carreraData) {
+                // Eliminar carreras marcadas
+                if (isset($carreraData['_destroy'])) {
+                    Carrera::destroy($carreraData['id_carrera']);
+                    continue;
+                }
+                
+                if (isset($carreraData['id_carrera'])) {
+                    // Actualizar carrera existente
+                    $carrera = Carrera::find($carreraData['id_carrera']);
+                    if ($carrera) {
+                        $carrera->update([
+                            'nombre_carr' => $carreraData['nombre_carr'],
+                            'gerente_carr' => $carreraData['gerente_carr'],
+                            'tel_gerente' => $carreraData['telefono_carr'],
+                            'correo_carr' => $carreraData['correo_carr']
+                        ]);
+                    }
+                } else {
+                    // Crear nueva carrera
+                    if (!empty($carreraData['nombre_carr'])) {
+                        Carrera::create([
+                            'id_institucion' => $id_institucion,
+                            'nombre_carr' => $carreraData['nombre_carr'],
+                            'gerente_carr' => $carreraData['gerente_carr'],
+                            'tel_gerente' => $carreraData['telefono_carr'],
+                            'correo_carr' => $carreraData['correo_carr']
+                        ]);
+                    }
+                }
+            }
+        }
+
+        DB::commit();
+        return redirect()->route('instituciones.index')
+            ->with('success', 'Institución actualizada correctamente');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+    }
+}
+
 }
