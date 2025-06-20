@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log; // Para logging
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Practicante; // Asegúrate de tener los modelos creados
 use App\Models\Institucion;
@@ -37,6 +38,7 @@ class PracticanteController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Iniciando registro de practicante', ['request' => $request->all()]);
         // 1. Validar los datos (puedes añadir más reglas según necesites)
         $request->validate([
             'nombre' => 'required|string|max:100',
@@ -58,6 +60,7 @@ class PracticanteController extends Controller
             'hora_salida' => 'nullable|string|max:10',
             'horas_requeridas' => 'nullable|integer|min:0',
             'horas_registradas' => 'nullable|integer|min:0',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Usar una transacción para asegurar la integridad de los datos
@@ -95,16 +98,48 @@ class PracticanteController extends Controller
 
             // 5. Crear y guardar el nuevo practicante
             $practicante = new Practicante();
-            $practicante->fill($request->all()); // Llena todos los campos definidos en $fillable del modelo
+            $practicante->fill($request->except('profile_image')); // Llena todos los campos definidos en $fillable del modelo
 
             // Asignar los valores que NO vienen directamente del formulario
             $practicante->codigo = $codigo;
             $practicante->institucion_id = $institucion->id_institucion;
             $practicante->carrera_id = $carrera->id_carrera;
+            $practicante->horas_registradas = 0;
 
             $practicante->save();
 
-            $practicante->save();
+            if ($request->hasFile('profile_image')) {
+                \Log::info('Archivo recibido', [
+                    'name' => $request->file('profile_image')->getClientOriginalName(),
+                    'size' => $request->file('profile_image')->getSize(),
+                    'mime' => $request->file('profile_image')->getMimeType()
+                ]);
+                // Eliminar imagen anterior si existe (para updates)
+                if ($practicante->profile_image) {
+                    Storage::disk('public')->delete($practicante->profile_image);
+                }
+
+                // Generar nombre único basado en ID
+                $extension = $request->file('profile_image')->extension();
+                $filename = 'practicante_' . $practicante->id_practicante . '.' . $extension;
+
+                $tempPath = $request->file('profile_image')->storeAs(
+                    'temp',
+                    'test_upload.jpg',
+                    'public'
+                );
+                \Log::info('Archivo guardado temporalmente en: ' . $tempPath);
+                // Guardar en la carpeta personalizada
+                $imagePath = $request->file('profile_image')->storeAs(
+                    'fotos_practicantes',
+                    $filename,
+                    'public'
+                );
+
+                $practicante->profile_image = $imagePath;
+                $practicante->save();
+            }
+
 
             DB::commit(); // Si todo salió bien, confirma los cambios en la BD
 
@@ -112,6 +147,8 @@ class PracticanteController extends Controller
                 ->with('success', 'Practicante registrado exitosamente con el código: ' . $codigo);
 
         } catch (\Exception $e) {
+            \Log::error('Error en store: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
             DB::rollBack(); // Si algo falla, revierte todos los cambios
             return back()->withErrors(['error' => 'Ocurrió un error al registrar al practicante: ' . $e->getMessage()])->withInput();
         }
@@ -157,7 +194,7 @@ class PracticanteController extends Controller
     // En PracticanteController.php
     public function update(Request $request, $id)
     {
-        // Validación (incluyendo la de CURP que ahora funcionará)
+        // Validación completa incluyendo la imagen
         $request->validate([
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
@@ -165,20 +202,32 @@ class PracticanteController extends Controller
             'fecha_nacimiento' => 'required|date',
             'institucion_nombre' => 'required|string|max:255',
             'carrera_nombre' => 'required|string|max:255',
-            // ... resto de tus validaciones
+            'fecha_inicio' => 'required|date',
+            'email_personal' => 'nullable|email|unique:practicantes,email_personal,' . $id . ',id_practicante',
+            'telefono_personal' => 'nullable|string|max:15',
+            'nombre_emergencia' => 'nullable|string|max:100',
+            'telefono_emergencia' => 'nullable|string|max:15',
+            'num_seguro' => 'nullable|string|max:20',
+            'email_institucional' => 'nullable|email',
+            'telefono_institucional' => 'nullable|string|max:20',
+            'area_asignada' => 'nullable|string|max:100',
+            'hora_entrada' => 'nullable|string|max:10',
+            'hora_salida' => 'nullable|string|max:10',
+            'horas_requeridas' => 'nullable|integer|min:0',
+            'horas_registradas' => 'nullable|integer|min:0',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Usar una transacción para seguridad
         DB::beginTransaction();
         try {
             $practicante = Practicante::findOrFail($id);
 
-            // 1. Gestionar Institución (Buscar o Crear)
+            // 1. Gestionar Institución
             $institucion = Institucion::firstOrCreate(
                 ['nombre' => $request->institucion_nombre]
             );
 
-            // 2. Gestionar Carrera (Buscar o Crear)
+            // 2. Gestionar Carrera
             $carrera = Carrera::firstOrCreate(
                 [
                     'id_institucion' => $institucion->id_institucion,
@@ -186,22 +235,45 @@ class PracticanteController extends Controller
                 ]
             );
 
-            // 3. Actualizar los campos directos del practicante
-            $practicante->update($request->except(['institucion_nombre', 'carrera_nombre']));
+            // 3. Manejo de la imagen
+            if ($request->hasFile('profile_image')) {
+                // Eliminar imagen anterior si existe
+                if ($practicante->profile_image) {
+                    Storage::disk('public')->delete($practicante->profile_image);
+                }
 
-            // 4. Asignar los IDs de las relaciones y guardar
+                // Generar nombre único basado en ID
+                $extension = $request->file('profile_image')->extension();
+                $filename = 'practicante_' . $practicante->id_practicante . '.' . $extension;
+
+                // Guardar en la carpeta personalizada
+                $imagePath = $request->file('profile_image')->storeAs(
+                    'fotos_practicantes',
+                    $filename,
+                    'public'
+                );
+
+                $practicante->profile_image = $imagePath;
+            }
+
+            // 4. Actualizar los campos directos del practicante
+            $practicante->fill($request->except(['institucion_nombre', 'carrera_nombre', 'profile_image']));
+
+            // 5. Asignar los IDs de las relaciones
             $practicante->institucion_id = $institucion->id_institucion;
             $practicante->carrera_id = $carrera->id_carrera;
+
             $practicante->save();
 
-            DB::commit(); // Confirmar los cambios
+            DB::commit();
 
-            // Redirigir a la vista de detalles
             return redirect()->route('practicantes.show', $practicante->id_practicante)
                 ->with('success', 'Practicante actualizado correctamente.');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Revertir en caso de error
+            DB::rollBack();
+            // Agregar logging para depuración
+            \Log::error('Error al actualizar practicante: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Ocurrió un error al actualizar: ' . $e->getMessage()])->withInput();
         }
     }

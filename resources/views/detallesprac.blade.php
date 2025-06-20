@@ -2,16 +2,6 @@
 <html lang="es">
 
 <head>
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de practicante</title>
@@ -21,23 +11,32 @@
 </head>
 
 <body>
+    @include('partials.menu_modal')
     <div class="header">
         <a href="#" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Detalles de practicante</h1>
-
         <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
         </button>
+        @include('partials.detalles_modal')
+
     </div>
-    @include('partials.menu_modal')
+
     <div class="main-container">
         <div class="practicante-info-wrapper">
             <div class="practicante-fixed-elements">
                 <div class="practicante-profile-section">
                     <div class="profile-image-container">
-                        <img src="{{ asset('img_prac/leonardo.jfif') }}" alt="ImagenPracticante" class="profile-image">
+                        @if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image))
+                            <img src="{{ asset('storage/' . $practicante->profile_image) }}" alt="Foto del practicante" class="profile-image">
+                        @else
+                            <div class="default-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                        @endif
+
                     </div>
                     <div class="practicante-codigo">Código: LAE</div>
                     <button class="credential-button" id="credentialButton">
@@ -154,6 +153,41 @@
         </div>
     </div>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showAlertModal('success', '{{ session('success') }}');
+            @endif
+
+            @if (session('error'))
+                showAlertModal('error', '{{ session('error') }}');
+            @endif
+        });
+
+        function showAlertModal(type, message) {
+            const modal = document.getElementById('alertModal');
+            const icon = document.getElementById('alertModalIcon');
+            const msg = document.getElementById('alertModalMessage');
+
+            // Configura el modal según el tipo
+            modal.className = `alert-modal ${type}`;
+            icon.innerHTML = type === 'success' ?
+                '<i class="fas fa-check-circle"></i>' :
+                '<i class="fas fa-exclamation-circle"></i>';
+            msg.textContent = message;
+
+            // Muestra el modal
+            modal.style.display = 'flex';
+
+            // Cierra automáticamente después de 5 segundos
+            setTimeout(() => {
+                modal.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
+    </script>
 </body>
 
 </html>

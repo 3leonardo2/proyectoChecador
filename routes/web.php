@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PracticanteController;
 use App\Http\Controllers\InstitucionController;
 use App\Http\Controllers\EvaluacionController;
+use App\Http\Controllers\BitacoraController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -48,9 +49,8 @@ Route::get('/instituciones/{id_institucion}/edit', [InstitucionController::class
 Route::put('/instituciones/{id_institucion}', [InstitucionController::class, 'update'])->name('instituciones.update');
 
 // Otras rutas de vistas
-Route::get('/bitacora', function () {
-    return view('bitacora');
-})->name('bitacora');
+Route::get('/bitacora', [BitacoraController::class, 'index'])->name('bitacora');
+Route::post('/bitacora/registrar', [BitacoraController::class, 'registrarEvento'])->name('bitacora.registrar');
 
 Route::get('/consulta_horas', function () {
     return view('consulta_horas');

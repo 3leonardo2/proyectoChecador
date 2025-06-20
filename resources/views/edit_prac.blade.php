@@ -20,18 +20,25 @@
 
     <div class="main-container">
         <form action="{{ route('practicantes.update', $practicante->id_practicante) }}" method="POST"
-            class="practicante-info-wrapper">
+            class="practicante-info-wrapper" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="practicante-fixed-elements">
                 <div class="practicante-profile-section">
-                    <div class="profile-image-container">
-                        <img src="img_prac/leonardo.jfif" alt="ImagenPracticante" class="profile-image">
-                    </div>
+                    @if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image))
+                        <div class="profile-image-container" id="image-preview-container">
+                            <img src="{{ asset('storage/' . $practicante->profile_image) }}" alt="ImagenPracticante"
+                                class="profile-image">
+                        </div>
+                    @else
+                        <div class="profile-image-container" id="image-preview-container">
+                            <i class="fas fa-user-circle default-avatar-icon"></i>
+                        </div>
+                    @endif
                     <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
                         accept="image/*" style="display: none;">
-                    <label for="add-image-input" class="add-image-button">Añadir imagen...</label>
-                    <div class="practicante-codigo">Código: LAE</div>
+                    <label for="add-image-input" class="add-image-button">Cambiar imagen...</label>
+                    <div class="practicante-codigo">Código: {{ $practicante->codigo }}</div>
                 </div>
             </div>
 
@@ -54,7 +61,7 @@
                 <div class="form-group">
                     <label for="curp">CURP*:</label>
                     <input type="text" id="curp" name="curp" required
-                        value="{{ old('curp', $practicante->curp) }}" >
+                        value="{{ old('curp', $practicante->curp) }}">
                 </div>
                 <div class="form-group">
                     <label for="sexo">Sexo:</label>
@@ -91,20 +98,20 @@
 
                 </div>
                 <div class="form-group">
-                    <label for="number">Número de seguro:</label>
-                    <input type="text" name="num_seguro" +
+                    <label for="num_seguro">Número de seguro:</label>
+                    <input type="text" name="num_seguro" 
                         value="{{ old('num_seguro', $practicante->num_seguro) }}">
                 </div>
 
                 <h2>Información institucional:</h2>
                 <div class="form-group">
-                    <label for="escuela">Escuela o institución:</label>
+                    <label for="institucion_nombre">Escuela o institución:</label>
                     <input type="text" name="institucion_nombre"
                         value="{{ old('institucion_nombre', optional($practicante->institucion)->nombre) }}">
 
                 </div>
                 <div class="form-group">
-                    <label for="carrera">Carrera:</label>
+                    <label for="carrera_nombre">Carrera:</label>
                     <input type="text" name="carrera_nombre"
                         value="{{ old('carrera_nombre', optional($practicante->carrera)->nombre_carr) }}">
 
@@ -159,37 +166,37 @@
                 </div>
                 <div class="form-group">
                     <label for="area_asignada">Área asignada:</label>
-                    <input type="text" name="area_asignada" +
+                    <input type="text" name="area_asignada" 
                         value="{{ old('area_asignada', default: $practicante->area_asignada) }}">
                 </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha de inicio:</label>
-                    <input type="date" name="fecha_inicio" +
+                    <input type="date" name="fecha_inicio" 
                         value="{{ old('fecha_inicio', default: $practicante->fecha_inicio) }}">
                 </div>
                 <div class="form-group">
                     <label for="fecha_cierre">Fecha de cierre:</label>
-                    <input type="date" name="fecha_final" +
+                    <input type="date" name="fecha_final" 
                         value="{{ old('fecha_final', $practicante->fecha_final) }}">
                 </div>
                 <div class="form-group">
                     <label for="hora_entrada">Hora de entrada:</label>
-                    <input type="time" name="hora_entrada" +
+                    <input type="time" name="hora_entrada" 
                         value="{{ old('hora_entrada', $practicante->hora_entrada) }}">
                 </div>
                 <div class="form-group">
                     <label for="hora_salida">Hora de salida:</label>
-                    <input type="time" name="hora_salida" +
+                    <input type="time" name="hora_salida" 
                         value="{{ old('hora_salida', $practicante->hora_salida) }}">
                 </div>
                 <div class="form-group">
                     <label for="horas_requeridas">Horas requeridas:</label>
-                    <input type="number" name="horas_requeridas" +
+                    <input type="number" name="horas_requeridas" 
                         value="{{ old('horas_requeridas', $practicante->horas_requeridas) }}">
                 </div>
                 <div class="form-group">
                     <label for="horas_registradas">Horas registradas:</label>
-                    <input type="number" name="horas_registradas" +
+                    <input type="number" name="horas_registradas" 
                         value="{{ old('horas_registradas', $practicante->horas_registradas) }}">
                 </div>
 
@@ -200,6 +207,8 @@
             </div>
         </form>
     </div>
+    <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
+
 </body>
 
 </html>

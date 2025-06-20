@@ -50,6 +50,7 @@ class Practicante extends Model
         'institucion_id',
         'carrera_id',
         'horas_registradas',
+        'profile_image',
     ];
     public function institucion()
     {

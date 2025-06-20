@@ -79,9 +79,12 @@ body {
 }
 
 .right-panel {
-    flex-grow: 1; /* Permite que el panel derecho ocupe el espacio restante */
-    max-width: 600px; /* Opcional: limita el ancho máximo del panel derecho */
-    min-width: 400px; /* Asegura un tamaño mínimo */
+    flex-grow: 1;
+    max-width: 600px;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 70vh; /* Altura fija para el panel derecho */
 }
 
 .input-section {
@@ -109,7 +112,12 @@ body {
     box-sizing: border-box; /* Incluye padding y border en el ancho */
     font-size: 17px;
 }
-
+.loading {
+    display: none; /* Oculto por defecto */
+    text-align: center;
+    padding: 10px;
+    color: #633800; /* Color que coincida con tu diseño */
+}
 .consultar-button {
     background-color: #d3bc68; /* Color gris suave */
     color: white;
@@ -143,9 +151,14 @@ body {
 
 /* Tabla de horas */
 .table-container {
-    height: 100%; /* El contenedor de la tabla puede tomar el alto disponible */
-    overflow-y: auto; /* Habilita el scroll si el contenido es demasiado largo */
+    flex: 1; /* Ocupa todo el espacio disponible */
+    overflow-y: auto; /* Scroll vertical */
+    position: relative; /* Necesario para el sticky header */
+    margin-top: 10px; /* Espacio entre el título y la tabla */
+    border: 1px solid #e0e0e0; /* Borde opcional */
+    border-radius: 8px; /* Bordes redondeados */
 }
+
 
 table {
     width: 100%;
@@ -180,14 +193,19 @@ tbody td {
 }
 
 tbody tr:nth-child(odd) {
-    background-color: #fff;
+    background-color: #f8f8f8; /* Color para filas impares */
 }
 
-tbody tr.highlighted-row,
 tbody tr:nth-child(even) {
-    background-color: #ceb15d;
+    background-color: #ffffff; /* Color para filas pares */
 }
 
-tbody tr:hover td {
-    padding: 18px 10px; /* Aumenta el padding vertical al pasar el mouse */
+/* Estilo para filas destacadas (puedes mantener tu highlighted-row si lo prefieres) */
+tbody tr.highlighted-row {
+    background-color: #f0e6c2;
+}
+
+/* Estilo para hover */
+tbody tr:hover {
+    background-color: #e6f7ff;
 }

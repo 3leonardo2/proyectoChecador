@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('nombre_emergencia', 200)->nullable();
             $table->string('telefono_emergencia', 20)->nullable();
             $table->string('num_seguro', 11)->unique()->nullable();
+            $table->string('profile_image')->nullable(); // Añadido para la imagen de perfil
 
             $table->unsignedBigInteger('institucion_id');
             $table->unsignedBigInteger('carrera_id');
@@ -37,7 +38,6 @@ return new class extends Migration
             $table->time('hora_salida')->nullable();
             $table->integer('horas_requeridas')->nullable(); // Renombrado para coincidir
             $table->integer('horas_registradas')->default(0); // Renombrado para coincidir
-
             $table->foreign('institucion_id')->references('id_institucion')->on('instituciones');
             $table->foreign('carrera_id')->references('id_carrera')->on('carreras');
             $table->timestamps();

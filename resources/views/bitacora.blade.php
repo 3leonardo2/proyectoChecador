@@ -8,62 +8,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     <style>
-        .bitacora-container {
-            width: 100%;
-            /* Ocupar todo el ancho */
+        .welcome-message {
+            animation: fadeOut 5s forwards;
+            animation-delay: 5s;
+            opacity: 1;
         }
 
-        /* Eliminar bordes redondeados de la tarjeta */
-        .card {
-            border-radius: 0 !important;
-        }
-
-        .image-avisos-wrapper {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            width: 100%;
-            padding: 1rem;
-            align-items: flex-start;
-            margin-top: 20px;
-            /* Aumenta este valor para bajar el contenido */
-            min-height: 200px;
-            /* Altura mínima para el área de la imagen */
-        }
-
-        .imagen-container {
-            width: 260px;
-            /* Aumenté el ancho */
-            height: 300px;
-            /* Aumenté el alto */
-            overflow: visible;
-            grid-column: 2;
-            margin: 0 auto;
-            position: relative;
-            top: -30px;
-            /* Ajusta para subir/bajar la imagen */
-        }
-
-        .imagen-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            object-position: center;
-        }
-
-        .avisos-container {
-            text-align: right;
-            color: #555;
-            grid-column: 3;
-            /* Coloca los avisos en la tercera columna (derecha) */
-            justify-self: end;
-            /* Alinea el contenido a la derecha */
-            padding-right: 1rem;
-            /* Un poco de espacio del borde derecho */
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                height: 0;
+                overflow: hidden;
+                margin: 0;
+            }
         }
     </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background-color: #e6e8e4;">
+    @include('partials.modal_bitacora')
+
     <div class="px-0 flex-grow-1 d-flex align-items-center">
         <div class="col-md-8 col-lg-6 bitacora-container">
             <div class="card shadow">
@@ -75,21 +39,31 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 mx-auto" style="max-width: 400px;"> 
-                        <input type="text" class="form-control rounded-pill py-2" placeholder="Ingresa tu código..."> 
+                    <div class="mb-3 mx-auto" style="max-width: 400px;">
+                        <form id="bitacora-form" method="POST" action="{{ route('bitacora.registrar') }}">
+                            @csrf
+                            <input type="text" name="codigo" class="form-control rounded-pill py-2"
+                                placeholder="Ingresa tu código..." required>
+                            <input type="hidden" name="tipo" id="tipo-evento">
+                        </form>
                     </div>
 
                     <div class="d-flex justify-content-center">
-                        <div class="d-flex gap-1"> <button type="button" class="btn btn-custom rounded-pill py-2 px-3">
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3"
+                                onclick="registrarEvento('entrada')">
                                 Entrada
                             </button>
-                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3">
+                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3"
+                                onclick="registrarEvento('entrada_comedor')">
                                 Entrada comedor
                             </button>
-                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3">
+                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3"
+                                onclick="registrarEvento('salida_comedor')">
                                 Salida comedor
                             </button>
-                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3">
+                            <button type="button" class="btn btn-custom rounded-pill py-2 px-3"
+                                onclick="registrarEvento('salida')">
                                 Salida
                             </button>
                         </div>
@@ -100,8 +74,14 @@
     </div>
 
     <div class="container">
-        <div class="text-center">
-            <h1>Bienvenido UPPER !</h1>
+        <div class="text-center" id="welcome-container">
+            @if (session('nombre'))
+                <h1 class="welcome-message">
+                    BIENVENID{{ session('sexo') == 'M' ? 'O' : 'A' }} {{ strtoupper(session('nombre')) }}
+                </h1>
+            @else
+                <h1>BIENVENIDO</h1>
+            @endif
         </div>
         <div style="text-align: right;">
             <a href="/consulta_horas" type="button" class="btn btn-custom2 rounded-pill py-2 px-3">
@@ -144,7 +124,33 @@
         updateDateTime();
         setInterval(updateDateTime, 60000);
     </script>
-
+    <script>
+        function registrarEvento(tipo) {
+            document.getElementById('tipo-evento').value = tipo;
+            fetch(document.getElementById('bitacora-form').action, {
+                    method: 'POST',
+                    body: new FormData(document.getElementById('bitacora-form')),
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showModal('Éxito', data.message, true);
+                        if (tipo === 'entrada') {
+                            window.location.reload();
+                        }
+                    } else {
+                        showModal('Error', data.message, false);
+                    }
+                })
+                .catch(error => {
+                    showModal('Error', 'Ocurrió un error inesperado', false);
+                });
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
