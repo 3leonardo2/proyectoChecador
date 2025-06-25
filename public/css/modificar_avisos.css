@@ -199,7 +199,6 @@ body {
     color: #e74c3c; /* Color rojo para el icono de borrar al hover */
 }
 
-
 /* Specific Styles for "Añadir imágenes" tab */
 .image-upload-area {
     border: 2px dashed #ccc;
@@ -332,7 +331,6 @@ body {
     background-color: #474747;
 }
 
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .avisos-card {
@@ -409,7 +407,10 @@ body {
 
 .current-images-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 2 columnas o más si el espacio lo permite */
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(180px, 1fr)
+    ); /* 2 columnas o más si el espacio lo permite */
     gap: 20px;
     margin-bottom: 30px;
     padding-bottom: 20px; /* Espacio antes del botón añadir */
@@ -494,7 +495,7 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     /* No poner display: flex; aquí, se añadirá con la clase .show */
     justify-content: center; /* Estas se aplicarán cuando sea flex */
-    align-items: center;    /* Estas se aplicarán cuando sea flex */
+    align-items: center; /* Estas se aplicarán cuando sea flex */
 }
 .image-modal.show {
     display: flex; /* Muestra el modal */
@@ -513,8 +514,14 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .image-modal .close-button {
@@ -656,4 +663,124 @@ body {
     .current-images-grid {
         grid-template-columns: 1fr; /* Una columna en pantallas muy pequeñas */
     }
+}
+
+#avisoModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.aviso-modal .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.aviso-modal .modal-content-aviso {
+    position: relative;
+    background-color: #ff0000;
+    margin: 5% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+}
+
+#avisoModal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Formulario de avisos */
+#avisoForm .form-group {
+    margin-bottom: 15px;
+}
+
+#avisoForm label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+#avisoForm textarea,
+#avisoForm input,
+#avisoForm select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#avisoForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Botones */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.btn:hover {
+    opacity: 0.9;
 }

@@ -1,228 +1,174 @@
-// public/js/imageModalHandler.js
-
 document.addEventListener('DOMContentLoaded', function() {
     const imageModal = document.getElementById('imageModal');
-    if (!imageModal) { // Asegura que el script solo se ejecute si el modal existe
+    if (!imageModal) return;
+
+    // Elementos del modal
+    const modalTitle = document.getElementById('modalTitle');
+    const imageConfigForm = document.getElementById('imageConfigForm');
+    if (!modalTitle || !imageConfigForm) return;
+    const imageIdInput = document.getElementById('imageId');
+    const imageUpload = document.getElementById('imageUploadModal');
+    const imagePreview = document.getElementById('modalImagePreview');
+    const imageTitle = document.getElementById('imageTitle');
+    const imageDescription = document.getElementById('imageDescription');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const displayDuration = document.getElementById('displayDuration');
+    const closeButton = imageModal.querySelector('.close-button');
+    const cancelButton = imageModal.querySelector('.cancel-image-config-button');
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    if (!csrfToken) {
+        console.error('CSRF token not found');
         return;
     }
 
-    const closeButton = imageModal.querySelector('.close-button');
-    const addNewImageButton = document.querySelector('.add-new-image-button');
-    const editImageButtons = document.querySelectorAll('.edit-image-button'); // Estos deben ser seleccionados en el HTML
-    const saveImageConfigButton = imageModal.querySelector('.save-image-config-button');
-    const cancelImageConfigButton = imageModal.querySelector('.cancel-image-config-button');
-    const imageUploadModal = document.getElementById('imageUploadModal');
-    const modalImagePreview = document.getElementById('modalImagePreview');
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-    const displayDurationInput = document.getElementById('displayDuration');
 
-    let currentImageId = null; // Para saber si estamos editando o añadiendo
-
-    // Función para abrir el modal
+    // Funciones para abrir/cerrar el modal
     function openImageModal(imageData = null) {
-        if (imageData) { // Modo edición
-            currentImageId = imageData.id;
-            imageModal.querySelector('h3').textContent = 'Editar Imagen';
-            if (imageData.url) {
-                modalImagePreview.innerHTML = `<img src="${imageData.url}" alt="Previsualización">`;
-            } else {
-                modalImagePreview.innerHTML = '';
+        if (imageData) {
+            // Modo edición
+            modalTitle.textContent = 'Editar Imagen';
+            imageIdInput.value = imageData.id;
+            imageTitle.value = imageData.titulo || '';
+            imageDescription.value = imageData.descripcion || '';
+            startDate.value = formatDateTimeForInput(imageData.fecha_inicio);
+            endDate.value = formatDateTimeForInput(imageData.fecha_fin);
+            displayDuration.value = imageData.duracion || 5;
+            
+            if (imageData.ruta) {
+                imagePreview.innerHTML = `<img src="${imageData.ruta}" alt="Previsualización" class="img-thumbnail">`;
             }
-            startDateInput.value = imageData.startDate;
-            endDateInput.value = imageData.endDate;
-            displayDurationInput.value = imageData.duration;
-            // Ocultar input de archivo si no se permite cambiar la imagen en edición directamente
-            // imageUploadModal.style.display = 'none';
-        } else { // Modo añadir
-            currentImageId = null;
-            imageModal.querySelector('h3').textContent = 'Configurar Nueva Imagen';
-            modalImagePreview.innerHTML = '';
-            startDateInput.value = '';
-            endDateInput.value = '';
-            displayDurationInput.value = 5;
-            imageUploadModal.value = ''; // Limpiar el input de archivo
-            // imageUploadModal.style.display = 'block'; // Mostrar si estaba oculto
+        } else {
+            // Modo creación
+            modalTitle.textContent = 'Añadir Nueva Imagen';
+            imageConfigForm.reset();
+            imagePreview.innerHTML = '';
+            // Establecer fechas por defecto
+            const now = new Date();
+            startDate.value = formatDateTimeForInput(now);
+            endDate.value = formatDateTimeForInput(new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)); // +7 días
         }
+        
         imageModal.classList.add('show');
     }
 
-    // Función para cerrar el modal
     function closeImageModal() {
         imageModal.classList.remove('show');
     }
 
-    // Event Listeners para abrir el modal (Añadir)
-    if (addNewImageButton) {
-        addNewImageButton.addEventListener('click', () => openImageModal());
+    // Formatear fecha para input datetime-local
+    function formatDateTimeForInput(dateTime) {
+        if (!dateTime) return '';
+        try {
+            const date = new Date(dateTime);
+            if (isNaN(date.getTime())) {
+                console.error('Invalid date:', dateTime);
+                return '';
+            }
+            return date.toISOString().slice(0, 16);
+        } catch (e) {
+            console.error('Error formatting date:', e);
+            return '';
+        }
     }
 
-    // Event Listeners para abrir el modal (Editar)
-    // Nota: Si estas imágenes se cargan dinámicamente,
-    // necesitarás un "event delegation" para los botones de editar.
-    // Para la demostración, asumimos que están en el DOM al cargar.
-    document.querySelectorAll('.edit-image-button').forEach(button => {
+    // Eventos para abrir el modal desde los botones
+    document.querySelectorAll('.add-new-image-button, .edit-image-button').forEach(button => {
         button.addEventListener('click', function() {
-            const imageItem = this.closest('.image-item');
-            const imageData = {
-                id: imageItem.dataset.imageId,
-                url: imageItem.querySelector('img').src,
-                startDate: imageItem.dataset.startDate,
-                endDate: imageItem.dataset.endDate,
-                duration: imageItem.dataset.duration
-            };
-            openImageModal(imageData);
-        });
-    });
-    // Si tus `.edit-image-button` se añaden dinámicamente después de la carga inicial,
-    // necesitarías una delegación de eventos así:
-    /*
-    document.querySelector('.current-images-grid').addEventListener('click', function(event) {
-        if (event.target.closest('.edit-image-button')) {
-            const button = event.target.closest('.edit-image-button');
-            const imageItem = button.closest('.image-item');
-            const imageData = {
-                id: imageItem.dataset.imageId,
-                url: imageItem.querySelector('img').src,
-                startDate: imageItem.dataset.startDate,
-                endDate: imageItem.dataset.endDate,
-                duration: imageItem.dataset.duration
-            };
-            openImageModal(imageData);
-        }
-    });
-    */
-
-
-    // Event Listeners para cerrar el modal
-    if (closeButton) {
-        closeButton.addEventListener('click', closeImageModal);
-    }
-    if (cancelImageConfigButton) {
-        cancelImageConfigButton.addEventListener('click', closeImageModal);
-    }
-    window.addEventListener('click', function(event) {
-        if (event.target === imageModal) {
-            closeImageModal();
-        }
-    });
-
-    // Previsualización de imagen en el modal
-    if (imageUploadModal && modalImagePreview) {
-        imageUploadModal.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    modalImagePreview.innerHTML = `<img src="${e.target.result}" alt="Previsualización">`;
+            if (this.classList.contains('edit-image-button')) {
+                const imageItem = this.closest('.image-item');
+                const imageData = {
+                    id: imageItem.dataset.imageId,
+                    ruta: imageItem.querySelector('img').src,
+                    titulo: imageItem.dataset.titulo || '',
+                    descripcion: imageItem.dataset.descripcion || '',
+                    fecha_inicio: imageItem.dataset.fechaInicio,
+                    fecha_fin: imageItem.dataset.fechaFin,
+                    duracion: imageItem.dataset.duracion || 5
                 };
-                reader.readAsDataURL(this.files[0]);
+                openImageModal(imageData);
             } else {
-                modalImagePreview.innerHTML = '';
+                openImageModal();
             }
         });
-    }
+    });
 
-    // Lógica para guardar/editar (comunicación con el backend)
-    if (saveImageConfigButton) {
-        saveImageConfigButton.addEventListener('click', function() {
-            const file = imageUploadModal.files[0];
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
-            const duration = displayDurationInput.value;
+    // Eventos para cerrar el modal
+    [closeButton, cancelButton].forEach(btn => {
+        btn.addEventListener('click', closeImageModal);
+    });
 
-            // Validación básica
-            if (!file && !currentImageId) { // Si es nueva y no hay archivo
-                alert('Por favor, selecciona una imagen para añadir.');
-                return;
+    // Previsualización de imagen
+    imageUpload.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.innerHTML = `<img src="${e.target.result}" alt="Previsualización" class="img-thumbnail">`;
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    // Envío del formulario
+    imageConfigForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const url = imageIdInput.value ? `/admin/imagenes-avisos/${imageIdInput.value}` : '/admin/imagenes-avisos';
+        const method = imageIdInput.value ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
             }
-            if (!startDate || !endDate || !duration) {
-                alert('Por favor, completa todos los campos de fecha y duración.');
-                return;
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.message);
+            } else {
+                alert('Imagen guardada correctamente');
+                closeImageModal();
+                window.location.reload(); // Recargar para ver los cambios
             }
-
-            const formData = new FormData();
-            if (file) {
-                formData.append('image', file);
-            }
-            formData.append('start_date', startDate);
-            formData.append('end_date', endDate);
-            formData.append('duration', duration);
-
-            let url = '/api/images';
-            let method = 'POST';
-
-            if (currentImageId) { // Editando
-                url = `/api/images/${currentImageId}`;
-                method = 'POST'; // Usamos POST con _method=PUT para Laravel
-                formData.append('_method', 'PUT');
-            }
-
-            // Aquí enviarías los datos al servidor. Ejemplo con fetch:
-            // Asegúrate de tener un meta tag para el token CSRF si usas Laravel
-            // <meta name="csrf-token" content="{{ csrf_token() }}">
-            /*
-            fetch(url, {
-                method: method,
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Imagen guardada correctamente!');
-                    closeImageModal();
-                    // Idealmente, actualiza el DOM aquí sin recargar toda la página
-                    location.reload(); // Simple recarga para demostración
-                } else {
-                    alert('Error al guardar la imagen: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error al guardar la imagen:', error);
-                alert('Hubo un error de red o del servidor al guardar la imagen.');
-            });
-            */
-            alert('Datos a guardar (simulación): \nID: ' + (currentImageId || 'Nuevo') + '\nImagen: ' + (file ? file.name : 'No seleccionada') + '\nInicio: ' + startDate + '\nFin: ' + endDate + '\nDuración: ' + duration);
-            closeImageModal();
-            // Lógica para actualizar el DOM o recargar la página para ver los cambios
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al guardar la imagen');
         });
-    }
+    });
 
-    // Lógica para eliminar imagen (comunicación con el backend)
+    // Eliminar imagen
     document.querySelectorAll('.delete-image-button').forEach(button => {
         button.addEventListener('click', function() {
             if (confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
                 const imageItem = this.closest('.image-item');
-                const imageIdToDelete = imageItem.dataset.imageId;
+                const imageId = imageItem.dataset.imageId;
 
-                // Ejemplo con fetch:
-                /*
-                fetch(`/api/images/${imageIdToDelete}`, {
-                    method: 'POST', // O 'DELETE' si tu router Laravel soporta DELETE directo
+                fetch(`/admin/imagenes-avisos/${imageId}`, {
+                    method: 'DELETE',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json' // Para el body
-                    },
-                    body: JSON.stringify({ _method: 'DELETE' }) // Simula DELETE para POST
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Imagen eliminada correctamente!');
-                        imageItem.remove(); // Elimina el elemento del DOM
+                        imageItem.remove();
+                        alert('Imagen eliminada correctamente');
                     } else {
-                        alert('Error al eliminar la imagen: ' + data.message);
+                        alert('Error: ' + data.message);
                     }
                 })
                 .catch(error => {
-                    console.error('Error al eliminar la imagen:', error);
-                    alert('Hubo un error de red o del servidor al eliminar la imagen.');
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al eliminar la imagen');
                 });
-                */
-                alert('Simulando eliminación de imagen con ID: ' + imageIdToDelete);
-                imageItem.remove(); // Elimina visualmente para la demostración
             }
         });
     });

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bitacora;
 use App\Models\Practicante;
 use Illuminate\Http\Request;
+use App\Models\Aviso;
+use App\Models\ImagenAviso;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -12,7 +14,18 @@ class BitacoraController extends Controller
 {
     public function index()
     {
-        return view('bitacora');
+        $imagenesAvisos = ImagenAviso::where('fecha_inicio', '<=', now())
+            ->where('fecha_fin', '>=', now())
+            ->where('activo', true)
+            ->orderBy('prioridad', 'desc')
+            ->get();
+
+        $avisos = Aviso::where('fecha_inicio', '<=', now())
+            ->where('fecha_fin', '>=', now())
+            ->orderBy('prioridad', 'desc')
+            ->get();
+
+        return view('bitacora', compact('imagenesAvisos', 'avisos'));
     }
 
     public function registrarEvento(Request $request)

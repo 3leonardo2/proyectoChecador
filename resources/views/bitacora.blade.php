@@ -92,11 +92,45 @@
 
     <div class="image-avisos-wrapper">
         <div class="imagen-container">
-            <img src="{{ asset('images/felizcum.jfif') }}" alt="Feliz Cumpleaños" style="max-width: 200px;">
+            <div id="carouselAvisos" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" id="carousel-inner-avisos">
+                    @foreach ($imagenesAvisos as $index => $imagen)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}"
+                            data-bs-interval="{{ $imagen->duracion * 1000 }}">
+                            <img src="{{ $imagen->ruta }}" class="d-block w-100" alt="{{ $imagen->titulo }}"
+                                style="max-height: 200px; object-fit: contain;">
+                            @if ($imagen->titulo || $imagen->descripcion)
+                                <div class="carousel-caption d-none d-md-block">
+                                    @if ($imagen->titulo)
+                                        <h5>{{ $imagen->titulo }}</h5>
+                                    @endif
+                                    @if ($imagen->descripcion)
+                                        <p>{{ $imagen->descripcion }}</p>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                @if (count($imagenesAvisos) > 1)
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselAvisos"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselAvisos"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                @endif
+            </div>
         </div>
         <div class="avisos-container">
             <h5>Avisos</h5>
-            <p>- Hoy es cumpleaños de Ángel Hernán !</p>
+            @foreach ($avisos as $aviso)
+                <p>- {{ $aviso->contenido }}</p>
+            @endforeach
         </div>
     </div>
 

@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modificación de Avisos</title>
     <link rel="stylesheet" href="{{ asset('css/modificar_avisos.css') }}">
@@ -17,7 +18,6 @@
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Modificación de avisos</h1>
-        {{-- Aquí puedes incluir el botón de menú si lo necesitas en esta vista --}}
         <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
         </button>
@@ -37,22 +37,19 @@
                     <h2>Avisos Actuales</h2>
                     <button class="add-aviso-button">Añadir aviso</button>
 
-                    <div class="aviso-item">
-                        <p>-Se solicita la asistencia en el departamento de RH a los practicantes en el área de cocina
-                        </p>
-                        <div class="aviso-actions">
-                            <button class="edit-aviso"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete-aviso"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
+                    @include('partials.aviso_modal')
 
-                    <div class="aviso-item">
-                        <p>-Se estarán revisando los equipos de protección en el área de desembarque</p>
-                        <div class="aviso-actions">
-                            <button class="edit-aviso"><i class="fa-solid fa-pencil"></i></button>
-                            <button class="delete-aviso"><i class="fa-solid fa-trash-can"></i></button>
+                    @foreach ($avisos as $aviso)
+                        <div class="aviso-item" data-aviso-id="{{ $aviso->id }}"
+                            data-fecha-inicio="{{ $aviso->fecha_inicio->format('Y-m-d\TH:i') }}"
+                            data-fecha-fin="{{ $aviso->fecha_fin->format('Y-m-d\TH:i') }}">
+                            <p>- {{ $aviso->contenido }}</p>
+                            <div class="aviso-actions">
+                                <button class="edit-aviso"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="delete-aviso"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <div class="tab-content" id="anadir-imagenes">
@@ -60,28 +57,26 @@
                     <p>Aquí podrás subir y gestionar las imágenes de avisos o banners.</p> {{-- Nueva descripción --}}
 
                     <div class="current-images-grid">
-                        <div class="image-item" data-image-id="1" data-start-date="2025-06-01" data-end-date="2025-06-15" data-duration="5">
-                            <img src="{{ asset('images/image1.jfif') }}" alt="Imagen de aviso 1">
-                            <div class="image-actions">
-                                <button class="edit-image-button"><i class="fa-solid fa-pencil"></i></button>
-                                <button class="delete-image-button"><i class="fa-solid fa-trash-can"></i></button>
+                        @foreach ($imagenes as $imagen)
+                            <div class="image-item" data-image-id="{{ $imagen->id }}"
+                                data-titulo="{{ $imagen->titulo }}" data-descripcion="{{ $imagen->descripcion }}"
+                                data-fecha-inicio="{{ $imagen->fecha_inicio->format('Y-m-d\TH:i') }}"
+                                data-fecha-fin="{{ $imagen->fecha_fin->format('Y-m-d\TH:i') }}"
+                                data-duracion="{{ $imagen->duracion }}">
+                                <img src="{{ $imagen->ruta }}" alt="{{ $imagen->titulo ?? 'Imagen de aviso' }}">
+                                <div class="image-actions">
+                                    <button class="edit-image-button"><i class="fa-solid fa-pencil"></i></button>
+                                    <button class="delete-image-button"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="image-item" data-image-id="2" data-start-date="2025-06-16" data-end-date="2025-06-30" data-duration="10">
-                            <img src="{{ asset('images/image2.jpg') }}" alt="Imagen de aviso 2">
-                            <div class="image-actions">
-                                <button class="edit-image-button"><i class="fa-solid fa-pencil"></i></button>
-                                <button class="delete-image-button"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                        </div>
+                        @endforeach
+                    </div>
 
                     <button class="add-new-image-button">Añadir imagen</button>
 
                     @include('partials.image_config_modal')
-                </div>
 
+                </div>
                 <div class="tab-content" id="cumpleanos">
                     <h2>Próximos Cumpleaños</h2>
                     <p>Consulta y gestiona los cumpleaños de los practicantes.</p>
@@ -150,9 +145,10 @@
             }
         });
     </script>
-    <script src="{{ asset('js/imageModalHandler.js') }}"></script>
-        <script src="{{ asset('js/menu_modal.js') }}"></script>
 
+    <script src="{{ asset('js/menu_modal.js') }}"></script>
+    <script src="{{ asset('js/avisoModalHandler.js') }}"></script>
+    <script src="{{ asset('js/imageModalHandler.js') }}"></script>
 </body>
 
 </html>
