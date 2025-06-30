@@ -53,8 +53,8 @@
                 </div>
 
                 <div class="tab-content" id="anadir-imagenes">
-                    <h2>Gestión de Imágenes</h2> {{-- Nuevo título --}}
-                    <p>Aquí podrás subir y gestionar las imágenes de avisos o banners.</p> {{-- Nueva descripción --}}
+                    <h2>Gestión de Imágenes</h2>
+                    <p>Aquí podrás subir y gestionar las imágenes de avisos o banners.</p>
 
                     <div class="current-images-grid">
                         @foreach ($imagenes as $imagen)
@@ -62,11 +62,21 @@
                                 data-titulo="{{ $imagen->titulo }}" data-descripcion="{{ $imagen->descripcion }}"
                                 data-fecha-inicio="{{ $imagen->fecha_inicio->format('Y-m-d\TH:i') }}"
                                 data-fecha-fin="{{ $imagen->fecha_fin->format('Y-m-d\TH:i') }}"
-                                data-duracion="{{ $imagen->duracion }}">
+                                data-duracion="{{ $imagen->duracion }}" data-activo="{{ $imagen->activo }}">
                                 <img src="{{ $imagen->ruta }}" alt="{{ $imagen->titulo ?? 'Imagen de aviso' }}">
+                                <div class="image-status {{ $imagen->activo ? 'active' : 'inactive' }}">
+                                    {{ $imagen->activo ? 'Activa' : 'Inactiva' }}
+                                </div>
+                                <div class="image-dates">
+                                    <small>Inicio: {{ $imagen->fecha_inicio->format('d/m/Y H:i') }}</small>
+                                    <small>Fin: {{ $imagen->fecha_fin->format('d/m/Y H:i') }}</small>
+                                </div>
                                 <div class="image-actions">
                                     <button class="edit-image-button"><i class="fa-solid fa-pencil"></i></button>
                                     <button class="delete-image-button"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="toggle-image-button" data-id="{{ $imagen->id }}">
+                                        <i class="fa-solid fa-power-off"></i>
+                                    </button>
                                 </div>
                             </div>
                         @endforeach

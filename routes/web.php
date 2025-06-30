@@ -60,10 +60,15 @@ Route::get('/consulta_horas', function () {
     return view('consulta_horas');
 })->name('consulta_horas');
 
+
+Route::get('/modificar_avisos', [AvisoController::class, 'index'])->name('modificar_avisos.index');
+
 Route::resource('avisos', AvisoController::class)->except(['create', 'edit', 'show']);
 
-Route::resource('admin/imagenes-avisos', ImagenAvisoController::class)->except(['create', 'edit', 'show']);
-
-Route::resource('admin/imagenes-avisos', ImagenAvisoController::class)->except(['create', 'edit', 'show']);
-
-
+Route::prefix('admin/imagenes-avisos')->group(function () {
+    Route::get('/', [ImagenAvisoController::class, 'index'])->name('imagenes-avisos.index');
+    Route::post('/', [ImagenAvisoController::class, 'store'])->name('imagenes-avisos.store');
+    Route::put('/{imagenAviso}', [ImagenAvisoController::class, 'update'])->name('imagenes-avisos.update');
+    Route::delete('/{imagenAviso}', [ImagenAvisoController::class, 'destroy'])->name('imagenes-avisos.destroy');
+    Route::post('/{imagen}/toggle', [ImagenAvisoController::class, 'toggle'])->name('imagenes-avisos.toggle');
+});

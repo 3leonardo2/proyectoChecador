@@ -128,9 +128,30 @@
         </div>
         <div class="avisos-container">
             <h5>Avisos</h5>
-            @foreach ($avisos as $aviso)
-                <p>- {{ $aviso->contenido }}</p>
-            @endforeach
+
+            {{-- Verificación de avisos --}}
+            @if ($avisos->count() > 0)
+                @foreach ($avisos as $aviso)
+                    <div class="aviso-item">
+                        <p>- {{ $aviso->contenido }}</p>
+                        <small class="text-muted">
+                            Vigente hasta: {{ $aviso->fecha_fin->format('d/m/Y H:i') }}
+                        </small>
+                    </div>
+                @endforeach
+            @else
+                <p class="text-muted">No hay avisos por el momento</p>
+            @endif
+
+            {{-- Depuración: Mostrar datos recibidos --}}
+            @auth
+                @if (auth()->user()->isAdmin())
+                    <div class="mt-3 p-2 bg-light rounded">
+                        <small class="text-muted">DEBUG:</small>
+                        <pre class="small mb-0">{{ json_encode($avisos, JSON_PRETTY_PRINT) }}</pre>
+                    </div>
+                @endif
+            @endauth
         </div>
     </div>
 

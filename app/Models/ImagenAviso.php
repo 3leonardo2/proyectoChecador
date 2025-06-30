@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 class ImagenAviso extends Model
 {
     use HasFactory;
@@ -18,7 +18,6 @@ class ImagenAviso extends Model
         'fecha_fin',
         'duracion',
         'activo',
-        'user_id',
     ];
 
     // ¡ESTA ES LA LÍNEA IMPORTANTE!
@@ -26,4 +25,17 @@ class ImagenAviso extends Model
         'fecha_inicio' => 'datetime',
         'fecha_fin' => 'datetime',
     ];
+
+    public function deleteImageFile()
+{
+    if (!$this->nombre_archivo) return false;
+    
+    $path = 'imagenes_avisos/' . $this->nombre_archivo;
+    
+    if (Storage::disk('public')->exists($path)) {
+        return Storage::disk('public')->delete($path);
+    }
+    
+    return false;
+}
 }

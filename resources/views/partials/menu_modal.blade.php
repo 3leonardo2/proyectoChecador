@@ -26,7 +26,7 @@
             <i class="fa-solid fa-list-ol"></i>
         </a>
         <div class="menu-divider"></div>
-        <a href="{{ route('modificar_avisos') }}" class="menu-item">
+        <a href="{{ route('modificar_avisos.index') }}" class="menu-item">
             <span class="item-text">Modificar avisos</span>
             <i class="fa-solid fa-triangle-exclamation menu-icon"></i>
         </a>

@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->dateTime('fecha_fin');
             $table->integer('duracion')->default(5); // segundos
             $table->boolean('activo')->default(true);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

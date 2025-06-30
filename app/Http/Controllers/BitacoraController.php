@@ -14,20 +14,24 @@ class BitacoraController extends Controller
 {
     public function index()
     {
+        // Primero desactivar imágenes que hayan expirado
+        ImagenAviso::where('fecha_fin', '<', now())
+            ->where('activo', true)
+            ->update(['activo' => false]);
+
         $imagenesAvisos = ImagenAviso::where('fecha_inicio', '<=', now())
             ->where('fecha_fin', '>=', now())
             ->where('activo', true)
-            ->orderBy('prioridad', 'desc')
+            ->orderBy('fecha_inicio', 'desc')
             ->get();
 
         $avisos = Aviso::where('fecha_inicio', '<=', now())
             ->where('fecha_fin', '>=', now())
-            ->orderBy('prioridad', 'desc')
+            ->orderBy('fecha_inicio', 'desc')
             ->get();
 
         return view('bitacora', compact('imagenesAvisos', 'avisos'));
     }
-
     public function registrarEvento(Request $request)
     {
         $request->validate([

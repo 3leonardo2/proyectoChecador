@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ImagenAviso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
 
 class ImagenAvisoController extends Controller
 {
@@ -12,7 +14,6 @@ class ImagenAvisoController extends Controller
     {
         $imagenes = ImagenAviso::where('fecha_inicio', '<=', now())
             ->where('fecha_fin', '>=', now())
-            ->where('activo', true)
             ->orderBy('fecha_inicio', 'asc')
             ->get();
 
@@ -42,7 +43,6 @@ class ImagenAvisoController extends Controller
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'duracion' => $request->duracion,
-            'user_id' => auth()->id(),
         ]);
 
         return response()->json($imagen, 201);
@@ -84,14 +84,67 @@ class ImagenAvisoController extends Controller
 
     public function destroy(ImagenAviso $imagenAviso)
     {
-        // El nombre del parámetro debe coincidir con el resource en la ruta.
-        // Si la ruta es /admin/imagenes-avisos/{imagenes_aviso}, el parámetro debe ser $imagenes_aviso.
-        // Asumiré que el model binding funciona y el parámetro es $imagenAviso.
+        DB::beginTransaction();
 
-        Storage::disk('public')->delete(str_replace('/storage/', '', $imagenAviso->ruta));
-        $imagenAviso->delete();
+        try {
+            // Validación adicional
+            if (!$imagenAviso->exists) {
+                throw new \Exception("El registro de imagen no existe en la base de datos");
+            }
 
-        // Devuelve una respuesta JSON en lugar de 204
-        return response()->json(['success' => true, 'message' => 'Imagen eliminada correctamente.']);
+            $nombreArchivo = $imagenAviso->nombre_archivo;
+            $rutaRelativa = 'imagenes_avisos/' . $nombreArchivo;
+            $rutaAbsoluta = storage_path('app/public/' . $rutaRelativa);
+
+            // Verificar y eliminar archivo físico
+            if ($nombreArchivo && Storage::disk('public')->exists($rutaRelativa)) {
+                if (!Storage::disk('public')->delete($rutaRelativa)) {
+                    throw new \Exception("No se pudo eliminar el archivo físico");
+                }
+            }
+
+            // Eliminar registro de la base de datos
+            if (!$imagenAviso->delete()) {
+                throw new \Exception("No se pudo eliminar el registro de la base de datos");
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagen eliminada correctamente',
+                'deleted' => [
+                    'id' => $imagenAviso->id,
+                    'file' => $nombreArchivo
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Error eliminando imagen: ' . $e->getMessage());
+            \Log::error('Datos imagen: ' . json_encode([
+                'id' => $imagenAviso->id ?? null,
+                'nombre_archivo' => $nombreArchivo ?? null,
+                'ruta' => $imagenAviso->ruta ?? null
+            ]));
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar la imagen: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toggle(ImagenAviso $imagen)
+    {
+        $imagen->activo = !$imagen->activo;
+        $imagen->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Estado de imagen actualizado',
+            'activo' => $imagen->activo
+        ]);
     }
 }
