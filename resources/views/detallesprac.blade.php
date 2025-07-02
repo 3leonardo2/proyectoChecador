@@ -30,7 +30,8 @@
                 <div class="practicante-profile-section">
                     <div class="profile-image-container">
                         @if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image))
-                            <img src="{{ asset('storage/' . $practicante->profile_image) }}" alt="Foto del practicante" class="profile-image">
+                            <img src="{{ asset('storage/' . $practicante->profile_image) }}" alt="Foto del practicante"
+                                class="profile-image">
                         @else
                             <div class="default-avatar">
                                 <i class="fas fa-user-circle"></i>
@@ -38,11 +39,11 @@
                         @endif
 
                     </div>
-                    <div class="practicante-codigo">Código: LAE</div>
-                    <button class="credential-button" id="credentialButton">
+                    <div class="practicante-codigo">Código: {{ $practicante->codigo }}</div>
+                    <a href="{{ route('practicantes.credencial', $practicante->id_practicante) }}" class="credential-button">
                         <i class="fa-solid fa-id-card"></i>
                         Credencial
-                    </button>
+                    </a>
                 </div>
             </div>
             <a href="{{ route('practicantes.edit', $practicante->id_practicante) }}" class="edit-button">

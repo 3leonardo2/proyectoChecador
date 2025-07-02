@@ -40,6 +40,9 @@ Route::prefix('practicantes')->group(function () {
     });
 });
 
+Route::get('/practicantes/{practicante}/credencial', [PracticanteController::class, 'generarCredencial'])
+    ->name('practicantes.credencial');
+
 // Rutas de instituciones
 Route::prefix('instituciones')->group(function () {
     Route::get('/', [InstitucionController::class, 'index'])->name('instituciones.index');

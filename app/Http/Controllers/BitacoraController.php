@@ -66,14 +66,12 @@ class BitacoraController extends Controller
                 'message' => 'No puedes registrar entrada de comedor sin haber registrado entrada primero'
             ], 400);
         }
-
         if ($tipo === 'salida_comedor' && (!$ultimoEvento || $ultimoEvento->tipo !== 'entrada_comedor')) {
             return response()->json([
                 'success' => false,
                 'message' => 'No puedes registrar salida de comedor sin haber registrado entrada de comedor primero'
             ], 400);
         }
-
         if ($tipo === 'salida') {
             // Primero verificar si ya registró salida
             if ($ultimoEvento && $ultimoEvento->tipo === 'salida') {
@@ -82,7 +80,6 @@ class BitacoraController extends Controller
                     'message' => 'Ya registraste una salida hoy'
                 ], 400);
             }
-
             // Luego verificar si tiene una entrada o salida de comedor registrada
             if (!$ultimoEvento || ($ultimoEvento->tipo !== 'entrada' && $ultimoEvento->tipo !== 'salida_comedor')) {
                 return response()->json([

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Practicante; // Asegúrate de tener los modelos creados
 use App\Models\Institucion;
 use App\Models\Carrera;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 use Illuminate\Support\Str; // Para usar funciones de string
 use Illuminate\Support\Facades\DB; // Para transacciones
 
@@ -277,6 +279,42 @@ class PracticanteController extends Controller
             return back()->withErrors(['error' => 'Ocurrió un error al actualizar: ' . $e->getMessage()])->withInput();
         }
     }
+
+    public function generarCredencial(Practicante $practicante)
+    {
+        $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
+        $area = $practicante->area_asignada;
+        $clave = $practicante->codigo;
+
+        $logoFrentePath = public_path('images/credencial/logo_presidente3.webp');
+        $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
+
+        $generator = new BarcodeGeneratorPNG();
+        $barcodeImage = base64_encode($generator->getBarcode(
+            $clave,
+                $generator::TYPE_CODE_128,
+            2,
+            33
+        ));
+
+        $data = [
+            'nombreCompleto' => $nombreCompleto,
+            'area' => $area,
+            'clave' => $clave,
+            'logoFrentePath' => $logoFrentePath,
+            'logoDorsoPath' => $logoDorsoPath,
+            'barcodeImage' => $barcodeImage,
+        ];
+
+        $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
+
+        // Configuración exacta del papel (12cm x 8cm cada credencial, con márgenes)
+        $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
+
+        return $pdf->download('credencial-' . $clave . '.pdf');
+    }
+
+
 
     public function show($id)
     {
