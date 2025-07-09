@@ -8,18 +8,12 @@
     <link rel="stylesheet" href="{{ asset('css/listadoprac.css') }}">
     <link rel="stylesheet" href="{{ asset('css/lista_practicantes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
 
 <body>
     <div class="header">
         <h1>Practicantes</h1>
-        <button class="menu-button" id="menuButton">
-            <i class="fa-solid fa-bars"></i>
-        </button>
     </div>
-    @include('partials.menu_modal')
-
     <div class="main-container">
         @if (session('success'))
             <div class="alert alert-success">
@@ -111,7 +105,7 @@
                             </td>
                             <td>
                                 @if (isset($practicante->id_practicante))
-                                    <a href="{{ route('practicantes.show', parameters: $practicante->id_practicante) }}"
+                                    <a href="{{ route('practicantes.show', $practicante->id_practicante) }}"
                                         class="admin-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>

@@ -1,0 +1,147 @@
+/* Estilos específicos para el listado de instituciones */
+tbody tr:nth-child(even) {
+    background-color: #f6e8d0;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ceb15d;
+}
+
+/* Estilos para el toggle de carreras */
+.carreras-container {
+    display: none;
+    padding: 10px;
+    background: #f9f9f9;
+    margin-top: 5px;
+    border-radius: 5px;
+    border-left: 3px solid #d3bc68;
+}
+
+.carreras-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.carrera-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.carrera-item:last-child {
+    border-bottom: none;
+}
+
+.carrera-details {
+    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.carrera-details small {
+    color: #666;
+}
+
+.no-carreras,
+.error-carrera {
+    color: #666;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+.error-carrera {
+    color: #dc3545;
+}
+
+.toggle-carreras {
+    cursor: pointer;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.toggle-carreras:hover {
+    cursor: pointer;
+    color: #534127;
+    font-size: 16px;
+}
+
+.toggle-carreras i.fa-spinner {
+    margin-right: 5px;
+}
+
+.carreras-container {
+    display: none;
+    padding: 10px;
+    background: #f5f5f5;
+    margin-top: 5px;
+}
+
+.carreras-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toggle-carreras {
+    cursor: pointer;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.toggle-carreras:hover {
+    cursor: pointer;
+    color: #534127;
+    font-size: 16px;
+}
+
+.carreras-container {
+    display: none;
+    padding: 10px;
+    background: #f9f9f9;
+    margin-top: 5px;
+    border-radius: 5px;
+    border-left: 3px solid #d3bc68;
+}
+
+.carreras-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.carrera-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.carrera-item:last-child {
+    border-bottom: none;
+}
+
+.carrera-details {
+    margin-top: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.carrera-details small {
+    color: #666;
+}
+
+.no-carreras,
+.error-carrera {
+    color: #666;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+.error-carrera {
+    color: #dc3545;
+}
+
+.toggle-carreras i.fa-spinner {
+    margin-right: 5px;
+}

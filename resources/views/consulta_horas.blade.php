@@ -11,7 +11,7 @@
 
 <body>
     <div class="header">
-        <a href="#" class="back-button">
+        <a href="/bitacora" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Consulta tus horas registradas</h1>
@@ -53,7 +53,6 @@
                         </tr>
                     </thead>
                     <tbody id="registrosBody">
-                        <!-- Datos se cargarán dinámicamente -->
                     </tbody>
                 </table>
             </div>

@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Credencial {{ $clave }}</title>
     <style>
-        /* Configuración global */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,7 +14,6 @@
         /* Tamaño de página para impresión */
         @page {
             size: 10cm 25cm;
-            /* Ancho doble para ambas caras */
             margin: 0;
         }
 
@@ -62,23 +60,18 @@
 
         .foto-espacio {
             width: 2.2cm;
-            /* 2cm */
             height: 3.2cm;
-            /* 2.5cm */
             background-color: #d1d2d4;
             border: 2pt solid white;
             border-radius: 8pt;
             margin: 0 auto 8pt auto;
         }
-
-        /* Footer ajustado para funcionar dentro del contenedor */
         .footer-texto {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
             font: bold;
             text-align: center;
             margin-top: auto;
-            /* Para que se posicione al final del contenedor */
             color: rgb(255, 255, 255);
             line-height: 1.2;
             padding-top: 37px;
@@ -150,7 +143,6 @@
         <div class="trainee">TRAINEE</div>
         <div class="foto-espacio"></div>
         <div class="footer-texto">En grupo Presidente, nuestra pasión será su mejor experiencia</div>
-        <!-- Footer CORRECTO dentro del contenedor -->
     </div>
 
     <!-- Dorso -->
@@ -167,7 +159,7 @@
             <br>
             <p>Este gafete es propiedad de la empresa. Devolver al terminar prácticas.</p>
         </div>
-
+        <!-- Código de barras al dorso de la credencial junto con clave-->
         <div class="barcode-container">
             <img src="data:image/png;base64,{{ $barcodeImage }}" alt="Barcode">
             <div class="clave-texto">{{ $clave }}</div>

@@ -22,24 +22,6 @@ body {
     border-bottom: 1px solid #e0e0e0;
 }
 
-.header .back-button {
-    background-color: #d3bc68; /* Color de tu marca */
-    color: white;
-    border: 1px solid #474747;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    margin-right: 20px;
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
 .header h1 {
     margin: 0 auto;
     font-size: 24px;
@@ -48,20 +30,29 @@ body {
 
 /* Menu button in header (if you choose to include it) */
 .header .menu-button {
-    background-color: #d3bc68; /* Color de tu marca */
+    background-color: #d3bc68;
     color: white;
-    border: 1px solid #474747;
+    border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    position: absolute; /* Para posicionarlo a la derecha */
+    font-size: 20px;
+    position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
+    transition: 0.3s;
+}
+
+.menu-button:hover {
+    background-color: #c0a855;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
 }
 
 /* Main Content Wrapper for Centering Card */
@@ -785,7 +776,6 @@ body {
     opacity: 0.9;
 }
 
-
 .image-item {
     position: relative;
     border: 1px solid #ddd;
@@ -816,7 +806,7 @@ body {
 
 .image-dates {
     padding: 5px;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
     font-size: 12px;
 }
@@ -846,4 +836,101 @@ body {
 
 .toggle-image-button:hover {
     color: #0056b3;
+}
+
+/* Estilos para la sección de cumpleaños */
+.month-selector {
+    margin: 15px 0;
+    max-width: 200px;
+}
+
+.month-selector select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #d3bc68;
+}
+
+.cumpleanos-list {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.cumpleanos-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.cumpleanos-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cumpleanos-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.cumpleanos-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.cumpleanos-area {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+}
+
+.cumpleanos-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 15px;
+}
+
+.cumpleanos-date .dia {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d3bc68;
+}
+
+.cumpleanos-date .mes {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.cumpleanos-dias {
+    font-size: 14px;
+    color: #666;
+}
+
+.cumpleanos-dias .hoy {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.export-cumpleanos-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #d3bc68;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.export-cumpleanos-button:hover {
+    background-color: #c0a855;
 }

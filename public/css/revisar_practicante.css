@@ -81,15 +81,25 @@ body {
 }
 
 .practicante-avatar {
-    width: 120px;
+    width: 120px; /* Tamaño fijo del contenedor */
     height: 120px;
-    background-color: #e0e0e0; /* Color gris claro para el fondo del avatar */
-    border-radius: 50%;
+    border-radius: 50%; /* Forma circular */
+    overflow: hidden; /* Recorta la imagen para que se ajuste al círculo */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
-    overflow: hidden;
+    background-color: #e0e0e0; /* Fondo gris para el avatar por defecto */
+}
+
+.practicante-avatar .profile-image {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    height: 100%; /* Ocupa toda la altura del contenedor */
+    object-fit: cover; /* Ajusta la imagen manteniendo la proporción */
+}
+
+.practicante-avatar .default-avatar i {
+    font-size: 70px;      /* Tamaño del ícono por defecto */
+    color: #888;          /* Color gris del ícono */
 }
 
 .practicante-avatar i.fa-user {
@@ -169,7 +179,6 @@ body {
     color: #ccc; /* Asegura que las no seleccionadas sean grises */
 }
 
-
 /* Form Actions Buttons */
 .form-actions {
     display: flex;
@@ -186,6 +195,7 @@ body {
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .add-review-button {
@@ -202,6 +212,14 @@ body {
     background-color: #e0e0e0; /* Color gris */
     color: #555;
     border: 1px solid #ccc;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .cancel-review-button:hover {
@@ -235,5 +253,9 @@ body {
     .form-actions button {
         width: 100%;
         max-width: 250px;
+    }
+
+    .form-actions a {
+        text-decoration: none;
     }
 }

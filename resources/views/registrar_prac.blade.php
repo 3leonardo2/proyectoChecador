@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Nuevo Practicante</title>
     <link rel="stylesheet" href="{{ asset('css/detailsprac.css') }}">
     <link rel="stylesheet" href="{{ asset('css/editprac.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/registrar_prac.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
+    @include('partials.menu_modal')
     <div class="header">
-        <a href="#" class="back-button">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
         <h1>Registrar Nuevo Practicante</h1>
+        <button class="menu-button" id="menuButton">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
 
     <div class="main-container">
-        <form action="{{ route('practicantes.store') }}" method="POST" class="practicante-info-wrapper" enctype="multipart/form-data"
-        data-carrera-route="{{ route('practicantes.getByCarrera') }}">
+        <form action="{{ route('practicantes.store') }}" method="POST" class="practicante-info-wrapper"
+            enctype="multipart/form-data" data-carrera-route="{{ route('practicantes.getByCarrera') }}">
             @csrf <div class="practicante-fixed-elements">
                 <div class="practicante-profile-section">
                     <div class="profile-image-container"></div>
-                    <input type="file" id="add-image-input" class="add-image-input" name="profile_image" accept="image/*" style="display: none;">
+                    <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
+                        accept="image/*" style="display: none;">
                     <label for="add-image-input" class="add-image-button">Añadir imagen...</label>
                 </div>
             </div>
@@ -37,9 +46,10 @@
                     <label for="apellidos">Apellidos*:</label>
                     <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos..." required>
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="curp">CURP*:</label>
-                    <input type="text" id="curp" name="curp" placeholder="CURP..." required maxlength="18" minlength="18">
+                    <input type="text" id="curp" name="curp" placeholder="CURP..." required maxlength="18"
+                        minlength="18">
                 </div>
                 <div class="form-group">
                     <label for="fecha_nacimiento">Fecha de nacimiento*:</label>
@@ -60,19 +70,23 @@
                 </div>
                 <div class="form-group">
                     <label for="email_personal">Correo electrónico personal:</label>
-                    <input type="email" id="email_personal" name="email_personal" placeholder="Correo electrónico personal...">
+                    <input type="email" id="email_personal" name="email_personal"
+                        placeholder="Correo electrónico personal...">
                 </div>
                 <div class="form-group">
                     <label for="telefono_personal">Teléfono personal:</label>
-                    <input type="tel" id="telefono_personal" name="telefono_personal" placeholder="Teléfono personal...">
+                    <input type="tel" id="telefono_personal" name="telefono_personal"
+                        placeholder="Teléfono personal...">
                 </div>
                 <div class="form-group">
                     <label for="nombre_emergencia">Nombre de emergencia:</label>
-                    <input type="text" id="nombre_emergencia" name="nombre_emergencia" placeholder="Nombre contacto...">
+                    <input type="text" id="nombre_emergencia" name="nombre_emergencia"
+                        placeholder="Nombre contacto...">
                 </div>
                 <div class="form-group">
                     <label for="telefono_emergencia">Teléfono de emergencia:</label>
-                    <input type="tel" id="telefono_emergencia" name="telefono_emergencia" placeholder="Teléfono de emergencia...">
+                    <input type="tel" id="telefono_emergencia" name="telefono_emergencia"
+                        placeholder="Teléfono de emergencia...">
                 </div>
                 <div class="form-group">
                     <label for="num_seguro">Número de seguro:</label>
@@ -80,31 +94,45 @@
                 </div>
 
                 <h2>Información institucional:</h2>
-                <div class="form-group">
-                    <label for="institucion_nombre">Escuela o institución*:</label>
-                    <input type="text" id="institucion_nombre" name="institucion_nombre" placeholder="Escribe para buscar o añadir..." list="instituciones-list" required>
-                    <datalist id="instituciones-list">
-                        @foreach($instituciones as $institucion)
-                            <option value="{{ $institucion->nombre }}">
-                        @endforeach
-                    </datalist>
-                </div>
-                <div class="form-group">
-                    <label for="carrera_nombre">Carrera*:</label>
-                    <input type="text" id="carrera_nombre" name="carrera_nombre" placeholder="Escribe para buscar o añadir..." list="carreras-list" required>
-                    <datalist id="carreras-list">
-                         @foreach($carreras as $carrera)
-                            <option value="{{ $carrera->nombre_carr }}">
-                        @endforeach
-                    </datalist>
+                <div class="institution-carrera-group">
+                    <div class="form-group">
+                        <label for="institucion_nombre" required>Escuela o institución:</label>
+                        <div class="institution-select-container">
+                            <input type="text" id="institucion_nombre" name="institucion_nombre"
+                                class="institution-select-input" placeholder="Escribe para buscar..."
+                                autocomplete="off" required>
+                            <div class="institution-select-dropdown" id="instituciones-dropdown">
+                                @foreach ($instituciones as $institucion)
+                                    <div class="institution-select-item" data-value="{{ $institucion->nombre }}"
+                                        data-id="{{ $institucion->id_institucion }}">
+                                        {{ $institucion->nombre }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrera_nombre" required>Carrera:</label>
+                        <div class="carrera-select-container">
+                            <input type="text" id="carrera_nombre" name="carrera_nombre"
+                                class="carrera-select-input" placeholder="Selecciona primero una institución" required
+                                disabled autocomplete="off">
+                            <div class="carrera-select-dropdown" id="carreras-dropdown"></div>
+                            <i class="fas fa-spinner fa-spin loading-carreras"></i>
+                            <div class="no-carreras-message">No se encontraron carreras para esta institución</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="email_institucional">Correo institucional:</label>
-                    <input type="email" id="email_institucional" name="email_institucional" placeholder="Correo institucional...">
+                    <input type="email" id="email_institucional" name="email_institucional"
+                        placeholder="Correo institucional...">
                 </div>
                 <div class="form-group">
                     <label for="telefono_institucional">Teléfono institucional:</label>
-                    <input type="tel" id="telefono_institucional" name="telefono_institucional" placeholder="Teléfono institucional...">
+                    <input type="tel" id="telefono_institucional" name="telefono_institucional"
+                        placeholder="Teléfono institucional...">
                 </div>
                 <div class="form-group">
                     <label for="nivel_estudios">Nivel de estudios:</label>
@@ -130,7 +158,7 @@
                 </div>
                 <div class="form-group">
                     <label for="area_asignada">Área asignada:</label>
-                <select id="area_asignada" name="area_asignada">
+                    <select id="area_asignada" name="area_asignada">
                         <option value="">Seleccione una opción</option>
                         <option value="Sistemas">Sistemas</option>
                         <option value="Mantenimiento">Mantenimiento</option>
@@ -167,8 +195,15 @@
                     <button type="button" class="cancel-button">Cancelar</button>
                 </div>
             </div>
-            <script src="js/getInfoCarrera.js"></script>
+            <script>
+                // Define la variable global antes de cargar tu script
+                window.instituciones = @json($instituciones->pluck('nombre', 'id_institucion'));
+            </script>
         </form>
     </div>
+    <script src="{{ asset('js/registrar_prac.js') }}"></script>
+    <script src="{{ asset('js/getInfoCarrera.js') }}"></script>
+    <script src="{{ asset('js/menu_modal.js') }}"></script>
 </body>
+
 </html>

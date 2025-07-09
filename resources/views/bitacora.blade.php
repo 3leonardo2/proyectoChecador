@@ -7,6 +7,8 @@
     <title>Bitácora de Practicantes</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/bitacora.css') }}">
+
     <style>
         .welcome-message {
             animation: fadeOut 5s forwards;
@@ -26,7 +28,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100" style="background-color: #e6e8e4;">
-    @include('partials.modal_bitacora')
+    @include('partials.detalles_modal')
 
     <div class="px-0 flex-grow-1 d-flex align-items-center">
         <div class="col-md-8 col-lg-6 bitacora-container">
@@ -75,12 +77,20 @@
 
     <div class="container">
         <div class="text-center" id="welcome-container">
-            @if (session('nombre'))
+            @if (session()->has('welcome_message'))
                 <h1 class="welcome-message">
-                    BIENVENID{{ session('sexo') == 'M' ? 'O' : 'A' }} {{ strtoupper(session('nombre')) }}
+                    @if (session('welcome_message.genero') === '@')
+                        ¡BIENVENID@ {{ strtoupper(session('welcome_message.nombre')) }}!
+                    @else
+                        BIENVENID{{ session('welcome_message.genero') }}
+                        {{ strtoupper(session('welcome_message.nombre')) }}
+                    @endif
                 </h1>
+                @php
+                    session()->forget('welcome_message');
+                @endphp
             @else
-                <h1>BIENVENIDO</h1>
+                <h1>BIENVENID@</h1>
             @endif
         </div>
         <div style="text-align: right;">
@@ -190,20 +200,47 @@
                         'Accept': 'application/json'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw err;
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    if (data.success) {
-                        showModal('Éxito', data.message, true);
-                        if (tipo === 'entrada') {
-                            window.location.reload();
-                        }
-                    } else {
-                        showModal('Error', data.message, false);
+                    showModal(data.success ? 'Éxito' : 'Error', data.message, data.success);
+                    if (tipo === 'entrada' && data.success) {
+                        window.location.reload(); // Recarga solo para entrada (para mostrar mensaje de bienvenida)
                     }
                 })
                 .catch(error => {
-                    showModal('Error', 'Ocurrió un error inesperado', false);
+                    showModal('Error', error.message || 'Error inesperado', false);
                 });
+        }
+
+        function showModal(title, message, isSuccess) {
+            const modal = document.getElementById('alertModal');
+            const icon = document.getElementById('alertModalIcon');
+            const msg = document.getElementById('alertModalMessage');
+
+            // Configura el modal según éxito/error
+            modal.className = `alert-modal ${isSuccess ? 'success' : 'error'}`;
+            icon.innerHTML = isSuccess ?
+                '<i class="fas fa-check-circle"></i>' :
+                '<i class="fas fa-exclamation-circle"></i>';
+            msg.textContent = message;
+
+            // Muestra el modal con animación
+            modal.style.display = 'flex';
+
+            // Cierra automáticamente después de 5 segundos
+            setTimeout(() => {
+                modal.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 500);
+            }, 5000);
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

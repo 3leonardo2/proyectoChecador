@@ -14,9 +14,6 @@
 
 <body>
     <div class="header">
-        <a href="#" class="back-button">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
         <h1>Modificación de avisos</h1>
         <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
@@ -89,18 +86,62 @@
                 </div>
                 <div class="tab-content" id="cumpleanos">
                     <h2>Próximos Cumpleaños</h2>
-                    <p>Consulta y gestiona los cumpleaños de los practicantes.</p>
-                    <div class="cumpleanos-list">
-                        <div class="cumpleanos-item">
-                            <span class="cumpleanos-name">Juan Pérez</span>
-                            <span class="cumpleanos-date">15 de Junio</span>
-                        </div>
-                        <div class="cumpleanos-item">
-                            <span class="cumpleanos-name">Ana García</span>
-                            <span class="cumpleanos-date">22 de Junio</span>
-                        </div>
+                    <p>Consulta los cumpleaños de los practicantes activos.</p>
+
+                    <div class="month-selector">
+                        <select id="month-selector" class="form-control">
+                            <option value="0">Todos los meses</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
                     </div>
-                    <button class="export-cumpleanos-button">Exportar Lista</button>
+
+                    <div class="cumpleanos-list">
+                        @foreach ($practicantes as $practicante)
+                            @php
+                                $fechaNacimiento = \Carbon\Carbon::parse($practicante->fecha_nacimiento);
+                                $mes = $fechaNacimiento->month;
+                                $dia = $fechaNacimiento->day;
+                                $hoy = \Carbon\Carbon::now();
+                                $proximoCumple = \Carbon\Carbon::create($hoy->year, $mes, $dia);
+
+                                if ($proximoCumple->lt($hoy)) {
+                                    $proximoCumple->addYear();
+                                }
+
+                                $diasRestantes = $hoy->diffInDays($proximoCumple, false);
+                            @endphp
+
+                            <div class="cumpleanos-item" data-month="{{ $mes }}">
+                                <div class="cumpleanos-info">
+                                    <span class="cumpleanos-name">{{ $practicante->nombre }}
+                                        {{ $practicante->apellidos }}</span>
+                                    <span class="cumpleanos-area">{{ $practicante->area_asignada }}</span>
+                                </div>
+                                <div class="cumpleanos-date">
+                                    <span class="dia">{{ $dia }}</span>
+                                    <span class="mes">{{ $fechaNacimiento->locale('es')->monthName }}</span>
+                                </div>
+                                <div class="cumpleanos-dias">
+                                    @if ($diasRestantes == 0)
+                                        <span class="hoy">¡Hoy es su cumpleaños!</span>
+                                    @else
+                                        <span>{{ $diasRestantes }} días</span>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,6 +195,26 @@
                 });
             }
         });
+
+        document.getElementById('month-selector').addEventListener('change', function() {
+            const selectedMonth = parseInt(this.value);
+            const cumpleanosItems = document.querySelectorAll('.cumpleanos-item');
+
+            cumpleanosItems.forEach(item => {
+                const itemMonth = parseInt(item.dataset.month);
+
+                if (selectedMonth === 0 || itemMonth === selectedMonth) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Opcional: Seleccionar automáticamente el mes actual
+        const currentMonth = new Date().getMonth() + 1;
+        document.getElementById('month-selector').value = currentMonth;
+        document.getElementById('month-selector').dispatchEvent(new Event('change'));
     </script>
 
     <script src="{{ asset('js/menu_modal.js') }}"></script>

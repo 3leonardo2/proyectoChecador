@@ -5,16 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Institución y/o Carrera</title>
-    <link rel="stylesheet" href="{{asset('css/registrar_insti.css') }}"> 
+    <link rel="stylesheet" href="{{ asset('css/registrar_insti.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
+
 </head>
 
 <body>
     <div class="header">
-        <a href="#" class="back-button">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
+        @include('partials.regis_insti_modal')
         <h1>Registrar Institución y/o Carrera</h1>
+        <button class="menu-button" id="menuButton">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        @include('partials.menu_modal')
+
     </div>
 
     <div class="main-container">
@@ -88,6 +93,8 @@
         </form>
     </div>
     <script src="{{ asset('js/registrar_insti.js') }}"></script>
+    <script src="{{ asset('js/menu_modal.js') }}"></script>
+
 </body>
 
 </html>

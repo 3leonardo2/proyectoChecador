@@ -23,7 +23,6 @@ class InstitucionController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validar los datos del formulario
         $validatedData = $request->validate([
             'nombre_ins' => 'required|string|max:255|unique:instituciones,nombre',
             'direccion_ins' => 'required|string|max:255',
@@ -33,10 +32,8 @@ class InstitucionController extends Controller
             'carreras.*.nombre_carr' => 'required_with:carreras|string|max:255',
         ]);
 
-        // 2. Usar una transacción para asegurar que todo se guarde correctamente
         DB::beginTransaction();
         try {
-            // 3. Crear la Institución
             $institucion = Institucion::create([
                 'nombre' => $request->nombre_ins,
                 'direccion' => $request->direccion_ins,
@@ -44,30 +41,45 @@ class InstitucionController extends Controller
                 'correo' => $request->correo_ins,
             ]);
 
-            // 4. Crear las Carreras y asociarlas a la Institución
             if ($request->has('carreras')) {
                 foreach ($request->carreras as $carreraData) {
-                    // Solo procesar si el nombre de la carrera no está vacío
                     if (!empty($carreraData['nombre_carr'])) {
                         Carrera::create([
                             'id_institucion' => $institucion->id_institucion,
                             'nombre_carr' => $carreraData['nombre_carr'],
                             'gerente_carr' => $carreraData['gerente_carr'],
-                            'tel_gerente' => $carreraData['telefono_carr'] ?? null, // Usar el nombre correcto del input
+                            'tel_gerente' => $carreraData['telefono_carr'] ?? null,
                             'correo_carr' => $carreraData['correo_carr'],
                         ]);
                     }
                 }
             }
 
-            DB::commit(); // Confirmar los cambios si todo salió bien
+            DB::commit();
 
-            return redirect()->route('instituciones.create')->with('success', '¡Institución registrada exitosamente!');
+            // Siempre devolver JSON para las solicitudes AJAX
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '¡Institución y carreras registradas exitosamente!',
+                    'institucion' => $institucion
+                ]);
+            }
+
+            return redirect()->route('instituciones.create')
+                ->with('success', '¡Institución registrada exitosamente!');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Revertir los cambios si algo falla
-            Log::error('Error al registrar institución: ' . $e->getMessage()); // Registrar el error
-            
+            DB::rollBack();
+            Log::error('Error al registrar institución: ' . $e->getMessage());
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ocurrió un error al guardar la institución: ' . $e->getMessage()
+                ], 500);
+            }
+
             return back()->withErrors(['error' => 'Ocurrió un error al guardar la institución.'])->withInput();
         }
     }
@@ -80,66 +92,90 @@ class InstitucionController extends Controller
 
     public function getCarreras($id_institucion)
     {
-        $carreras = Carrera::where('id_institucion', $id_institucion)->get();
-        return response()->json($carreras);
+        try {
+            $carreras = Carrera::where('id_institucion', $id_institucion)
+                ->select('id_carrera', 'nombre_carr', 'gerente_carr', 'tel_gerente', 'correo_carr')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'carreras' => $carreras
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener carreras: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function edit($id_institucion)
-{
-    $institucion = Institucion::with('carreras')->findOrFail($id_institucion);
-    return view('editar_institucion', compact('institucion'));
-}
-public function update(Request $request, $id_institucion)
-{
-    DB::beginTransaction();
-    try {
-        // 1. Actualizar la institución
-        $institucion = Institucion::findOrFail($id_institucion);
-        $institucion->update($request->only(['nombre', 'direccion', 'telefono', 'correo']));
+    {
+        $institucion = Institucion::with('carreras')->findOrFail($id_institucion);
+        return view('editar_institucion', compact('institucion'));
+    }
+    public function update(Request $request, $id_institucion)
+    {
+        DB::beginTransaction();
+        try {
+            $institucion = Institucion::findOrFail($id_institucion);
+            $institucion->update($request->only(['nombre', 'direccion', 'telefono', 'correo']));
 
-        // 2. Manejar carreras
-        if ($request->has('carreras')) {
-            foreach ($request->carreras as $carreraData) {
-                // Eliminar carreras marcadas
-                if (isset($carreraData['_destroy'])) {
-                    Carrera::destroy($carreraData['id_carrera']);
-                    continue;
-                }
-                
-                if (isset($carreraData['id_carrera'])) {
-                    // Actualizar carrera existente
-                    $carrera = Carrera::find($carreraData['id_carrera']);
-                    if ($carrera) {
-                        $carrera->update([
-                            'nombre_carr' => $carreraData['nombre_carr'],
-                            'gerente_carr' => $carreraData['gerente_carr'],
-                            'tel_gerente' => $carreraData['telefono_carr'],
-                            'correo_carr' => $carreraData['correo_carr']
-                        ]);
+            if ($request->has('carreras')) {
+                foreach ($request->carreras as $carreraData) {
+                    if (isset($carreraData['_destroy'])) {
+                        Carrera::destroy($carreraData['id_carrera']);
+                        continue;
                     }
-                } else {
-                    // Crear nueva carrera
-                    if (!empty($carreraData['nombre_carr'])) {
-                        Carrera::create([
-                            'id_institucion' => $id_institucion,
-                            'nombre_carr' => $carreraData['nombre_carr'],
-                            'gerente_carr' => $carreraData['gerente_carr'],
-                            'tel_gerente' => $carreraData['telefono_carr'],
-                            'correo_carr' => $carreraData['correo_carr']
-                        ]);
+
+                    if (isset($carreraData['id_carrera'])) {
+                        $carrera = Carrera::find($carreraData['id_carrera']);
+                        if ($carrera) {
+                            $carrera->update([
+                                'nombre_carr' => $carreraData['nombre_carr'],
+                                'gerente_carr' => $carreraData['gerente_carr'],
+                                'tel_gerente' => $carreraData['telefono_carr'],
+                                'correo_carr' => $carreraData['correo_carr']
+                            ]);
+                        }
+                    } else {
+                        if (!empty($carreraData['nombre_carr'])) {
+                            Carrera::create([
+                                'id_institucion' => $id_institucion,
+                                'nombre_carr' => $carreraData['nombre_carr'],
+                                'gerente_carr' => $carreraData['gerente_carr'],
+                                'tel_gerente' => $carreraData['telefono_carr'],
+                                'correo_carr' => $carreraData['correo_carr']
+                            ]);
+                        }
                     }
                 }
             }
+
+            DB::commit();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Institución actualizada correctamente'
+                ]);
+            }
+
+            return redirect()->route('instituciones.index')
+                ->with('success', 'Institución actualizada correctamente');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al actualizar: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
         }
-
-        DB::commit();
-        return redirect()->route('instituciones.index')
-            ->with('success', 'Institución actualizada correctamente');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
     }
-}
 
 }

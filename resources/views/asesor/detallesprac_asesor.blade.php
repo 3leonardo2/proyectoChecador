@@ -7,19 +7,14 @@
     <title>Detalles de practicante</title>
     <link rel="stylesheet" href="{{ asset('css/detailsprac.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
 </head>
 
 <body>
-    @include('partials.menu_modal')
     <div class="header">
         <a href="/practicantes" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Detalles de practicante</h1>
-        <button class="menu-button" id="menuButton">
-            <i class="fa-solid fa-bars"></i>
-        </button>
         @include('partials.detalles_modal')
     </div>
     <div class="main-container">
@@ -38,21 +33,7 @@
 
                     </div>
                     <div class="practicante-codigo">Código: {{ $practicante->codigo }}</div>
-                    <a href="{{ route('practicantes.credencial', $practicante->id_practicante) }}"
-                        class="credential-button">
-                        <i class="fa-solid fa-id-card"></i>
-                        Credencial
-                    </a>
-                    <a href="#" class="reporte-button" id="openReportModal">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        Generar reporte
-                    </a>
-                </div>
             </div>
-            <a href="{{ route('practicantes.edit', $practicante->id_practicante) }}" class="edit-button">
-                <i class="fa-solid fa-pen-to-square"></i>
-                Editar
-            </a>
             <a href="{{ route('evaluaciones.index', $practicante->id_practicante) }}" class="revision-button">
                 <i class="fa-solid fa-ranking-star"></i> Ver revisiones
             </a>
@@ -156,9 +137,7 @@
             </div>
         </div>
     </div>
-    @include('partials.reporte_practicantes_modal')
     <script src="{{ asset('js/menu_modal.js') }}"></script>
-    <script> const practicanteId = {{ $practicante->id_practicante }}; </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))

@@ -6,41 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Instituciones</title>
     <link rel="stylesheet" href="{{ asset('css/listadoprac.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/lista_instituciones.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
-    <style>
-        .carreras-container {
-            display: none;
-            padding: 10px;
-            background: #f5f5f5;
-            margin-top: 5px;
-        }
-
-        .carreras-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .toggle-carreras {
-            cursor: pointer;
-            color: #333;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .toggle-carreras:hover {
-            cursor: pointer;
-            color: #534127;
-            font-size: 16px;
-        }
-    </style>
 </head>
 
 <body>
     <div class="header">
-        <a href="#" class="back-button">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
         <h1>Instituciones y/o Escuelas</h1>
         <button class="menu-button" id="menuButton">
             <i class="fa-solid fa-bars"></i>
@@ -108,32 +80,62 @@
     <script>
         function toggleCarreras(idInstitucion) {
             const container = document.getElementById(`carreras-${idInstitucion}`);
+            const toggleSpan = container.previousElementSibling;
 
+            // Cambiar el ícono del toggle
             if (container.style.display === 'block') {
                 container.style.display = 'none';
+                toggleSpan.innerHTML = `${toggleSpan.textContent.match(/\d+/)[0]} Carreras Registradas ▼`;
                 return;
             }
-            if (container.querySelector('li') === null) {
-                fetch(`/instituciones/${idInstitucion}/carreras`)
-                    .then(response => response.json())
-                    .then(carreras => {
-                        const list = container.querySelector('ul');
-                        list.innerHTML = '';
 
-                        if (carreras.length === 0) {
-                            list.innerHTML = '<li>No hay carreras registradas</li>';
-                        } else {
-                            carreras.forEach(carrera => {
-                                const li = document.createElement('li');
-                                li.textContent = carrera.nombre_carr;
-                                list.appendChild(li);
-                            });
-                        }
-                        container.style.display = 'block';
-                    });
-            } else {
-                container.style.display = 'block';
-            }
+            // Mostrar spinner mientras carga
+            toggleSpan.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Cargando...`;
+
+            // Obtener carreras via AJAX
+            fetch(`/instituciones/${idInstitucion}/carreras`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message || 'Error al obtener carreras');
+                    }
+
+                    const list = container.querySelector('ul');
+                    list.innerHTML = '';
+
+                    if (data.carreras.length === 0) {
+                        list.innerHTML = '<li class="no-carreras">No hay carreras registradas</li>';
+                    } else {
+                        data.carreras.forEach(carrera => {
+                            const li = document.createElement('li');
+                            li.className = 'carrera-item';
+                            li.innerHTML = `
+                        <strong>${carrera.nombre_carr}</strong>
+                        <div class="carrera-details">
+                            <small>Gerente: ${carrera.gerente_carr || 'N/A'}</small>
+                            <small>Teléfono: ${carrera.tel_gerente || 'N/A'}</small>
+                            <small>Correo: ${carrera.correo_carr || 'N/A'}</small>
+                        </div>
+                    `;
+                            list.appendChild(li);
+                        });
+                    }
+
+                    container.style.display = 'block';
+                    toggleSpan.innerHTML = `${data.carreras.length} Carreras Registradas ▲`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const list = container.querySelector('ul');
+                    list.innerHTML = `<li class="error-carrera">Error al cargar carreras: ${error.message}</li>`;
+                    container.style.display = 'block';
+                    toggleSpan.innerHTML = `Error ▼`;
+                });
         }
         document.getElementById('searchInput').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();

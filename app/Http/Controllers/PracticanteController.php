@@ -314,6 +314,46 @@ class PracticanteController extends Controller
         return $pdf->download('credencial-' . $clave . '.pdf');
     }
 
+    public function generarReporte(Request $request, Practicante $practicante)
+    {
+        //Verificar si la imagen del perfil existe
+        $imagenPath = $practicante->profile_image
+            ? storage_path('app/public/' . $practicante->profile_image)
+            : null;
+        $imagenValida = ($imagenPath && file_exists($imagenPath));
+
+        // Obtener datos básicos del practicante
+        $data = [
+            'practicante' => $practicante->load(['institucion', 'carrera']),
+            'horas_completadas' => $practicante->horas_registradas,
+            'horas_requeridas' => $practicante->horas_requeridas,
+            'porcentaje_completado' => ($practicante->horas_requeridas > 0)
+                ? ($practicante->horas_registradas / $practicante->horas_requeridas) * 100
+                : 0,
+            'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
+        ];
+
+        // Verificar si se deben incluir las revisiones
+        $incluirRevisiones = filter_var($request->input('incluir_revisiones', false), FILTER_VALIDATE_BOOLEAN);
+
+        if ($incluirRevisiones) {
+            $data['revisiones'] = $practicante->evaluaciones()->orderBy('fecha_evaluacion', 'desc')->get();
+        }
+
+        // Opciones para el PDF
+        $pdfOptions = [
+            'orientation' => 'portrait',
+            'margin-top' => 10,
+            'margin-right' => 10,
+            'margin-bottom' => 10,
+            'margin-left' => 10,
+        ];
+
+        $pdf = PDF::loadView('reportes.practicante', $data)
+            ->setOptions($pdfOptions);
+
+        return $pdf->download('reporte-practicante-' . $practicante->codigo . '.pdf');
+    }
 
 
     public function show($id)

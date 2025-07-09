@@ -12,7 +12,7 @@
 
 <body>
     <div class="header">
-        <a href="#" class="back-button">
+        <a href="{{ route('practicantes.show', parameters: $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Editar Practicante</h1>

@@ -9,14 +9,16 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    
     public function up(): void
     {
         Schema::create('administradores', function (Blueprint $table) {
-            $table->integer('id_admin')->primary();
+            $table->bigIncrements('id_admin');
             $table->string('nombre', 100)->notNullable();
             $table->string('correo', 255)->unique()->notNullable();
             $table->string('contrasena', 255)->notNullable(); // Almacenar hash de contraseña
             $table->string('departamento', 100)->nullable();
+            $table->enum('rol', ['rh', 'asesor'])->notNullable();
             // $table->timestamps();
         });
     }

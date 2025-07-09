@@ -1,0 +1,130 @@
+/* bitacora.css - Estilos específicos para bitacora.blade.php */
+
+/* Estilos para el contenedor principal */
+.bitacora-container {
+    width: 100%;
+}
+
+.card {
+    border-radius: 0 !important;
+}
+
+/* Estilos para la sección de avisos e imágenes */
+.image-avisos-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    padding: 1rem;
+    align-items: flex-start;
+    margin-top: 20px;
+    min-height: 200px;
+}
+
+.imagen-container {
+    width: 260px;
+    height: 300px;
+    overflow: visible;
+    grid-column: 2;
+    margin: 0 auto;
+    position: relative;
+    top: -30px;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.imagen-container img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    margin: 0 auto;
+}
+
+.carousel-inner {
+    height: 100%;
+}
+
+.carousel-item {
+    height: 100%;
+    text-align: center;
+}
+
+.avisos-container {
+    text-align: right;
+    color: #555;
+    grid-column: 3;
+    justify-self: end;
+    padding-right: 1rem;
+}
+
+/* Estilos para mensajes de bienvenida */
+.welcome-message {
+    animation: fadeOut 5s forwards;
+    animation-delay: 5s;
+    opacity: 1;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        height: 0;
+        overflow: hidden;
+        margin: 0;
+    }
+}
+
+
+.alert-modal i {
+    font-size: 24px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-modal.evento {
+    background-color: #e2f0fd;
+    color: #004085;
+    border-left: 5px solid #007bff;
+}
+
+.alert-modal .evento-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+/* Animación para el icono */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+.alert-modal.success .fa-sign-in-alt,
+.alert-modal.success .fa-utensils,
+.alert-modal.success .fa-sign-out-alt,
+.alert-modal.success .fa-home {
+    animation: bounce 1s;
+}
+
+/* Estilos para botones específicos de bitácora */
+.btn-custom2 {
+    background-color: #a7a7a7 !important;
+    color: white !important;
+    border: 2px solid #a7a7a7 !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    white-space: nowrap;
+}
+
+.btn-custom2:hover {
+    background-color: #ffffff !important;
+    color: rgb(0, 0, 0) !important;
+    border-color: #583811 !important;
+    font-size: 17px;
+}

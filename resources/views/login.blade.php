@@ -19,16 +19,23 @@
         <div class="card shadow w-100">
             <div class="card-body py-5">
                 <h2 class="text-center mb-4">Iniciar sesión</h2>
-
-                <form class="form-pills mx-auto" style="max-width: 400px;">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        {{ $errors->first() }}s
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('login') }}" class="form-pills mx-auto" style="max-width: 400px;">
+                    @csrf
                     <div class="mb-3">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-control" placeholder="example@gmail.com">
+                        <label for="correo" class="form-label">Correo</label>
+                        <input type="email" class="form-control" name="correo" id="correo"
+                            placeholder="example@gmail.com" required>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" placeholder="••••••••">
+                        <label for="contrasena" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" name="contrasena" id="contrasena"
+                            placeholder="••••••••" required>
                     </div>
 
                     <button type="submit" class="btn btn-custom w-100 rounded-pill py-2">
@@ -36,7 +43,10 @@
                     </button>
 
                     <div class="text-center mt-3">
-                        <a  class="btn btn-secondary btn-lg "style="font-size: 1.1rem;" href="/bitacora" >Ir a bitácora de practicantes</a>
+                        <a class="btn btn-secondary btn-lg" style="font-size: 1.1rem;"
+                            href="{{ route('bitacora.index') }}">
+                            Ir a bitácora de practicantes
+                        </a>
                     </div>
                 </form>
             </div>
