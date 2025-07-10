@@ -44,8 +44,9 @@
                     <div class="mb-3 mx-auto" style="max-width: 400px;">
                         <form id="bitacora-form" method="POST" action="{{ route('bitacora.registrar') }}">
                             @csrf
-                            <input type="text" name="codigo" class="form-control rounded-pill py-2"
-                                placeholder="Ingresa tu código..." required>
+                            <input type="text" name="codigo" id="codigo-input"
+                                class="form-control rounded-pill py-2" placeholder="Ingresa tu código..." required
+                                autofocus>
                             <input type="hidden" name="tipo" id="tipo-evento">
                         </form>
                     </div>
@@ -242,6 +243,43 @@
                 }, 500);
             }, 5000);
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('codigo-input');
+            input.focus();
+
+            document.getElementById('bitacora-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                fetch('{{ route('bitacora.registrar.automatico') }}', {
+                        method: 'POST',
+                        body: new FormData(this),
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        showModal(data.success ? 'Éxito' : 'Error', data.message, data.success);
+                        input.value = ''; // Limpiar input
+                        input.focus();
+                        // Si quieres recargar para mostrar bienvenida, puedes hacerlo aquí si data.tipo_registrado === 'entrada'
+                    })
+                    .catch(error => {
+                        showModal('Error', error.message || 'Error inesperado', false);
+                        input.value = '';
+                        input.focus();
+                    });
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('bitacora-form').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

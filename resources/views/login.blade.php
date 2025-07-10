@@ -15,15 +15,17 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100 " style="background-color: #e6e8e4;">
+    @if ($errors->any())
+        <div id="login-error-alert"
+            class="alert alert-danger text-center position-fixed top-0 start-50 translate-middle-x mt-3"
+            style="z-index: 9999; min-width: 350px;">
+            {{ $errors->first() }}
+        </div>
+    @endif
     <div class="container-fluid px-0 flex-grow-1 d-flex align-items-center ">
         <div class="card shadow w-100">
             <div class="card-body py-5">
                 <h2 class="text-center mb-4">Iniciar sesión</h2>
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        {{ $errors->first() }}s
-                    </div>
-                @endif
                 <form method="POST" action="{{ route('login') }}" class="form-pills mx-auto" style="max-width: 400px;">
                     @csrf
                     <div class="mb-3">
@@ -52,6 +54,18 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('login-error-alert');
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 
 </html>

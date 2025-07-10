@@ -11,7 +11,7 @@
 
 <body>
     <div class="header">
-        <a href="{{ route('evaluaciones.index', $practicante->id_practicante) }}" class="back-button">
+        <a href="{{ route('asesor.practicantes.evaluaciones', $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Revisión de practicante</h1>
@@ -35,11 +35,12 @@
             </div>
 
             <div class="review-form-section">
-                <form action="{{ route('evaluaciones.store', $practicante->id_practicante) }}" method="POST">
+                <form action="{{ route('asesor.practicantes.evaluaciones.store', $practicante->id_practicante) }}"
+                    method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="nombre_asesor">Nombre de quién hará la revisión:</label>
-                        <input type="text" id="nombre_asesor" name="nombre_asesor" placeholder="Escriba su nombre..."
+                        <input type="text" id="nombre_asesor" name="nombre_asesor" value="{{ $asesor->nombre }}"
                             required>
                     </div>
 
@@ -69,7 +70,7 @@
 
                     <div class="form-actions">
                         <button type="submit" class="add-review-button">Agregar revisión</button>
-                        <a href="{{ route('evaluaciones.index', $practicante->id_practicante) }}"
+                        <a href="{{ route('asesor.practicantes.evaluaciones', $practicante->id_practicante) }}"
                             class="cancel-review-button">Cancelar revisión</a>
                     </div>
                 </form>

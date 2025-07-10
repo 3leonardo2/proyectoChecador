@@ -138,6 +138,96 @@ class BitacoraController extends Controller
         ]);
     }
 
+    public function registrarEventoAutomatico(Request $request)
+{
+    $codigo = $request->codigo;
+    if (!$codigo) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Ingrese un código de practicante válido.'
+        ], 400);
+    }
+
+    $practicante = Practicante::where('codigo', $codigo)->first();
+    if (!$practicante) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Código de practicante no encontrado.'
+        ], 404);
+    }
+
+    $fechaHoy = now()->toDateString();
+    $ultimoEvento = Bitacora::where('clave_prac', $codigo)
+        ->where('fecha', $fechaHoy)
+        ->latest('hora')
+        ->first();
+
+    // Determinar el siguiente tipo de evento
+    $siguiente = match(optional($ultimoEvento)->tipo) {
+        'salida', null => 'entrada',
+        'entrada' => 'entrada_comedor',
+        'entrada_comedor' => 'salida_comedor',
+        'salida_comedor' => 'salida',
+        default => 'entrada'
+    };
+
+    // Puedes agregar validaciones adicionales aquí si lo deseas
+
+    // Registrar el evento
+    Bitacora::create([
+        'clave_prac' => $codigo,
+        'fecha' => $fechaHoy,
+        'hora' => now()->toTimeString(),
+        'tipo' => $siguiente,
+        'descripcion' => 'Registro automático'
+    ]);
+
+    // Si es salida, actualiza horas
+    if ($siguiente === 'salida') {
+        $this->actualizarHorasPracticante($codigo, $fechaHoy);
+    }
+
+    $mensajes = [
+        'entrada' => '¡Entrada registrada! Bienvenid@ ' . $practicante->nombre,
+        'entrada_comedor' => 'Hora de comida registrada. ¡Buen provecho!',
+        'salida_comedor' => 'Salida del comedor registrada. Continúa con tus actividades.',
+        'salida' => 'Salida registrada. ¡Hasta mañana, ' . $practicante->nombre . '!'
+    ];
+
+    // Verifica si solo hay dos eventos hoy para este practicante
+    $eventosHoy = Bitacora::where('clave_prac', $codigo)
+        ->where('fecha', $fechaHoy)
+        ->orderBy('hora')
+        ->get();
+
+    if ($eventosHoy->count() == 2) {
+        $primerEvento = $eventosHoy[0];
+        $segundoEvento = $eventosHoy[1];
+
+        // Si el segundo evento es 'entrada_comedor', actualizarlo a 'salida'
+        if ($segundoEvento->tipo === 'entrada_comedor') {
+            $segundoEvento->tipo = 'salida';
+            $segundoEvento->descripcion = 'Salida automática (no usó comedor)';
+            $segundoEvento->save();
+
+            // Actualiza horas
+            $this->actualizarHorasPracticante($codigo, $fechaHoy);
+
+            return response()->json([
+                'success' => true,
+                'message' => '¡Salida registrada! Que tengas buen día.',
+                'tipo_registrado' => 'salida'
+            ]);
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => $mensajes[$siguiente],
+        'tipo_registrado' => $siguiente
+    ]);
+}
+
     private function actualizarHorasPracticante($codigo, $fecha)
     {
         // 1. Obtener eventos del día ordenados cronológicamente

@@ -23,6 +23,7 @@ Route::get('/bitacora', [BitacoraController::class, 'index'])->name('bitacora.in
 Route::prefix('bitacora')->group(function () {
     Route::get('/', [BitacoraController::class, 'index'])->name('bitacora.index');
     Route::post('/registrar', [BitacoraController::class, 'registrarEvento'])->name('bitacora.registrar');
+    Route::post('/registrar-automático', [BitacoraController::class, 'registrarEventoAutomatico'])->name('bitacora.registrar.automatico');
 });
 
 // Ruta para consulta de horas
@@ -95,11 +96,17 @@ Route::get('/administradores', [AsesorController::class, 'listaAdministradores']
 Route::get('/administradores/{id}/editar', [AsesorController::class, 'edit'])->name('administradores.edit');
 Route::put('/administradores/{id}', [AsesorController::class, 'update'])->name('administradores.update');
 
+Route::get('/asesor/practicantes/{id}', [AsesorController::class, 'show'])->name('asesor.practicantes.show');
+
 // Rutas para asesores
 Route::prefix('asesor')->group(function () {
     Route::get('/practicantes', [AsesorController::class, 'index'])->name('asesor.practicantes.index');
     Route::get('/practicantes/{id}', [AsesorController::class, 'detalles_practicante'])->name('asesor.practicantes.show');
-    Route::get('/practicantes/{id}/evaluaciones', [AsesorController::class, 'evaluaciones_practicante'])->name('asesor.practicantes.evaluaciones');
-    Route::get('/practicantes/{id}/evaluaciones/crear', [AsesorController::class, 'crear_evaluación'])->name('asesor.practicantes.evaluaciones.create');
+    
+    // Rutas para evaluaciones
+    Route::prefix('/practicantes/{id}')->group(function () {
+        Route::get('/evaluaciones', [AsesorController::class, 'evaluaciones_practicante'])->name('asesor.practicantes.evaluaciones');
+        Route::get('/evaluaciones/crear', [AsesorController::class, 'crear_evaluacion'])->name('asesor.practicantes.evaluaciones.create');
+        Route::post('/evaluaciones', [AsesorController::class, 'store_evaluacion'])->name('asesor.practicantes.evaluaciones.store');
+    });
 });
-

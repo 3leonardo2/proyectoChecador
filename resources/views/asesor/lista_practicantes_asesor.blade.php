@@ -39,19 +39,6 @@
                         <input type="text" id="filterCodigo">
                     </div>
                     <div class="filter-group">
-                        <label for="filterArea">Área:</label>
-                        <select id="filterArea">
-                            <option value="">Todas</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Gastronomía">Gastronomía</option>
-                            <option value="Panadería">Panadería</option>
-                            <option value="Concierge">Concierge</option>
-                            <option value="Ventas">Ventas</option>
-                            <option value="LLamadas">Llamadas</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
                         <label for="filterEscuela">Escuela o institución:</label>
                         <input type="text" id="filterEscuela">
                     </div>
@@ -105,7 +92,7 @@
                             </td>
                             <td>
                                 @if (isset($practicante->id_practicante))
-                                    <a href="{{ route('practicantes.show', $practicante->id_practicante) }}"
+                                    <a href="{{ route('asesor.practicantes.show', $practicante->id_practicante) }}"
                                         class="admin-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>

@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de practicante</title>
     <link rel="stylesheet" href="{{ asset('css/detailsprac.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
     <div class="header">
-        <a href="/practicantes" class="back-button">
+        <a href="/asesor/practicantes" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Detalles de practicante</h1>
-        @include('partials.detalles_modal')
     </div>
     <div class="main-container">
         <div class="practicante-info-wrapper">
@@ -33,8 +33,10 @@
 
                     </div>
                     <div class="practicante-codigo">Código: {{ $practicante->codigo }}</div>
+                </div>
             </div>
-            <a href="{{ route('evaluaciones.index', $practicante->id_practicante) }}" class="revision-button">
+            <a href="{{ route('asesor.practicantes.evaluaciones', $practicante->id_practicante) }}"
+                class="revision-button">
                 <i class="fa-solid fa-ranking-star"></i> Ver revisiones
             </a>
             <div class="practicante-scrollable-content">
@@ -137,7 +139,6 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))

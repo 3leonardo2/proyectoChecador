@@ -374,3 +374,20 @@ a{
         transform: translateY(-20px);
     }
 }
+
+body.asesor-view .edit-button,
+body.asesor-view .credential-button,
+body.asesor-view .reporte-button {
+    display: none;
+}
+
+body.asesor-view .revision-button {
+    right: 20px; /* Ajustar posición cuando faltan otros botones */
+}
+.asesor-button {
+    position: relative !important;
+    margin-top: 20px !important;
+    right: auto !important;
+    top: auto !important;
+    width: 100%;
+}

@@ -13,13 +13,10 @@
 
 <body>
     <div class="header">
-        <a href="{{ route('practicantes.show', $practicante->id_practicante) }}" class="back-button">
+        <a href="{{ route('asesor.practicantes.show', $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Lista de revisiones</h1>
-        <button class="menu-button" id="menuButton">
-            <i class="fa-solid fa-bars"></i>
-        </button>
     </div>
     @include('partials.menu_modal')
 
@@ -38,7 +35,7 @@
                 </div>
                 <p class="practicante-name">{{ $practicante->nombre }} {{ $practicante->apellidos }}</p>
                 <p class="practicante-area">{{ $practicante->area_asignada }}</p>
-                <a href="{{ route('evaluaciones.create', $practicante->id_practicante) }}"
+                <a href="{{ route('asesor.practicantes.evaluaciones.create', $practicante->id_practicante) }}"
                     class="add-review-button">Añadir revisión</a>
             </div>
 
