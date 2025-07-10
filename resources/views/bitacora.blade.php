@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitácora de Practicantes</title>
@@ -95,7 +96,7 @@
             @endif
         </div>
         <div style="text-align: right;">
-            <a href="/consulta_horas" type="button" class="btn btn-custom2 rounded-pill py-2 px-3">
+            <a href="{{ route('consulta_horas') }}" type="button" class="btn btn-custom2 rounded-pill py-2 px-3">
                 Consulta tus horas
             </a>
         </div>

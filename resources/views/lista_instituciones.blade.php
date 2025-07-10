@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Instituciones</title>
@@ -93,7 +94,7 @@
             toggleSpan.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Cargando...`;
 
             // Obtener carreras via AJAX
-            fetch(`/instituciones/${idInstitucion}/carreras`)
+            fetch(`{{ route('instituciones.carreras', ['id_institucion' => '__ID__']) }}`.replace('__ID__', idInstitucion))
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error en la respuesta del servidor');
