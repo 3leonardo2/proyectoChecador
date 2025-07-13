@@ -80,19 +80,4 @@
                 carrerasContainer.appendChild(newCareerBlock);
                 updateCareerIndices(); // Re-indexar después de añadir
             });
-
-            // Configurar botón de eliminar para el primer bloque (si decides añadirlo y que sea eliminable)
-            // Si quieres que el primer bloque también pueda ser eliminado (quizás no es deseable si siempre debe haber al menos una sección de carrera)
-            // const firstRemoveButton = carrerasContainer.firstElementChild.querySelector('.remove-career-button');
-            // if (firstRemoveButton) {
-            //     // firstRemoveButton.style.display = 'inline-block'; // Descomenta si quieres que el primer bloque tenga botón de eliminar visible
-            //     firstRemoveButton.addEventListener('click', function() {
-            //         if (carrerasContainer.querySelectorAll('.carrera-block').length > 1) { // Solo permite eliminar si hay más de uno
-            //             carrerasContainer.firstElementChild.remove();
-            //             updateCareerIndices();
-            //         } else {
-            //             alert('Debe haber al menos una sección de carrera.');
-            //         }
-            //     });
-            // }
         });

@@ -3,6 +3,7 @@
 /* Estilos para el contenedor principal */
 .bitacora-container {
     width: 100%;
+    
 }
 
 .card {
@@ -21,7 +22,7 @@
 }
 
 .imagen-container {
-    width: 260px;
+    width: 400px;
     height: 300px;
     overflow: visible;
     grid-column: 2;
@@ -46,8 +47,17 @@
 .carousel-inner {
     height: 100%;
 }
+.carousel-caption {
+    color:black;
+}
 
 .carousel-item {
+    height: 100%;
+    text-align: center;
+    padding-bottom: 30%;
+}
+
+.carousel-item img {
     height: 100%;
     text-align: center;
 }

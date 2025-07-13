@@ -7,14 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Practicantes</title>
     <link rel="stylesheet" href="{{ asset('css/listadoprac.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
     <link rel="stylesheet" href="{{ asset('css/lista_practicantes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+    @include('partials.menu_modal_asesor')
     <div class="header">
+        <button class="menu-button" id="menuButton">
+            <i class="fa-solid fa-bars"></i>
+        </button>
         <h1>Practicantes</h1>
+
     </div>
+
     <div class="main-container">
         @if (session('success'))
             <div class="alert alert-success">
@@ -70,7 +77,7 @@
                         <th>Área</th>
                         <th>Escuela o institución</th>
                         <th>ESTADO</th>
-                        <th>Acciones</th>
+                        <th>Comentarios</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,13 +100,12 @@
                             </td>
                             <td>
                                 @if (isset($practicante->id_practicante))
-                                    <a href="{{ route('asesor.practicantes.show', $practicante->id_practicante) }}"
+                                    <a href="{{ route('asesor.practicantes.evaluaciones', $practicante->id_practicante) }}"
                                         class="admin-button">
-                                        <i class="fa-solid fa-user-gear"></i>
+                                        <i class="fa-solid fa-ranking-star"></i>
                                     </a>
                                 @endif
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -107,7 +113,8 @@
         </div>
     </div>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
-    <script src="{{ asset('js/lista_prac.js') }}"></script>
+
+    <script src="{{ asset('js/lista_prac_asesor.js') }}"></script>
 </body>
 
 </html>

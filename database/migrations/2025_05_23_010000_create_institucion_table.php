@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('instituciones', function (Blueprint $table) {
             $table->id('id_institucion'); // Usar id() para una clave primaria autoincremental
             $table->string('nombre', 255)->unique(); // El nombre de la institución debe ser único
+            $table->string('acronimo', 255)->unique();
             $table->string('direccion', 255)->nullable();
             $table->string('telefono', 20)->nullable(); // Aumentado por si usan ladas internacionales
             $table->string('correo', 255)->unique()->nullable();

@@ -26,7 +26,7 @@ Route::get('/practicante/{codigo}', function ($codigo) {
             'registros' => Bitacora::where('clave_prac', $codigo)
                           ->orderBy('fecha', 'desc')
                           ->orderBy('hora', 'desc')
-                          ->limit(50)
+                          ->limit(200) 
                           ->get()
         ]);
 

@@ -15,7 +15,7 @@
         <a href="{{ route('asesor.practicantes.evaluaciones', $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h1>Revisión de practicante</h1>
+        <h1>Crear comentario</h1>
     </div>
 
     <div class="main-content-wrapper">
@@ -40,13 +40,13 @@
                     method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="nombre_asesor">Nombre de quién hará la revisión:</label>
+                        <label for="nombre_asesor">Nombre de quién escribe:</label>
                         <input type="text" id="nombre_asesor" name="nombre_asesor" value="{{ $asesor->nombre }}"
                             required>
                     </div>
 
                     <div class="form-group">
-                        <label for="nombre_revision">Nombre de revisión:</label>
+                        <label for="nombre_revision">Titulo de comentario:</label>
                         <input type="text" id="nombre_revision" name="nombre_revision"
                             placeholder="Escriba el nombre/tipo de su revisión..." required>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="form-group">
                         <label for="descripcion_revision">Agregue una descripción:</label>
                         <textarea id="descripcion_revision" name="descripcion_revision"
-                            placeholder="Haga click aquí para empezar a redactar su revisión..." required></textarea>
+                            placeholder="Haga click aquí para empezar a escribir..." required></textarea>
                     </div>
 
                     <div class="form-group">

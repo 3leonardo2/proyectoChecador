@@ -15,6 +15,7 @@ class Institucion extends Model
 
     protected $fillable = [
         'nombre',
+        'acronimo',
         'direccion',
         'telefono',
         'correo',

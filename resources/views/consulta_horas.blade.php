@@ -8,11 +8,51 @@
     <title>Consulta tus horas registradas</title>
     <link rel="stylesheet" href="{{ asset('css/consulta_horas.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .date-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .date-filter input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .date-filter button {
+            padding: 8px 15px;
+            background-color: #d3bc68;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .date-filter button:hover {
+            background-color: #c0a855;
+        }
+
+        .no-event {
+            color: #999;
+            font-style: italic;
+        }
+
+        .date-cell {
+            font-weight: bold;
+            background-color: #f8f8f8;
+        }
+    </style>
 </head>
 
 <body>
     <div class="header">
-    <a href="{{ route('bitacora.index') }}" class="back-button">
+        <a href="{{ route('bitacora.index') }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
         <h1>Consulta tus horas registradas</h1>
@@ -42,15 +82,21 @@
                 <p>Porcentaje Completado: <span id="porcentajeCompletado"></span></p>
             </div>
         </div>
-
         <div class="right-panel">
+            <div class="date-filter" id="dateFilter" style="display: none;">
+                <input type="text" id="dateRangePicker" placeholder="Selecciona rango de fechas" readonly>
+                <button id="filterBtn">Filtrar</button>
+                <button id="resetFilterBtn">Mostrar todo</button>
+            </div>
             <div class="table-container">
                 <table id="registrosTable">
                     <thead>
                         <tr>
-                            <th>Fecha <i class="fa-solid fa-caret-down sort-icon"></i></th>
-                            <th>Tipo</th>
-                            <th>Hora</th>
+                            <th>Fecha</th>
+                            <th>Entrada</th>
+                            <th>Entrada Comedor</th>
+                            <th>Salida Comedor</th>
+                            <th>Salida</th>
                         </tr>
                     </thead>
                     <tbody id="registrosBody">
@@ -61,167 +107,12 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('consultarBtn').addEventListener('click', function() {
-            const codigo = document.getElementById('codigoInput').value.trim();
-
-            if (!codigo) {
-                showError('Por favor ingresa tu código');
-                return;
-            }
-
-            fetchPracticanteData(codigo);
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            // Ocultar el indicador de carga al iniciar
-            document.getElementById('loadingIndicator').style.display = 'none';
-
-            document.getElementById('consultarBtn').addEventListener('click', function() {
-                const codigo = document.getElementById('codigoInput').value.trim();
-
-                if (!codigo) {
-                    showError('Por favor ingresa tu código');
-                    return;
-                }
-
-                // Mostrar solo cuando se inicia la búsqueda
-                document.getElementById('loadingIndicator').style.display = 'block';
-                document.getElementById('practicanteInfo').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'none';
-
-                fetchPracticanteData(codigo);
-            });
-        });
-
-        function fetchPracticanteData(codigo) {
-            document.getElementById('loadingIndicator').style.display = 'block';
-            document.getElementById('practicanteInfo').style.display = 'none';
-            document.getElementById('errorMessage').style.display = 'none';
-
-            fetch(`/api/practicante/${codigo}`)
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            throw new Error(err.message || 'Error del servidor');
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (!data.success) {
-                        throw new Error(data.error || 'Datos incorrectos recibidos');
-                    }
-
-                    // Debug: muestra los datos en consola
-                    console.log('Datos recibidos:', data);
-
-                    // Verifica que los datos del practicante existen
-                    if (!data.practicante) {
-                        throw new Error('No se encontraron datos del practicante');
-                    }
-
-                    displayPracticanteData(data.practicante);
-                    displayRegistros(data.registros);
-                })
-                .catch(error => {
-                    console.error('Error al obtener datos:', error);
-                    showError(error.message || 'Error al cargar los datos');
-                })
-                .finally(() => {
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                });
-        }
-
-        function displayPracticanteData(practicante) {
-            console.log('Datos del practicante recibidos:', practicante);
-
-            // Actualiza estos campos según la respuesta de la API
-            document.getElementById('practicanteNombre').textContent = practicante.nombre_completo || 'No disponible';
-            document.getElementById('practicanteInstitucion').textContent = practicante.institucion || 'No especificada';
-            document.getElementById('practicanteCarrera').textContent = practicante.carrera || 'No especificada';
-            document.getElementById('practicantePeriodo').textContent =
-                `${formatDate(practicante.fecha_inicio)} al ${formatDate(practicante.fecha_final)}`;
-
-            // Cambiado de horas_totales a horas_requeridas
-            document.getElementById('horasTotales').textContent = practicante.horas_requeridas || 0;
-            document.getElementById('horasRegistradas').textContent = practicante.horas_registradas || 0;
-
-            const horasFaltantes = (practicante.horas_requeridas || 0) - (practicante.horas_registradas || 0);
-            document.getElementById('horasFaltantes').textContent = horasFaltantes > 0 ? horasFaltantes : 0;
-
-            const porcentaje = practicante.horas_requeridas > 0 ?
-                Math.round(((practicante.horas_registradas || 0) / practicante.horas_requeridas) * 100) : 0;
-            document.getElementById('porcentajeCompletado').textContent = `${porcentaje}%`;
-
-            // Muestra el contenedor
-            document.getElementById('practicanteInfo').style.display = 'block';
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return 'No definido';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-MX', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-
-        function displayRegistros(registros) {
-            const tbody = document.getElementById('registrosBody');
-            tbody.innerHTML = '';
-
-            if (registros.length === 0) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = '<td colspan="3" style="text-align: center;">No hay registros encontrados</td>';
-                tbody.appendChild(tr);
-                return;
-            }
-
-            registros.forEach((registro, index) => {
-                const tr = document.createElement('tr');
-                if (index % 2 === 0) {
-                    tr.classList.add('highlighted-row');
-                }
-
-                // Formatear fecha
-                const fecha = new Date(registro.fecha);
-                const fechaFormateada = fecha.toLocaleDateString('es-MX');
-
-                // Formatear hora
-                const hora = new Date(`1970-01-01T${registro.hora}`);
-                const horaFormateada = hora.toLocaleTimeString('es-MX', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                }).replace(/^0/, '');
-
-                tr.innerHTML = `
-                    <td>${fechaFormateada}</td>
-                    <td>${formatTipoEvento(registro.tipo)}</td>
-                    <td>${horaFormateada}</td>
-                `;
-
-                tbody.appendChild(tr);
-            });
-        }
-
-        function formatTipoEvento(tipo) {
-            const tipos = {
-                'entrada': 'Entrada',
-                'salida': 'Salida',
-                'entrada_comedor': 'Entrada Comedor',
-                'salida_comedor': 'Salida Comedor'
-            };
-            return tipos[tipo] || tipo;
-        }
-
-        function showError(message) {
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-            document.getElementById('practicanteInfo').style.display = 'none';
-        }
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script src="{{ asset('js/consultar_horas.js') }}">
+        let allRegistros = [];
+        let currentPracticanteCodigo = '';
+        let datePicker = null;
     </script>
 </body>
 

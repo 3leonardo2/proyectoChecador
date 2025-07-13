@@ -9,6 +9,7 @@ use App\Models\Evaluacion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AsesorController extends Controller
 {
@@ -24,30 +25,77 @@ class AsesorController extends Controller
 
     public function create()
     {
-        return view('registrar_admin');
+        $departamentos = [
+            'Recursos Humanos',
+            'Sistemas',
+            'Administración',
+            'Dirección',
+            'Cocina'
+        ];
+
+        return view('registrar_admin', compact('departamentos'));
     }
 
-    public function store(\Illuminate\Http\Request $request)
+    public function store(Request $request)
     {
-        // Validar los datos
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|unique:administradores,correo',
-            'contrasena' => 'required|string|min:8|confirmed',
-            'departamento' => 'required|string|max:255',
-            'rol' => 'required|in:rh,asesor',
-        ]);
+        \Log::info('Iniciando registro de administrador', ['request' => $request->all()]);
 
-        // Crear el nuevo administrador
-        \App\Models\Administrador::create([
-            'nombre' => $validated['nombre'],
-            'correo' => $validated['correo'],
-            'contrasena' => \Illuminate\Support\Facades\Hash::make($validated['contrasena']),
-            'departamento' => $validated['departamento'],
-            'rol' => $validated['rol'],
-        ]);
+        try {
+            // Validación común para ambos tipos
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'departamento' => 'required|string|max:255',
+                'rol' => 'required|in:rh,asesor',
+                'tipo_registro' => 'required|in:manual,automatico'
+            ]);
 
-        return redirect()->route('administradores.create')->with('success', 'Administrador registrado correctamente.');
+            // Validación condicional para registro manual
+            if ($validated['tipo_registro'] === 'manual') {
+                $request->validate([
+                    'correo' => 'required|email|unique:administradores,correo',
+                    'contrasena' => 'required|string|min:8|confirmed'
+                ]);
+                $correo = $request->correo;
+                $contrasena = $request->contrasena;
+            } else {
+                // Generar credenciales automáticas
+                $correo = strtolower(str_replace(' ', '', $validated['departamento'])) . '_asesor@empresa.com';
+                $contrasena = Str::random(12);
+            }
+
+            // Crear el administrador
+            $admin = Administrador::create([
+                'nombre' => $validated['nombre'],
+                'correo' => $correo,
+                'contrasena' => Hash::make($contrasena),
+                'departamento' => $validated['departamento'],
+                'rol' => $validated['rol'],
+                'es_generico' => ($validated['tipo_registro'] === 'automatico')
+            ]);
+
+            // Preparar mensaje de éxito
+            $message = $validated['tipo_registro'] === 'automatico'
+                ? 'Administrador genérico creado correctamente.'
+                : 'Administrador registrado correctamente.';
+
+            // Preparar datos para mostrar
+            $response = redirect()->route('admin.create')->with('success', $message);
+
+            if ($validated['tipo_registro'] === 'automatico') {
+                $response->with('credenciales', [
+                    'correo' => $correo,
+                    'contrasena' => $contrasena
+                ]);
+            }
+
+            return $response;
+
+        } catch (\Exception $e) {
+            \Log::error('Error en registro: ' . $e->getMessage());
+            return redirect()->route('admin.create')
+                ->with('error', 'Error al registrar: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function show($id)

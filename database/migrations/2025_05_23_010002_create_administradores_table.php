@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('contrasena', 255)->notNullable(); // Almacenar hash de contraseña
             $table->string('departamento', 100)->nullable();
             $table->enum('rol', ['rh', 'asesor'])->notNullable();
+            $table->boolean('es_generico')->default(false);
             // $table->timestamps();
         });
     }

@@ -23,8 +23,11 @@ class InstitucionController extends Controller
      */
     public function store(Request $request)
     {
+        \Log::info('Datos recibidos:', $request->all()); 
+
         $validatedData = $request->validate([
             'nombre_ins' => 'required|string|max:255|unique:instituciones,nombre',
+            'acronimo_ins' => 'required|string|max:255|unique:instituciones,acronimo',
             'direccion_ins' => 'required|string|max:255',
             'telefono_ins' => 'required|string|max:20',
             'correo_ins' => 'email|max:255|unique:instituciones,correo',
@@ -36,10 +39,13 @@ class InstitucionController extends Controller
         try {
             $institucion = Institucion::create([
                 'nombre' => $request->nombre_ins,
+                'acronimo' => $request->acronimo_ins,
                 'direccion' => $request->direccion_ins,
                 'telefono' => $request->telefono_ins,
                 'correo' => $request->correo_ins,
             ]);
+
+            \Log::info('Datos validados:', $validatedData); 
 
             if ($request->has('carreras')) {
                 foreach ($request->carreras as $carreraData) {
@@ -70,6 +76,7 @@ class InstitucionController extends Controller
                 ->with('success', '¡Institución registrada exitosamente!');
 
         } catch (\Exception $e) {
+            
             DB::rollBack();
             Log::error('Error al registrar institución: ' . $e->getMessage());
 
@@ -79,7 +86,7 @@ class InstitucionController extends Controller
                     'message' => 'Ocurrió un error al guardar la institución: ' . $e->getMessage()
                 ], 500);
             }
-
+            \Log::error('Error general:', ['message' => $e->getMessage(), 'trace' => $e->getTrace()]);
             return back()->withErrors(['error' => 'Ocurrió un error al guardar la institución.'])->withInput();
         }
     }

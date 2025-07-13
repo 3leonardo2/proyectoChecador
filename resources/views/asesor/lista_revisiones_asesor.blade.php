@@ -14,10 +14,10 @@
 
 <body>
     <div class="header">
-        <a href="{{ route('asesor.practicantes.show', $practicante->id_practicante) }}" class="back-button">
+        <a href="{{ route('asesor.practicantes.index', $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h1>Lista de revisiones</h1>
+        <h1>Lista de comentarios</h1>
     </div>
     @include('partials.menu_modal')
 
@@ -47,7 +47,7 @@
                             <tr>
                                 <th>Nº</th>
                                 <th>Nombre</th>
-                                <th>Descripción</th>
+                                <th>Comentarios</th>
                                 <th>Evaluación general</th>
                                 <th>Nombre Evaluador</th>
                                 <th>Fecha</th>

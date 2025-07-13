@@ -23,6 +23,13 @@
             {{ $errors->first() }}
         </div>
     @endif
+    @if (session('generic_warning'))
+        <div id="generic-warning-alert"
+            class="alert alert-warning text-center position-fixed top-0 start-50 translate-middle-x mt-3"
+            style="z-index: 9999; min-width: 350px;">
+            {{ session('generic_warning') }}
+        </div>
+    @endif
     <div class="container-fluid px-0 flex-grow-1 d-flex align-items-center ">
         <div class="card shadow w-100">
             <div class="card-body py-5">

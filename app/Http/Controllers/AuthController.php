@@ -31,6 +31,16 @@ class AuthController extends Controller
             'contrasena' => 'required'
         ]);
 
+        $admin = Administrador::where('correo', $credentials['correo'])->first();
+
+        if ($admin && $admin->es_generico) {
+            // Mostrar alerta de seguridad para usuarios genéricos
+            return back()->with(
+                'generic_warning',
+                'Está utilizando una cuenta genérica.'
+            );
+        }
+
         if (
             Auth::guard('admin')->attempt([
                 'correo' => $credentials['correo'],

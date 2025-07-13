@@ -11,10 +11,11 @@
             <i class="fa-solid fa-clipboard-list menu-icon"></i>
         </a>
         <div class="menu-divider"></div>
-        <a href="{{ route('administradores.create') }}" class="menu-item">
+        <a href="{{ route('admin.create') }}" class="menu-item">
             <span class="item-text">Registrar Administrador</span>
             <i class="fa-solid fa-gear menu-icon"></i>
         </a>
+        <div class="menu-divider"></div>
         <a href="{{ route('administradores.lista') }}" class="menu-item">
             <span class="item-text">Lista de asesores</span>
             <i class="fa-solid fa-gear menu-icon"></i>
@@ -35,7 +36,7 @@
             <i class="fa-solid fa-triangle-exclamation menu-icon"></i>
         </a>
         <div class="menu-divider"></div>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        <form id="logout-form" action="{{ url('/logout') }}"method="POST" style="display: none;">
             @csrf
         </form>
         <a href="#" class="menu-item"
@@ -45,3 +46,4 @@
         </a>
     </div>
 </div>
+|

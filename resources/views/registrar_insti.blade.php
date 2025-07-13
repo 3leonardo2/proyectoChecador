@@ -24,7 +24,7 @@
     </div>
 
     <div class="main-container">
-        <form action="{{ route('instituciones.store') }}" method="POST" class="registrar_insti-wrapper"
+        <form action="{{ url('/instituciones/registrar_insti') }}" method="POST" class="registrar_insti-wrapper"
             enctype="multipart/form-data">
             @csrf
             <div class="institucion-scrollable-content">
@@ -32,6 +32,10 @@
                 <div class="form-group">
                     <label for="nombre_ins">Nombre*:</label>
                     <input type="text" id="nombre_ins" name="nombre_ins" placeholder="Nombre..." required>
+                </div>
+                <div class="form-group">
+                    <label for="acronimo_ins">Acrónimo (Abreviación)*:</label>
+                    <input type="text" id="acronimo_ins" name="acronimo_ins" placeholder="Acrónimo..." required>
                 </div>
                 <div class="form-group">
                     <label for="direccion_ins">Direción*:</label>

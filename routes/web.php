@@ -35,8 +35,6 @@ Route::get('/consulta_horas', function () {
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'showLoginForm')->name('login');
     Route::post('/login', 'login');
-    Route::get('/registro', 'showRegistrationForm')->name('register');
-    Route::post('/registro', 'register')->name('register.submit');
     Route::post('/logout', 'logout')->name('logout');
 });
 
@@ -89,8 +87,8 @@ Route::get('/practicantes/{practicante}/reporte', [PracticanteController::class,
     ->name('practicantes.reporte');
 
 
-Route::get('/administradores/registrar', [AsesorController::class, 'create'])->name('administradores.create');
-Route::post('/administradores/registrar', [AsesorController::class, 'store'])->name('administradores.store');
+Route::get('/admin/registrar', [AsesorController::class, 'create'])->name('admin.create');
+Route::post('/admin/registrar', [AsesorController::class, 'store'])->name('admin.store');
 Route::get('/administradores/{id}/editar', [AsesorController::class, 'edit'])->name('administradores.edit');
 Route::get('/administradores', [AsesorController::class, 'listaAdministradores'])->name('administradores.lista');
 Route::get('/administradores/{id}/editar', [AsesorController::class, 'edit'])->name('administradores.edit');
