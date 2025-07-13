@@ -18,7 +18,7 @@
         <div class="menu-divider"></div>
         <a href="{{ route('administradores.lista') }}" class="menu-item">
             <span class="item-text">Lista de asesores</span>
-            <i class="fa-solid fa-gear menu-icon"></i>
+            <i class="fa-solid fa-user-tie"></i>
         </a>
         <div class="menu-divider"></div>
         <a href="{{ route('instituciones.create') }}" class="menu-item">

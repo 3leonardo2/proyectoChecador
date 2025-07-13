@@ -28,19 +28,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 6cm;
-            height: 9cm;
+            width: 4.3cm;
+            /* 5.3cm */
+            height: 6.6cm;
+            /* 7.6cm */
             padding: 12pt;
             border: 2pt solid black;
         }
 
         .logo-frente {
-            width: 120pt;
-            margin-bottom: 10pt;
+            width: 110pt;
+            margin-bottom: 2pt;
         }
 
         .nombre-practicante {
-            font-size: 13pt;
+            font-size: 8pt;
             font-weight: bold;
             letter-spacing: 1pt;
             margin: 5pt 0;
@@ -50,8 +52,8 @@
 
         .trainee {
             text-align: center;
-            font:bold;
-            font-size: 11pt;
+            font: bold;
+            font-size: 8pt;
             letter-spacing: 1pt;
             margin-bottom: 10pt;
             font-weight: 300;
@@ -59,22 +61,28 @@
         }
 
         .foto-espacio {
-            width: 2.2cm;
-            height: 3.2cm;
+            width: 2.5cm;
+            height: 3.3cm;
             background-color: #d1d2d4;
             border: 2pt solid white;
-            border-radius: 8pt;
+            border-radius: 4pt;
             margin: 0 auto 8pt auto;
+            overflow: hidden;
+            /* Esto evita que la imagen se salga del contenedor */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
         .footer-texto {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
+            font-size: 7pt;
             font: bold;
             text-align: center;
             margin-top: auto;
             color: rgb(255, 255, 255);
             line-height: 1.2;
-            padding-top: 37px;
+            padding-top: 5px;
         }
 
         /* ESTILOS PARA EL DORSO */
@@ -84,22 +92,26 @@
             border-left: 1pt dashed #ccc;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            width: 6cm;
+            justufy-content: center;
+            width: 4.3cm;
+            /* 5.3cm */
+            height: 6.6cm;
+            /* 7.6cm */
             padding: 12pt;
-            height: 9cm;
             border: 2pt solid black;
         }
 
         .logo-dorso {
-            width: 120pt;
+            width: 110pt;
             margin: 0 auto 10pt auto;
         }
 
         .info-dorso {
-            font-size: 10pt;
-            margin: 0 0 8pt 0;
+            font-size: 8pt;
             line-height: 1.3;
+            margin: 5pt 0;
+            text-align: center;
+            text-transform: uppercase;
         }
 
         .info-dorso strong {
@@ -107,27 +119,27 @@
         }
 
         .footer-info {
-            font-size: 9pt;
+            font-size: 7pt;
             line-height: 1.2;
             border-top: 1pt solid #ddd;
             padding-top: 8pt;
             margin-top: auto;
             color: black;
+            text-align: center;
         }
 
         .barcode-container {
             text-align: center;
-            margin-top: 10pt;
-            padding-bottom: 5pt;
+            padding-top: 6pt;
         }
 
         .barcode-container img {
-            height: 28pt;
+            height: 19pt;
             width: auto;
         }
 
         .clave-texto {
-            font-size: 8pt;
+            font-size: 6pt;
             letter-spacing: 1pt;
             margin-top: 2pt;
             color: black;
@@ -141,7 +153,12 @@
         <img src="{{ $logoFrentePath }}" alt="Logo" class="logo-frente">
         <div class="nombre-practicante">{{ $nombreCompleto }}</div>
         <div class="trainee">TRAINEE</div>
-        <div class="foto-espacio"></div>
+        <div class="foto-espacio">
+            @if ($imagen)
+                <img src="data:image/jpeg;base64,{{ $imagen }}" alt="Foto del practicante"
+                    style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+            @endif
+        </div>
         <div class="footer-texto">En grupo Presidente, nuestra pasión será su mejor experiencia</div>
     </div>
 

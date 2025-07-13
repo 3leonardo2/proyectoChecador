@@ -108,6 +108,6 @@
         </div>
     </div>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
-    {{-- Puedes reutilizar tu js/lista_prac.js para filtros y búsqueda, solo cambia los selectores si es necesario --}}
+    <script src="{{ asset('js/lista_asesor.js') }}"></script>
 </body>
 </html>

@@ -282,11 +282,16 @@ class PracticanteController extends Controller
 
     public function generarCredencial(Practicante $practicante)
     {
+        $imagenPath = $practicante->profile_image
+            ? storage_path('app/public/' . $practicante->profile_image)
+            : null;
+        $imagenValida = ($imagenPath && file_exists($imagenPath));
         $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
         $area = $practicante->area_asignada;
         $clave = $practicante->codigo;
 
-        $logoFrentePath = public_path('images/credencial/logo_presidente3.webp');
+
+        $logoFrentePath = public_path('images/credencial/logo_presidente3.png');
         $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
 
         $generator = new BarcodeGeneratorPNG();
@@ -304,6 +309,7 @@ class PracticanteController extends Controller
             'logoFrentePath' => $logoFrentePath,
             'logoDorsoPath' => $logoDorsoPath,
             'barcodeImage' => $barcodeImage,
+            'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
         ];
 
         $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
