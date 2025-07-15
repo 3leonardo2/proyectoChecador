@@ -32,8 +32,10 @@
                 <div class="practicante-profile-section">
                     <div class="profile-image-container"></div>
                     <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
-                        accept="image/*" style="display: none;">
+                        accept="image/jpeg, image/png, image/jpg, image/gif"
+                    onchange="validateImage(this)">
                     <label for="add-image-input" class="add-image-button">Añadir imagen...</label>
+                    <small class="text-muted">Recomendado: imagen cuadrada (300x300 px, JPG o PNG, 2MB)</small>
                 </div>
             </div>
 
@@ -205,6 +207,45 @@
     <script src="{{ asset('js/registrar_prac.js') }}"></script>
     <script src="{{ asset('js/getInfoCarrera.js') }}"></script>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
+
+    <script>
+document.getElementById('add-image-input').addEventListener('change', function(event) {
+    const previewContainer = document.querySelector('.profile-image-container');
+    const file = event.target.files[0];
+    
+    if (file && file.type.match('image.*')) {
+        // Validar tamaño
+        if (file.size > 2 * 1024 * 1024) {
+            alert('La imagen no debe exceder los 2MB');
+            this.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Crear elemento img
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'profile-image-preview';
+            img.alt = 'Vista previa';
+            
+            // Limpiar contenedor y añadir nueva imagen
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(img);
+            
+            // Verificar relación de aspecto
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                if (Math.abs(this.width - this.height) > this.width * 0.1) { // 10% de tolerancia
+                    alert('La imagen no es perfectamente cuadrada. Se ajustará para mostrarse correctamente.');
+                }
+            };
+            tempImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 </body>
 
 </html>
