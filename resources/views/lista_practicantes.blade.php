@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="{{ asset('css/lista_practicantes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
+    <style>
+        #monthFilterGroup {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+    </style>
 </head>
 
 <body>
@@ -49,13 +56,17 @@
                         <label for="filterArea">Área:</label>
                         <select id="filterArea">
                             <option value="">Todas</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Gastronomía">Gastronomía</option>
-                            <option value="Panadería">Panadería</option>
-                            <option value="Concierge">Concierge</option>
-                            <option value="Ventas">Ventas</option>
-                            <option value="LLamadas">Llamadas</option>
+                        <option value="Contraloria">Contraloria</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="AyB">AyB</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Recepción">Recepción</option>
+                        <option value="Reservaciones">Reservaciones</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Ama de llaves">Ama de llaves</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -70,6 +81,29 @@
                             <option value="CONCLUIDO">CONCLUIDO</option>
                         </select>
                     </div>
+<div class="filter-group">
+    <label>
+        <input type="checkbox" id="filterProximos30"> Próximos 30 días
+    </label>
+</div>
+
+<div class="filter-group" id="monthFilterGroup">
+    <label for="filterMes">Seleccionar mes:</label>
+    <select id="filterMes">
+        <option value="1">Enero</option>
+        <option value="2">Febrero</option>
+        <option value="3">Marzo</option>
+        <option value="4">Abril</option>
+        <option value="5">Mayo</option>
+        <option value="6">Junio</option>
+        <option value="7">Julio</option>
+        <option value="8">Agosto</option>
+        <option value="9">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+    </select>
+</div>
                     <div class="filter-actions">
                         <button class="apply-filter-button">Aplicar Filtros</button>
                         <button class="clear-filter-button">Limpiar Filtros</button>
@@ -89,6 +123,7 @@
                         <th>Área</th>
                         <th>Escuela o institución</th>
                         <th>ESTADO</th>
+                        <th>Fecha Finalización</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -98,7 +133,8 @@
                             data-code="{{ $practicante->codigo }}" data-lastname="{{ $practicante->apellidos }}"
                             data-area="{{ $practicante->area_asignada }}"
                             data-school="{{ $practicante->institucion->nombre }}"
-                            data-estado="{{ $practicante->estado_practicas }}">
+                            data-estado="{{ $practicante->estado_practicas }}"
+                            data-fecha-fin="{{ $practicante->fecha_final }}">
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $practicante->codigo }}</td>
                             <td>{{ $practicante->nombre }}</td>
@@ -110,6 +146,7 @@
                                     {{ $practicante->estado_practicas }}
                                 </span>
                             </td>
+                            <td>{{ $practicante->fecha_final }}</td>
                             <td>
                                 @if (isset($practicante->id_practicante))
                                     <a href="{{ route('practicantes.show', parameters: $practicante->id_practicante) }}"
@@ -118,7 +155,6 @@
                                     </a>
                                 @endif
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>

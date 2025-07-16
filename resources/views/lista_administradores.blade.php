@@ -44,11 +44,17 @@
                         <label for="filterDepartamento">Departamento:</label>
                         <select id="filterDepartamento">
                             <option value="">Todos</option>
-                            <option value="Recursos Humanos">Recursos Humanos</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="Administración">Administración</option>
-                            <option value="Direccion">Dirección</option>
-                            <option value="Cocina">Cocina</option>
+                        <option value="Contraloria">Contraloria</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="AyB">Alimentos y Bebidas</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="RH"> Recursos Humanos</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Recepción">Recepción</option>
+                        <option value="Reservaciones">Reservaciones</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Ama de llaves">Ama de llaves</option>
                         </select>
                     </div>
                     <div class="filter-group">

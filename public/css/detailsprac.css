@@ -134,27 +134,17 @@ a{
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: hidden; /* Asegura que el contenido no se desborde */
     margin-bottom: 10px;
     background-color: #e0e0e0;
     position: relative;
 }
 
-
-.profile-image-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.profile-image-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Esto asegura que la imagen cubra el contenedor manteniendo su relación de aspecto */
+.profile-image {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    height: 100%; /* Ocupa toda la altura del contenedor */
+    object-fit: cover; /* Escala la imagen manteniendo la relación de aspecto y recortando si es necesario */
+    object-position: center; /* Centra la imagen en el contenedor */
     border-radius: 5px;
 }
 
@@ -165,6 +155,16 @@ a{
     position: absolute;
     text-align: center;
     width: 100%;
+}
+
+.default-avatar {
+    font-size: 150px; /* Tamaño del icono */
+    color: #999; /* Color del icono */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .add-image-button {

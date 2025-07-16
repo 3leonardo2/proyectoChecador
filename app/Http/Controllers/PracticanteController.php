@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Log; // Para logging
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Practicante; // Asegúrate de tener los modelos creados
@@ -11,16 +10,18 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use Illuminate\Support\Str; // Para usar funciones de string
 use Illuminate\Support\Facades\DB; // Para transacciones
+use Illuminate\Support\Facades\Log; // Para logging
 
 class PracticanteController extends Controller
 {
     public function index()
     {
         $practicantes = Practicante::with('institucion')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        ->orderBy('created_at', 'desc')
+        ->get(['id_practicante', 'codigo', 'nombre', 'apellidos', 'area_asignada', 
+              'institucion_id', 'estado_practicas', 'fecha_final']); // Asegúrate de incluir fecha_fin
 
-        return view('lista_practicantes', compact('practicantes'));
+    return view('lista_practicantes', compact('practicantes'));
     }
     /**
      * Muestra el formulario para crear un nuevo practicante.
@@ -38,45 +39,43 @@ class PracticanteController extends Controller
      * Almacena un nuevo practicante en la base de datos.
      * 
      */
-    public function store(Request $request)
+        public function store(Request $request)
     {
-        \Log::info('Iniciando registro de practicante', ['request' => $request->all()]);
-        // 1. Validar los datos (puedes añadir más reglas según necesites)
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellidos' => 'required|string|max:100',
-            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
-            'fecha_nacimiento' => 'required|date',
-            'institucion_nombre' => 'required|string|max:255',
-            'carrera_nombre' => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-            'email_personal' => 'nullable|email|unique:practicantes,email_personal',
-            'telefono_personal' => 'nullable|string|max:15',
-            'nombre_emergencia' => 'nullable|string|max:100',
-            'telefono_emergencia' => 'nullable|string|max:15',
-            'num_seguro' => 'nullable|string|max:20',
-            'email_institucional' => 'nullable|email',
-            'telefono_institucional' => 'nullable|string|max:20',
-            'area_asignada' => 'nullable|string|max:100',
-            'hora_entrada' => 'nullable|string|max:10',
-            'hora_salida' => 'nullable|string|max:10',
-            'horas_requeridas' => 'nullable|integer|min:0',
-            'horas_registradas' => 'nullable|integer|min:0',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        // Usar una transacción para asegurar la integridad de los datos
-        DB::beginTransaction();
+        Log::info('Iniciando registro de practicante', ['request' => $request->all()]);
+        
         try {
-            // 2. Gestionar Institución (Buscar o Crear)
-            // firstOrCreate buscará un registro con ese nombre, si no lo encuentra, lo creará.
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:100',
+                'apellidos' => 'required|string|max:100',
+                'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
+                'fecha_nacimiento' => 'required|date',
+                'institucion_nombre' => 'required|string|max:255',
+                'carrera_nombre' => 'required|string|max:255',
+                'fecha_inicio' => 'required|date',
+                'email_personal' => 'required|email|unique:practicantes,email_personal',
+                'telefono_personal' => 'nullable|string|max:15',
+                'nombre_emergencia' => 'nullable|string|max:100',
+                'telefono_emergencia' => 'nullable|string|max:15',
+                'num_seguro' => 'nullable|string|max:20',
+                'email_institucional' => 'nullable|email',
+                'telefono_institucional' => 'nullable|string|max:20',
+                'area_asignada' => 'nullable|string|max:100',
+                'hora_entrada' => 'nullable|string|max:10',
+                'hora_salida' => 'nullable|string|max:10',
+                'horas_requeridas' => 'nullable|integer|min:0',
+                'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            Log::info('Validación exitosa', $validated);
+            
+            DB::beginTransaction();
+
+            // Gestionar Institución
             $institucion = Institucion::firstOrCreate(
-                ['nombre' => $request->institucion_nombre],
-                // Si la crea, puede añadir más datos si los tuvieras en otro campo
-                // ['direccion' => $request->direccion_institucion] 
+                ['nombre' => $request->institucion_nombre]
             );
 
-            // 3. Gestionar Carrera (Buscar o Crear, asociada a la institución)
+            // Gestionar Carrera
             $carrera = Carrera::firstOrCreate(
                 [
                     'id_institucion' => $institucion->id_institucion,
@@ -84,75 +83,51 @@ class PracticanteController extends Controller
                 ]
             );
 
-            // 4. Generar el código del practicante
-            // Lógica: 3 primeras letras del nombre + 3 últimos caracteres de la CURP
+            // Generar código
             $codigo = strtoupper(
                 substr($request->nombre, 0, 3) . substr($request->curp, -3)
             );
 
-
-            // Asegurarse de que el código sea único (en caso de una colisión muy improbable)
             $count = Practicante::where('codigo', 'LIKE', $codigo . '%')->count();
             if ($count > 0) {
                 $codigo = $codigo . ($count + 1);
             }
 
-
-            // 5. Crear y guardar el nuevo practicante
+            // Crear practicante
             $practicante = new Practicante();
-            $practicante->fill($request->except('profile_image')); // Llena todos los campos definidos en $fillable del modelo
-
-            // Asignar los valores que NO vienen directamente del formulario
+            $practicante->fill($request->except('profile_image'));
             $practicante->codigo = $codigo;
             $practicante->institucion_id = $institucion->id_institucion;
             $practicante->carrera_id = $carrera->id_carrera;
             $practicante->horas_registradas = 0;
 
-            $practicante->save();
-
+            // Manejo de imagen
             if ($request->hasFile('profile_image')) {
-                \Log::info('Archivo recibido', [
-                    'name' => $request->file('profile_image')->getClientOriginalName(),
-                    'size' => $request->file('profile_image')->getSize(),
-                    'mime' => $request->file('profile_image')->getMimeType()
-                ]);
-                // Eliminar imagen anterior si existe (para updates)
-                if ($practicante->profile_image) {
-                    Storage::disk('public')->delete($practicante->profile_image);
-                }
-
-                // Generar nombre único basado en ID
-                $extension = $request->file('profile_image')->extension();
-                $filename = 'practicante_' . $practicante->id_practicante . '.' . $extension;
-
-                $tempPath = $request->file('profile_image')->storeAs(
-                    'temp',
-                    'test_upload.jpg',
-                    'public'
-                );
-                \Log::info('Archivo guardado temporalmente en: ' . $tempPath);
-                // Guardar en la carpeta personalizada
-                $imagePath = $request->file('profile_image')->storeAs(
+                $imagePath = $request->file('profile_image')->store(
                     'fotos_practicantes',
-                    $filename,
                     'public'
                 );
-
                 $practicante->profile_image = $imagePath;
-                $practicante->save();
             }
 
+            $practicante->save();
+            DB::commit();
 
-            DB::commit(); // Si todo salió bien, confirma los cambios en la BD
-
+            Log::info('Practicante registrado exitosamente', ['codigo' => $codigo]);
+            
             return redirect()->route('practicantes.show', $practicante->id_practicante)
                 ->with('success', 'Practicante registrado exitosamente con el código: ' . $codigo);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Error de validación', ['errors' => $e->errors()]);
+            return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error('Error en store: ' . $e->getMessage());
-            \Log::error($e->getTraceAsString());
-            DB::rollBack(); // Si algo falla, revierte todos los cambios
-            return back()->withErrors(['error' => 'Ocurrió un error al registrar al practicante: ' . $e->getMessage()])->withInput();
+            Log::error('Error en store: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+            DB::rollBack();
+            return back()->with('error', 'Error al registrar: ' . $e->getMessage())->withInput();
         }
     }
     public function getByCarrera(Request $request)
@@ -281,44 +256,42 @@ class PracticanteController extends Controller
     }
 
     public function generarCredencial(Practicante $practicante)
-    {
-        $imagenPath = $practicante->profile_image
-            ? storage_path('app/public/' . $practicante->profile_image)
-            : null;
-        $imagenValida = ($imagenPath && file_exists($imagenPath));
-        $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
-        $area = $practicante->area_asignada;
-        $clave = $practicante->codigo;
+{
+    $imagenPath = $practicante->profile_image
+        ? storage_path('app/public/' . $practicante->profile_image)
+        : null;
+    $imagenValida = ($imagenPath && file_exists($imagenPath));
+    $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
+    $area = $practicante->area_asignada;
+    $clave = $practicante->codigo;
 
+    $logoFrentePath = public_path('images/credencial/logo_presidente3.png');
+    $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
 
-        $logoFrentePath = public_path('images/credencial/logo_presidente3.png');
-        $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
+    $generator = new BarcodeGeneratorPNG();
+    $barcodeImage = base64_encode($generator->getBarcode(
+        $clave,
+        $generator::TYPE_CODE_128,
+        2,
+        33
+    ));
 
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeImage = base64_encode($generator->getBarcode(
-            $clave,
-                $generator::TYPE_CODE_128,
-            2,
-            33
-        ));
+    $data = [
+        'nombreCompleto' => $nombreCompleto,
+        'area' => $area,
+        'clave' => $clave,
+        'logoFrentePath' => $logoFrentePath,
+        'logoDorsoPath' => $logoDorsoPath,
+        'barcodeImage' => $barcodeImage,
+        'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
+    ];
 
-        $data = [
-            'nombreCompleto' => $nombreCompleto,
-            'area' => $area,
-            'clave' => $clave,
-            'logoFrentePath' => $logoFrentePath,
-            'logoDorsoPath' => $logoDorsoPath,
-            'barcodeImage' => $barcodeImage,
-            'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
-        ];
+    $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
+    $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
 
-        $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
-
-        // Configuración exacta del papel (12cm x 8cm cada credencial, con márgenes)
-        $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
-
-        return $pdf->download('credencial-' . $clave . '.pdf');
-    }
+    // Cambia download() por stream() para abrir en el navegador
+    return $pdf->stream('credencial-' . $clave . '.pdf');
+}
 
     public function generarReporte(Request $request, Practicante $practicante)
     {

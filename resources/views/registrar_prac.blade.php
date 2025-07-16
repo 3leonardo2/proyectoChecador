@@ -10,7 +10,24 @@
     <link rel="stylesheet" href="{{ asset('css/editprac.css') }}">
     <link rel="stylesheet" href="{{ asset('css/registrar_prac.css') }}">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
-
+    <style>
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,8 +41,29 @@
             <i class="fa-solid fa-bars"></i>
         </button>
     </div>
-
+    @include('partials.detalles_modal')
     <div class="main-container">
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <form action="{{ route('practicantes.store') }}" method="POST" class="practicante-info-wrapper"
             enctype="multipart/form-data" data-carrera-route="{{ route('practicantes.getByCarrera') }}">
             @csrf <div class="practicante-fixed-elements">
@@ -72,7 +110,7 @@
                     <input type="text" id="direccion" name="direccion" placeholder="Dirección...">
                 </div>
                 <div class="form-group">
-                    <label for="email_personal">Correo electrónico personal:</label>
+                    <label for="email_personal">Correo electrónico personal*:</label>
                     <input type="email" id="email_personal" name="email_personal"
                         placeholder="Correo electrónico personal...">
                 </div>
@@ -163,13 +201,17 @@
                     <label for="area_asignada">Área asignada:</label>
                     <select id="area_asignada" name="area_asignada">
                         <option value="">Seleccione una opción</option>
-                        <option value="Sistemas">Sistemas</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
-                        <option value="Gastronomía">Gastronomía</option>
-                        <option value="Panadería">Panadería</option>
-                        <option value="Concierge">Concierge</option>
+                        <option value="Contraloria">Contraloria</option>
                         <option value="Ventas">Ventas</option>
-                        <option value="LLamadas">Llamadas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="AyB">AyB</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Recepción">Recepción</option>
+                        <option value="Reservaciones">Reservaciones</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Ama de llaves">Ama de llaves</option>
                     </select>
                 </div>
                 <div class="form-group">

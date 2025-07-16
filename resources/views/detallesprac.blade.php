@@ -27,23 +27,24 @@
         <div class="practicante-info-wrapper">
             <div class="practicante-fixed-elements">
                 <div class="practicante-profile-section">
-                    <div class="profile-image-container">
-                        @if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image))
-                            <img src="{{ asset('storage/' . $practicante->profile_image) }}" alt="Foto del practicante"
-                                class="profile-image">
-                        @else
-                            <div class="default-avatar">
-                                <i class="fas fa-user-circle"></i>
-                            </div>
-                        @endif
-
-                    </div>
+<div class="profile-image-container">
+    @if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image))
+        <img src="{{ asset('storage/' . $practicante->profile_image) }}" 
+             alt="Foto del practicante"
+             class="profile-image"> <!-- Asegúrate de usar 'profile-image' -->
+    @else
+        <div class="default-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    @endif
+</div>
                     <div class="practicante-codigo">Código: {{ $practicante->codigo }}</div>
-                    <a href="{{ route('practicantes.credencial', $practicante->id_practicante) }}"
-                        class="credential-button">
-                        <i class="fa-solid fa-id-card"></i>
-                        Credencial
-                    </a>
+<a href="{{ route('practicantes.credencial', $practicante->id_practicante) }}" 
+   class="credential-button"
+   target="_blank">
+    <i class="fa-solid fa-id-card"></i>
+    Generar Credencial
+</a>
                     <a href="#" class="reporte-button" id="openReportModal">
                         <i class="fa-solid fa-file-pdf"></i>
                         Generar reporte
