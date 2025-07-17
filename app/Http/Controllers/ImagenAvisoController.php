@@ -6,7 +6,7 @@ use App\Models\ImagenAviso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log; // Para logging
 
 class ImagenAvisoController extends Controller
 {
@@ -122,8 +122,8 @@ class ImagenAvisoController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Error eliminando imagen: ' . $e->getMessage());
-            \Log::error('Datos imagen: ' . json_encode([
+            Log::error('Error eliminando imagen: ' . $e->getMessage());
+            Log::error('Datos imagen: ' . json_encode([
                 'id' => $imagenAviso->id ?? null,
                 'nombre_archivo' => $nombreArchivo ?? null,
                 'ruta' => $imagenAviso->ruta ?? null

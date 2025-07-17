@@ -12,6 +12,16 @@
 </head>
 
 <body>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <div class="header">
         <a href="{{ route('practicantes.show', parameters: $practicante->id_practicante) }}" class="back-button">
             <i class="fa-solid fa-arrow-left"></i>
@@ -20,8 +30,9 @@
     </div>
 
     <div class="main-container">
-        <form action="{{ route('practicantes.update', $practicante->id_practicante) }}" method="POST"
-            class="practicante-info-wrapper" enctype="multipart/form-data">
+<form action="{{ route('practicantes.update', $practicante->id_practicante) }}" method="POST"
+      class="practicante-info-wrapper" enctype="multipart/form-data"
+      data-carrera-route="{{ route('practicantes.getByCarrera') }}">
             @csrf
             @method('PUT')
             <div class="practicante-fixed-elements">
@@ -104,30 +115,45 @@
                         value="{{ old('num_seguro', $practicante->num_seguro) }}">
                 </div>
 
-                <h2>Información institucional:</h2>
-                <div class="form-group">
-                    <label for="institucion_nombre">Escuela o institución:</label>
-                    <input type="text" name="institucion_nombre"
-                        value="{{ old('institucion_nombre', optional($practicante->institucion)->nombre) }}">
+<h2>Información institucional:</h2>
+<div class="form-group institution-select-container">
+    <label for="institucion_select">Institución:</label>
+    <select name="institucion_id" id="institucion_select" class="form-control">
+        <option value="">Seleccione una institución</option>
+        @foreach($instituciones as $institucion)
+            <option value="{{ $institucion->id_institucion }}"
+                {{ old('institucion_id', $practicante->institucion_id) == $institucion->id_institucion ? 'selected' : '' }}>
+                {{ $institucion->nombre }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
-                </div>
-                <div class="form-group">
-                    <label for="carrera_nombre">Carrera:</label>
-                    <input type="text" name="carrera_nombre"
-                        value="{{ old('carrera_nombre', optional($practicante->carrera)->nombre_carr) }}">
+<div class="form-group carrera-select-container">
+    <label for="carrera_select">Carrera:</label>
+    <select name="carrera_id" id="carrera_select" class="form-control" disabled>
+        <option value="">Primero seleccione una institución</option>
+        {{-- Aquí se cargarán las carreras dinámicamente --}}
+        @if ($practicante->carrera) {{-- Si ya tiene una carrera, precargarla --}}
+            <option value="{{ $practicante->carrera->id_carrera }}" selected>
+                {{ $practicante->carrera->nombre_carr }}
+            </option>
+        @endif
+    </select>
+    <div class="loading-carreras" style="display: none;">Cargando carreras...</div>
+    <div class="no-carreras-message" style="display: none; color: #dc3545;">No hay carreras disponibles para esta institución.</div>
+</div>
 
-                </div>
-                <div class="form-group">
-                    <label for="email_institucional">Correo institucional:</label>
-                    <input type="email" name="email_institucional"
-                        value="{{ old('email_institucional', $practicante->email_institucional) }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="telefono_institucional">Teléfono institucional:</label>
-                    <input type="text" name="telefono_institucional"
-                        value="{{ old('telefono_institucional', $practicante->telefono_institucional) }}">
-                </div>
+<div class="form-group">
+    <label for="email_institucional">Correo Institucional:</label>
+    <input type="email" id="email_institucional" name="correo_institucional_carrera" class="form-control"
+           value="{{ old('correo_institucional_carrera', $practicante->carrera->correo_carr ?? '') }}" readonly>
+</div>
+<div class="form-group">
+    <label for="telefono_institucional">Teléfono Institucional:</label>
+    <input type="text" id="telefono_institucional" name="telefono_institucional_carrera" class="form-control"
+           value="{{ old('telefono_institucional_carrera', $practicante->carrera->tel_gerente ?? '') }}" readonly>
+</div>
                 <div class="form-group">
                     <label for="nivel_estudios">Nivel de estudios:</label>
                     <select id="nivel_estudios" name="nivel_estudios">
@@ -200,7 +226,41 @@
                     <input type="number" name="horas_registradas" 
                         value="{{ old('horas_registradas', $practicante->horas_registradas) }}">
                 </div>
+                <h2>Información del Proyecto (Opcional)</h2>
+<div class="form-group">
+    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto"
+           {{ old('incluir_proyecto', $practicante->proyecto_id ? 'on' : '') == 'on' ? 'checked' : '' }}>
+    <label for="incluir_proyecto">Asignar a un proyecto</label>
+</div>
 
+<div id="proyecto_fields" style="display: none;">
+    <div class="form-group">
+        <label for="nombre_proyecto">Nombre del Proyecto:</label>
+        <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control"
+               value="{{ old('nombre_proyecto', $practicante->proyecto->nombre_proyecto ?? '') }}">
+    </div>
+    <div class="form-group">
+        <label for="descripcion_proyecto">Descripción del Proyecto:</label>
+        <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto', $practicante->proyecto->descripcion_proyecto ?? '') }}</textarea>
+    </div>
+    <div class="form-group">
+                    <label for="area_asignada">Área asignada:</label>
+                    <select id="area_asignada" name="area_asignada">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Contraloria">Contraloria</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="AyB">AyB</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Recepción">Recepción</option>
+                        <option value="Reservaciones">Reservaciones</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Ama de llaves">Ama de llaves</option>
+                    </select>
+    </div>
+</div>
                 <div class="form-actions">
                     <button type="submit" class="save-button">Guardar cambios</button>
                     <button type="button" class="cancel-button">Cancelar</button>
@@ -208,8 +268,43 @@
             </div>
         </form>
     </div>
-    <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
+    <script src="{{ asset('js/registrar_prac.js') }}"></script>
+    <script src="{{ asset('js/getInfoCarrera.js') }}"></script>
+<script>
+    // Lógica para mostrar/ocultar campos de proyecto
+    document.addEventListener('DOMContentLoaded', function() {
+        const incluirProyectoCheckbox = document.getElementById('incluir_proyecto');
+        const proyectoFields = document.getElementById('proyecto_fields');
+
+        // Función para actualizar la visibilidad y requerimiento de los campos
+        const updateProyectoFieldsVisibility = () => {
+            if (incluirProyectoCheckbox.checked) {
+                proyectoFields.style.display = 'block';
+                // Puedes hacer que los campos sean requeridos aquí si lo deseas
+            } else {
+                proyectoFields.style.display = 'none';
+                // Limpiar campos al ocultar (importante para que no se envíen datos viejos si se desmarca)
+                document.getElementById('nombre_proyecto').value = '';
+                document.getElementById('descripcion_proyecto').value = '';
+                document.getElementById('area_proyecto').value = '';
+            }
+        };
+
+        incluirProyectoCheckbox.addEventListener('change', updateProyectoFieldsVisibility);
+
+        // Llamar la función al cargar la página para reflejar el estado inicial
+        updateProyectoFieldsVisibility();
+
+        // Si hay errores de validación y los campos estaban visibles, mantenerlos así
+        @if($errors->hasAny(['nombre_proyecto', 'descripcion_proyecto', 'area_proyecto']) || old('incluir_proyecto'))
+            incluirProyectoCheckbox.checked = true;
+            proyectoFields.style.display = 'block';
+        @endif
+    });
+</script>
 </body>
 
 </html>

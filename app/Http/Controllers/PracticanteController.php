@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Proyecto;
 use Illuminate\Http\Request;
 use App\Models\Practicante; // Asegúrate de tener los modelos creados
 use App\Models\Institucion;
@@ -29,63 +30,63 @@ class PracticanteController extends Controller
     public function create()
     {
         // Pasamos todas las instituciones y carreras a la vista para los <datalist>
+        $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
         $instituciones = Institucion::orderBy('nombre')->get();
         $carreras = Carrera::orderBy('nombre_carr')->get();
 
-        return view('registrar_prac', compact('instituciones', 'carreras'));
+        return view('registrar_prac', compact('instituciones', 'carreras','proyectos'));
     }
 
-    /**
-     * Almacena un nuevo practicante en la base de datos.
-     * 
-     */
         public function store(Request $request)
     {
         Log::info('Iniciando registro de practicante', ['request' => $request->all()]);
-        
+
+        $projectRules = [];
+        $commonRules = [
+            'nombre' => 'required|string|max:100',
+            'apellidos' => 'required|string|max:100',
+            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
+            'fecha_nacimiento' => 'required|date',
+            // Si `institucion_nombre` y `carrera_nombre` son solo para mostrar en la UI
+            // y los IDs son los que se guardan, puedes quitarlos de `required`
+            // o solo validar los IDs. Asumo que los IDs son los importantes para guardar.
+            'institucion_id' => 'required|exists:instituciones,id_institucion',
+            'carrera_id' => 'required|exists:carreras,id_carrera',
+            'fecha_inicio' => 'required|date',
+            'email_personal' => 'required|email|unique:practicantes,email_personal',
+            'telefono_personal' => 'nullable|string|max:15',
+            'nombre_emergencia' => 'nullable|string|max:100',
+            'telefono_emergencia' => 'nullable|string|max:15',
+            'num_seguro' => 'nullable|string|max:20',
+            'email_institucional' => 'nullable|email',
+            'telefono_institucional' => 'nullable|string|max:20',
+            'area_asignada' => 'nullable|string|max:100',
+            'hora_entrada' => 'nullable|string|max:10',
+            'hora_salida' => 'nullable|string|max:10',
+            'horas_requeridas' => 'nullable|integer|min:0',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'incluir_proyecto' => 'nullable|string', // Aseguramos que este campo se valide
+        ];
+
+        if ($request->has('incluir_proyecto') && $request->incluir_proyecto == 'on') {
+            $projectRules = [
+                'nombre_proyecto' => 'required|string|max:255',
+                'descripcion_proyecto' => 'nullable|string',
+                'area_proyecto' => 'nullable|string|max:255',
+            ];
+        }
+
         try {
-            $validated = $request->validate([
-                'nombre' => 'required|string|max:100',
-                'apellidos' => 'required|string|max:100',
-                'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
-                'fecha_nacimiento' => 'required|date',
-                'institucion_nombre' => 'required|string|max:255',
-                'carrera_nombre' => 'required|string|max:255',
-                'fecha_inicio' => 'required|date',
-                'email_personal' => 'required|email|unique:practicantes,email_personal',
-                'telefono_personal' => 'nullable|string|max:15',
-                'nombre_emergencia' => 'nullable|string|max:100',
-                'telefono_emergencia' => 'nullable|string|max:15',
-                'num_seguro' => 'nullable|string|max:20',
-                'email_institucional' => 'nullable|email',
-                'telefono_institucional' => 'nullable|string|max:20',
-                'area_asignada' => 'nullable|string|max:100',
-                'hora_entrada' => 'nullable|string|max:10',
-                'hora_salida' => 'nullable|string|max:10',
-                'horas_requeridas' => 'nullable|integer|min:0',
-                'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+            // Fusionar las reglas comunes con las reglas del proyecto
+            $validated = $request->validate(array_merge($commonRules, $projectRules));
 
             Log::info('Validación exitosa', $validated);
-            
+
             DB::beginTransaction();
 
-            // Gestionar Institución
-            $institucion = Institucion::firstOrCreate(
-                ['nombre' => $request->institucion_nombre]
-            );
-
-            // Gestionar Carrera
-            $carrera = Carrera::firstOrCreate(
-                [
-                    'id_institucion' => $institucion->id_institucion,
-                    'nombre_carr' => $request->carrera_nombre
-                ]
-            );
-
-            // Generar código
+            // Generar código (esta lógica está bien)
             $codigo = strtoupper(
-                substr($request->nombre, 0, 3) . substr($request->curp, -3)
+                substr($validated['nombre'], 0, 3) . substr($validated['curp'], -3)
             );
 
             $count = Practicante::where('codigo', 'LIKE', $codigo . '%')->count();
@@ -95,26 +96,43 @@ class PracticanteController extends Controller
 
             // Crear practicante
             $practicante = new Practicante();
-            $practicante->fill($request->except('profile_image'));
+            // Llenar el practicante con los datos validados
+            // Asegúrate de que todos los campos del formulario que se mapean directamente
+            // a la tabla practicantes estén en $fillable en el modelo Practicante.
+            $practicante->fill($validated); // Usa $validated en lugar de $request->except()
             $practicante->codigo = $codigo;
-            $practicante->institucion_id = $institucion->id_institucion;
-            $practicante->carrera_id = $carrera->id_carrera;
-            $practicante->horas_registradas = 0;
+            $practicante->horas_registradas = 0; // Se inicializa a 0 al crear
 
-            // Manejo de imagen
-            if ($request->hasFile('profile_image')) {
-                $imagePath = $request->file('profile_image')->store(
+            // Manejo de imagen (esta lógica está bien, pero usa $validated para la ruta)
+            if (isset($validated['profile_image'])) { // Verifica si el campo de imagen está presente en los datos validados
+                $imagePath = $validated['profile_image']->store( // Accede al archivo a través de $validated
                     'fotos_practicantes',
                     'public'
                 );
                 $practicante->profile_image = $imagePath;
             }
 
-            $practicante->save();
+            // Manejo del proyecto
+            // El `proyecto_id` se inicializa a null por defecto en la base de datos si es nullable,
+            // o se asigna más abajo si se crea un proyecto.
+            $practicante->proyecto_id = null; // Reiniciar o asegurar que es null por defecto
+
+            if ($request->has('incluir_proyecto') && $request->incluir_proyecto == 'on') {
+                $proyecto = Proyecto::create([
+                    'nombre_proyecto' => $validated['nombre_proyecto'],
+                    'descripcion_proyecto' => $validated['descripcion_proyecto'] ?? null,
+                    'area_proyecto' => $validated['area_proyecto'] ?? null,
+                ]);
+                // Asignar directamente a la propiedad del modelo Practicante
+                $practicante->proyecto_id = $proyecto->id_proyecto;
+            }
+
+            $practicante->save(); // Guarda el practicante con todos sus datos, incluyendo proyecto_id
+
             DB::commit();
 
             Log::info('Practicante registrado exitosamente', ['codigo' => $codigo]);
-            
+
             return redirect()->route('practicantes.show', $practicante->id_practicante)
                 ->with('success', 'Practicante registrado exitosamente con el código: ' . $codigo);
 
@@ -130,59 +148,54 @@ class PracticanteController extends Controller
             return back()->with('error', 'Error al registrar: ' . $e->getMessage())->withInput();
         }
     }
+
+
+
     public function getByCarrera(Request $request)
-    {
-        \Log::info('Solicitud getByCarrera recibida', ['carrera' => $request->input('carrera')]);
-
-        try {
-            $carreraNombre = urldecode($request->input('carrera'));
-
-            if (empty($carreraNombre)) {
-                return response()->json(['error' => 'Nombre de carrera no proporcionado'], 400);
-            }
-
-            // 1. Buscar la carrera por su nombre
-            $carrera = Carrera::where('nombre_carr', 'LIKE', '%' . $carreraNombre . '%')->first();
-
-            if (!$carrera) {
-                \Log::info('No se encontró la carrera', ['nombre' => $carreraNombre]);
-                return response()->json([], 200); // Devuelve un objeto vacío si no se encuentra
-            }
-
-            // 2. Devolver la información de contacto DE LA CARRERA, no de un practicante
-            // Estos nombres de campo ('correo_carr', 'tel_gerente') deben coincidir con tu migración de la tabla `carreras`.
-            // Basado en tu InstitucionController, los campos son 'correo_carr' y 'tel_gerente'.
-            $datosCarrera = [
-                'email_institucional' => $carrera->correo_carr,
-                'telefono_institucional' => $carrera->tel_gerente,
-            ];
-
-            \Log::info('Resultado encontrado', ['carrera_info' => $datosCarrera]);
-
-            return response()->json($datosCarrera);
-
-        } catch (\Exception $e) {
-            \Log::error('Error en getByCarrera: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
-            return response()->json(['error' => 'Error interno del servidor'], 500);
+{
+    try {
+        $carreraId = $request->input('carrera_id');
+        
+        if (empty($carreraId)) {
+            return response()->json(['error' => 'ID de carrera no proporcionado'], 400);
         }
+
+        $carrera = Carrera::find($carreraId);
+
+        if (!$carrera) {
+            return response()->json([], 200);
+        }
+
+        return response()->json([
+            'email_institucional' => $carrera->correo_carr,
+            'telefono_institucional' => $carrera->tel_gerente,
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Error interno del servidor'], 500);
     }
-    // En PracticanteController.php
-    public function update(Request $request, $id)
+}
+
+
+     public function update(Request $request, $id)
     {
-        // Validación completa incluyendo la imagen
-        $request->validate([
+        $practicante = Practicante::findOrFail($id);
+
+        $projectRules = [];
+        // Se define 'incluir_proyecto' como parte de las reglas para que se valide
+        // correctamente al momento de fusionar
+        $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp,' . $id . ',id_practicante',
+            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp,' . $practicante->id_practicante . ',id_practicante',
             'fecha_nacimiento' => 'required|date',
-            'institucion_nombre' => 'required|string|max:255',
-            'carrera_nombre' => 'required|string|max:255',
+            'institucion_id' => 'required|exists:instituciones,id_institucion',
+            'carrera_id' => 'required|exists:carreras,id_carrera',
             'fecha_inicio' => 'required|date',
-            'email_personal' => 'nullable|email|unique:practicantes,email_personal,' . $id . ',id_practicante',
+            'email_personal' => 'nullable|email|unique:practicantes,email_personal,' . $practicante->id_practicante . ',id_practicante',
             'telefono_personal' => 'nullable|string|max:15',
             'nombre_emergencia' => 'nullable|string|max:100',
+            'nivel_estudios' => 'nullable|string|max:255',
             'telefono_emergencia' => 'nullable|string|max:15',
             'num_seguro' => 'nullable|string|max:20',
             'email_institucional' => 'nullable|email',
@@ -193,29 +206,29 @@ class PracticanteController extends Controller
             'horas_requeridas' => 'nullable|integer|min:0',
             'horas_registradas' => 'nullable|integer|min:0',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+            'incluir_proyecto' => 'nullable|string', // Importante para que el request->has() funcione correctamente en la validación
+        ];
+
+        if ($request->has('incluir_proyecto') && $request->incluir_proyecto == 'on') {
+            $projectRules = [
+                'nombre_proyecto' => 'required|string|max:255',
+                'descripcion_proyecto' => 'nullable|string',
+                'area_proyecto' => 'nullable|string|max:255',
+            ];
+        }
+
+        // ASIGNA el resultado de validate() a $validatedData
+        $validatedData = $request->validate(array_merge($commonRules, $projectRules));
 
         DB::beginTransaction();
         try {
-            $practicante = Practicante::findOrFail($id);
-
-            // 1. Gestionar Institución
-            $institucion = Institucion::firstOrCreate(
-                ['nombre' => $request->institucion_nombre]
-            );
-
-            // 2. Gestionar Carrera
-            $carrera = Carrera::firstOrCreate(
-                [
-                    'id_institucion' => $institucion->id_institucion,
-                    'nombre_carr' => $request->carrera_nombre
-                ]
-            );
+            // No necesitas volver a buscar el practicante aquí, ya lo tienes al principio
+            // $practicante = Practicante::findOrFail($id); // <-- Elimina esta línea duplicada
 
             // 3. Manejo de la imagen
             if ($request->hasFile('profile_image')) {
                 // Eliminar imagen anterior si existe
-                if ($practicante->profile_image) {
+                if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image)) {
                     Storage::disk('public')->delete($practicante->profile_image);
                 }
 
@@ -229,16 +242,55 @@ class PracticanteController extends Controller
                     $filename,
                     'public'
                 );
-
                 $practicante->profile_image = $imagePath;
+            } else if ($request->input('profile_image_cleared')) { // Si el usuario marcó para limpiar la imagen
+                if ($practicante->profile_image && Storage::disk('public')->exists($practicante->profile_image)) {
+                    Storage::disk('public')->delete($practicante->profile_image);
+                }
+                $practicante->profile_image = null;
             }
 
-            // 4. Actualizar los campos directos del practicante
-            $practicante->fill($request->except(['institucion_nombre', 'carrera_nombre', 'profile_image']));
 
-            // 5. Asignar los IDs de las relaciones
-            $practicante->institucion_id = $institucion->id_institucion;
-            $practicante->carrera_id = $carrera->id_carrera;
+            // 4. Manejo del proyecto
+            if (!$request->has('incluir_proyecto') && $practicante->proyecto_id) {
+                // Si el checkbox se desmarcó y había un proyecto asociado, lo eliminamos y desvinculamos
+                $practicante->proyecto->delete(); // Esto elimina el registro del proyecto de la tabla `proyectos`
+                $practicante->proyecto_id = null; // Esto establece la clave foránea a NULL en `practicantes`
+            }
+            // Si el checkbox está marcado, creamos o actualizamos el proyecto
+            elseif ($request->has('incluir_proyecto') && $request->incluir_proyecto == 'on') {
+                if ($practicante->proyecto_id) {
+                    // Actualizar proyecto existente
+                    $practicante->proyecto->update([
+                        'nombre_proyecto' => $validatedData['nombre_proyecto'],
+                        'descripcion_proyecto' => $validatedData['descripcion_proyecto'] ?? null,
+                        'area_proyecto' => $validatedData['area_proyecto'] ?? null,
+                    ]);
+                } else {
+                    // Crear nuevo proyecto y asignarlo
+                    $proyecto = Proyecto::create([
+                        'nombre_proyecto' => $validatedData['nombre_proyecto'],
+                        'descripcion_proyecto' => $validatedData['descripcion_proyecto'] ?? null,
+                        'area_proyecto' => $validatedData['area_proyecto'] ?? null,
+                    ]);
+                    $practicante->proyecto_id = $proyecto->id_proyecto;
+                }
+            } else {
+                 // Si el checkbox no está marcado y no había un proyecto, o si el checkbox se desmarca
+                 // y ya se manejó la eliminación arriba, no hacemos nada con el proyecto_id aquí.
+                 // Si no había proyecto_id y el checkbox no está, simplemente se mantiene null.
+                 // Si se desmarcó y se eliminó el proyecto, ya se estableció a null arriba.
+            }
+
+            // 5. Actualizar los campos directos del practicante
+            // Usa $validatedData para llenar el modelo, excluyendo 'incluir_proyecto'
+            // Los campos 'institucion_nombre', 'carrera_nombre' no deberían estar en $validatedData
+            // si no son campos reales del formulario o vienen de selects con IDs.
+            // Si el nombre de la institución y carrera no se guardan directamente en el modelo
+            // del practicante, puedes usar $request->except(['incluir_proyecto'])
+            // o $validatedData si quieres ser más explícito.
+            // La validación ya se encarga de que vengan los IDs correctos.
+            $practicante->fill($validatedData); // Esto llenará todos los campos validados
 
             $practicante->save();
 
@@ -249,8 +301,7 @@ class PracticanteController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // Agregar logging para depuración
-            \Log::error('Error al actualizar practicante: ' . $e->getMessage());
+            Log::error('Error al actualizar practicante: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Ocurrió un error al actualizar: ' . $e->getMessage()])->withInput();
         }
     }
@@ -337,13 +388,16 @@ class PracticanteController extends Controller
 
     public function show($id)
     {
-        $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
+        $practicante = Practicante::with(['institucion', 'carrera','proyecto'])->findOrFail($id);
         return view('detallesprac', compact('practicante'));
     }
     public function edit($id)
     {
-        $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
-        return view('edit_prac', compact('practicante'));
+    $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
+    $instituciones = Institucion::orderBy('nombre')->get();
+            $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
+
+    return view('edit_prac', compact('practicante', 'instituciones','proyectos'));
     }
 
     public function showEvaluaciones($id_practicante)

@@ -155,6 +155,20 @@
                     <label>Horas acumuladas:</label>
                     <p>{{ $practicante->horas_registradas }}</p>
                 </div>
+                @if ($practicante->proyecto)
+    <div class="info-section">
+        <h2>Información del Proyecto</h2>
+        <p><strong>Nombre del Proyecto:</strong> {{ $practicante->proyecto->nombre_proyecto ?? 'N/A' }}</p>
+        <p><strong>Descripción:</strong> {{ $practicante->proyecto->descripcion_proyecto ?? 'N/A' }}</p>
+        <p><strong>Área del Proyecto:</strong> {{ $practicante->proyecto->area_proyecto ?? 'N/A' }}</p>
+    </div>
+@else
+    <div class="info-section">
+        <h2>Información del Proyecto</h2>
+        <p>Este practicante no tiene un proyecto asociado.</p>
+    </div>
+@endif
+
             </div>
         </div>
     </div>

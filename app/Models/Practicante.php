@@ -51,6 +51,7 @@ class Practicante extends Model
         'carrera_id',
         'horas_registradas',
         'profile_image',
+        'proyecto_id',
     ];
     public function institucion()
     {
@@ -64,6 +65,10 @@ class Practicante extends Model
     public function evaluaciones(): HasMany
     {
         return $this->hasMany(Evaluacion::class, 'id_practicante');
+    }
+        public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'proyecto_id', 'id_proyecto');
     }
 
 }

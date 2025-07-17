@@ -27,6 +27,31 @@
             background-color: #dff0d8;
             border-color: #d6e9c6;
         }
+        .institution-select-container, .carrera-select-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.loading-carreras {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    color: #666;
+}
+
+.no-carreras-message {
+    color: #dc3545;
+    margin-top: 5px;
+    font-size: 0.875em;
+}
+
+select.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+}
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -135,36 +160,30 @@
                 </div>
 
                 <h2>Información institucional:</h2>
-                <div class="institution-carrera-group">
-                    <div class="form-group">
-                        <label for="institucion_nombre" required>Escuela o institución:</label>
-                        <div class="institution-select-container">
-                            <input type="text" id="institucion_nombre" name="institucion_nombre"
-                                class="institution-select-input" placeholder="Escribe para buscar..."
-                                autocomplete="off" required>
-                            <div class="institution-select-dropdown" id="instituciones-dropdown">
-                                @foreach ($instituciones as $institucion)
-                                    <div class="institution-select-item" data-value="{{ $institucion->nombre }}"
-                                        data-id="{{ $institucion->id_institucion }}">
-                                        {{ $institucion->nombre }}
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
+<div class="institution-carrera-group">
+    <div class="form-group">
+        <label for="institucion_select" required>Escuela o institución:</label>
+        <div class="institution-select-container">
+            <select id="institucion_select" name="institucion_id" class="form-control" required>
+                <option value="">Seleccione una institución</option>
+                @foreach ($instituciones as $institucion)
+                    <option value="{{ $institucion->id_institucion }}">{{ $institucion->nombre }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
-                    <div class="form-group">
-                        <label for="carrera_nombre" required>Carrera:</label>
-                        <div class="carrera-select-container">
-                            <input type="text" id="carrera_nombre" name="carrera_nombre"
-                                class="carrera-select-input" placeholder="Selecciona primero una institución" required
-                                disabled autocomplete="off">
-                            <div class="carrera-select-dropdown" id="carreras-dropdown"></div>
-                            <i class="fas fa-spinner fa-spin loading-carreras"></i>
-                            <div class="no-carreras-message">No se encontraron carreras para esta institución</div>
-                        </div>
-                    </div>
-                </div>
+    <div class="form-group">
+        <label for="carrera_select" required>Carrera:</label>
+        <div class="carrera-select-container">
+            <select id="carrera_select" name="carrera_id" class="form-control" required disabled>
+                <option value="">Primero seleccione una institución</option>
+            </select>
+            <i class="fas fa-spinner fa-spin loading-carreras" style="display: none;"></i>
+            <div class="no-carreras-message" style="display: none;">No se encontraron carreras para esta institución</div>
+        </div>
+    </div>
+</div>
                 <div class="form-group">
                     <label for="email_institucional">Correo institucional:</label>
                     <input type="email" id="email_institucional" name="email_institucional"
@@ -235,15 +254,51 @@
                     <input type="number" id="horas_requeridas" name="horas_requeridas" min="0">
                 </div>
 
+
+                <h2>Información del Proyecto (Opcional)</h2>
+<div class="form-group">
+    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto">
+    <label for="incluir_proyecto">Asignar a un proyecto</label>
+</div>
+
+<div id="proyecto_fields" style="display: none;">
+    <div class="form-group">
+        <label for="nombre_proyecto">Nombre del Proyecto:</label>
+        <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control" value="{{ old('nombre_proyecto') }}">
+    </div>
+    <div class="form-group">
+        <label for="descripcion_proyecto">Descripción del Proyecto:</label>
+        <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto') }}</textarea>
+    </div>
+    <div class="form-group">
+                    <label for="area_asignada">Área asignada:</label>
+                    <select id="area_asignada" name="area_asignada">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Contraloria">Contraloria</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Sistemas">Sistemas</option>
+                        <option value="AyB">AyB</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Dirección">Dirección</option>
+                        <option value="Recepción">Recepción</option>
+                        <option value="Reservaciones">Reservaciones</option>
+                        <option value="Cocina">Cocina</option>
+                        <option value="Ama de llaves">Ama de llaves</option>
+                    </select>
+    </div>
+</div>
                 <div class="form-actions">
                     <button type="submit" class="save-button">Guardar Practicante</button>
                     <button type="button" class="cancel-button">Cancelar</button>
                 </div>
+
             </div>
             <script>
                 // Define la variable global antes de cargar tu script
                 window.instituciones = @json($instituciones->pluck('nombre', 'id_institucion'));
             </script>
+            
         </form>
     </div>
     <script src="{{ asset('js/registrar_prac.js') }}"></script>
@@ -287,6 +342,36 @@ document.getElementById('add-image-input').addEventListener('change', function(e
         reader.readAsDataURL(file);
     }
 });
+</script>
+<script>
+    // Lógica para mostrar/ocultar campos de proyecto
+    document.addEventListener('DOMContentLoaded', function() {
+        const incluirProyectoCheckbox = document.getElementById('incluir_proyecto');
+        const proyectoFields = document.getElementById('proyecto_fields');
+
+        incluirProyectoCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                proyectoFields.style.display = 'block';
+                // Puedes hacer que los campos sean requeridos aquí si lo deseas:
+                // document.getElementById('nombre_proyecto').setAttribute('required', 'required');
+                // etc.
+            } else {
+                proyectoFields.style.display = 'none';
+                // Limpiar campos y quitar 'required' si estaban marcados
+                document.getElementById('nombre_proyecto').value = '';
+                document.getElementById('descripcion_proyecto').value = '';
+                document.getElementById('area_proyecto').value = '';
+                // document.getElementById('nombre_proyecto').removeAttribute('required');
+                // etc.
+            }
+        });
+
+        // Mantener el estado si hubo un error de validación
+        @if(old('incluir_proyecto'))
+            incluirProyectoCheckbox.checked = true;
+            proyectoFields.style.display = 'block';
+        @endif
+    });
 </script>
 </body>
 

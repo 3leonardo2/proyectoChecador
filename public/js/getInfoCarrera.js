@@ -1,50 +1,67 @@
+// getInfoCarrera.js (with added console.log statements)
 document.addEventListener('DOMContentLoaded', function() {
-    const carreraInput = document.getElementById('carrera_nombre');
+    const carreraSelect = document.getElementById('carrera_select');
     const form = document.querySelector('form.practicante-info-wrapper');
-    
-    if (!form) {
-        console.error('Formulario no encontrado');
+
+    if (!carreraSelect || !form) {
+        console.error('Elementos no encontrados: carrera_select o form.practicante-info-wrapper');
         return;
     }
-    
-    const getByCarreraRoute = form.dataset.carreraRoute;
-    
-    carreraInput.addEventListener('change', async function() {
-        const carrera = this.value.trim();
-        
-        if (!carrera) {
-            console.log('Campo de carrera vacío');
+
+    console.log('getInfoCarrera.js script loaded.');
+    console.log('form.dataset.carreraRoute:', form.dataset.carreraRoute);
+
+    const autocompletarDatosCarrera = async (carreraId) => {
+        console.log('autocompletarDatosCarrera called with carreraId:', carreraId);
+        if (!carreraId) {
+            console.log('No carreraId provided, returning.');
             return;
         }
-        
+
         try {
-            console.log('Buscando información para:', carrera);
-            
-            const response = await fetch(`${getByCarreraRoute}?carrera=${encodeURIComponent(carrera)}`, {
+            const url = `${form.dataset.carreraRoute}?carrera_id=${carreraId}`;
+            console.log('Fetching from URL:', url);
+
+            const response = await fetch(url, {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
-            
+
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `Error HTTP: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText} - ${errorText}`);
             }
-            
+
             const data = await response.json();
-            console.log('Datos recibidos:', data);
-            
-            // Actualizar campos
-            const emailInput = document.getElementById('email_institucional');
-            const telInput = document.getElementById('telefono_institucional');
-            
-            emailInput.value = data.email_institucional || '';
-            telInput.value = data.telefono_institucional || '';
-            
+            console.log('Received data:', data);
+
+            if (data.email_institucional) {
+                document.getElementById('email_institucional').value = data.email_institucional;
+                console.log('Autocompleted email_institucional:', data.email_institucional);
+            } else {
+                console.log('No email_institucional found in data.');
+            }
+            if (data.telefono_institucional) {
+                document.getElementById('telefono_institucional').value = data.telefono_institucional;
+                console.log('Autocompleted telefono_institucional:', data.telefono_institucional);
+            } else {
+                console.log('No telefono_institucional found in data.');
+            }
+
         } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error: ' + error.message);
+            console.error('Error al obtener datos de la carrera:', error);
         }
+    };
+
+    carreraSelect.addEventListener('change', function() {
+        console.log('Carrera select changed. New value:', this.value);
+        autocompletarDatosCarrera(this.value);
     });
+
+    if (carreraSelect.value) {
+        console.log('Carrera pre-selected on load:', carreraSelect.value);
+        autocompletarDatosCarrera(carreraSelect.value);
+    }
 });
