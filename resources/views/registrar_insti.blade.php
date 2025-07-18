@@ -38,7 +38,7 @@
                     <input type="text" id="acronimo_ins" name="acronimo_ins" placeholder="Acrónimo..." required>
                 </div>
                 <div class="form-group">
-                    <label for="direccion_ins">Direción*:</label>
+                    <label for="direccion_ins">Direción:</label>
                     <input type="text" id="direccion_ins" name="direccion_ins" placeholder="Dirección..." required>
                 </div>
                 <div class="form-group">
@@ -46,7 +46,7 @@
                     <input type="text" id="telefono_ins" name="telefono_ins" placeholder="Teléfono...">
                 </div>
                 <div class="form-group">
-                    <label for="correo_ins">Dirección de correo electrónico*:</label>
+                    <label for="correo_ins">Dirección de correo electrónico:</label>
                     <input type="text" id="correo_ins" name="correo_ins" placeholder="Correo electrónico...">
                 </div>
 

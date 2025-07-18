@@ -28,8 +28,8 @@ class InstitucionController extends Controller
 
         $validatedData = $request->validate([
             'nombre_ins' => 'required|string|max:255|unique:instituciones,nombre',
-            'acronimo_ins' => 'required|string|max:255|unique:instituciones,acronimo',
-            'direccion_ins' => 'required|string|max:255',
+            'acronimo_ins' => 'string|max:255|unique:instituciones,acronimo',
+            'direccion_ins' => 'string|max:255',
             'telefono_ins' => 'required|string|max:20',
             'correo_ins' => 'email|max:255|unique:instituciones,correo',
             'carreras' => 'nullable|array',
