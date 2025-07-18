@@ -61,12 +61,14 @@ Route::prefix('practicantes')->group(function () {
 
 // Rutas de instituciones
 Route::prefix('instituciones')->group(function () {
+    route::get('/{id_institucion}/check-practicantes', [InstitucionController::class, 'checkPracticantes'])->name('instituciones.checkPracticantes');
     Route::get('/', [InstitucionController::class, 'index'])->name('instituciones.index');
     Route::get('/registrar_insti', [InstitucionController::class, 'create'])->name('instituciones.create');
     Route::post('/registrar_insti', [InstitucionController::class, 'store'])->name('instituciones.store');
     Route::get('/{id_institucion}/edit', [InstitucionController::class, 'edit'])->name('instituciones.edit');
     Route::put('/{id_institucion}', [InstitucionController::class, 'update'])->name('instituciones.update');
     Route::get('/{id_institucion}/carreras', [InstitucionController::class, 'getCarreras'])->name('instituciones.carreras');
+    Route::delete('/{id_institucion}', [InstitucionController::class, 'destroy'])->name('instituciones.destroy');
 });
 
 //Rutas para avisos

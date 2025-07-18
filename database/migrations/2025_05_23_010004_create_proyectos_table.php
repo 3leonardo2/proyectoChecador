@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('nombre_proyecto');
             $table->text('descripcion_proyecto')->nullable();
             $table->string('area_proyecto')->nullable(); // Podrías usar un enum si las áreas son fijas
-            $table->timestamps();
         });
     }
 

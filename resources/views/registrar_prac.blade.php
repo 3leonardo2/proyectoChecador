@@ -17,41 +17,45 @@
             border: 1px solid transparent;
             border-radius: 4px;
         }
+
         .alert-danger {
             color: #a94442;
             background-color: #f2dede;
             border-color: #ebccd1;
         }
+
         .alert-success {
             color: #3c763d;
             background-color: #dff0d8;
             border-color: #d6e9c6;
         }
-        .institution-select-container, .carrera-select-container {
-    position: relative;
-    margin-bottom: 15px;
-}
 
-.loading-carreras {
-    position: absolute;
-    right: 10px;
-    top: 35px;
-    color: #666;
-}
+        .institution-select-container,
+        .carrera-select-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
 
-.no-carreras-message {
-    color: #dc3545;
-    margin-top: 5px;
-    font-size: 0.875em;
-}
+        .loading-carreras {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            color: #666;
+        }
 
-select.form-control {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    background-color: white;
-}
+        .no-carreras-message {
+            color: #dc3545;
+            margin-top: 5px;
+            font-size: 0.875em;
+        }
+
+        select.form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -68,23 +72,23 @@ select.form-control {
     </div>
     @include('partials.detalles_modal')
     <div class="main-container">
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
         @endif
 
-        @if(session('success'))
+        @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
-        @if(session('error'))
+        @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
@@ -95,8 +99,7 @@ select.form-control {
                 <div class="practicante-profile-section">
                     <div class="profile-image-container"></div>
                     <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
-                        accept="image/jpeg, image/png, image/jpg, image/gif"
-                    onchange="validateImage(this)">
+                        accept="image/jpeg, image/png, image/jpg, image/gif" onchange="validateImage(this)">
                     <label for="add-image-input" class="add-image-button">Añadir imagen...</label>
                     <small class="text-muted">Recomendado: imagen cuadrada (300x300 px, JPG o PNG, 2MB)</small>
                 </div>
@@ -160,30 +163,32 @@ select.form-control {
                 </div>
 
                 <h2>Información institucional:</h2>
-<div class="institution-carrera-group">
-    <div class="form-group">
-        <label for="institucion_select" required>Escuela o institución:</label>
-        <div class="institution-select-container">
-            <select id="institucion_select" name="institucion_id" class="form-control" required>
-                <option value="">Seleccione una institución</option>
-                @foreach ($instituciones as $institucion)
-                    <option value="{{ $institucion->id_institucion }}">{{ $institucion->nombre }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
+                <div class="institution-carrera-group">
+                    <div class="form-group">
+                        <label for="institucion_select" required>Escuela o institución:</label>
+                        <div class="institution-select-container">
+                            <select id="institucion_select" name="institucion_id" class="form-control" required>
+                                <option value="">Seleccione una institución</option>
+                                @foreach ($instituciones as $institucion)
+                                    <option value="{{ $institucion->id_institucion }}">{{ $institucion->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-    <div class="form-group">
-        <label for="carrera_select" required>Carrera:</label>
-        <div class="carrera-select-container">
-            <select id="carrera_select" name="carrera_id" class="form-control" required disabled>
-                <option value="">Primero seleccione una institución</option>
-            </select>
-            <i class="fas fa-spinner fa-spin loading-carreras" style="display: none;"></i>
-            <div class="no-carreras-message" style="display: none;">No se encontraron carreras para esta institución</div>
-        </div>
-    </div>
-</div>
+                    <div class="form-group">
+                        <label for="carrera_select" required>Carrera:</label>
+                        <div class="carrera-select-container">
+                            <select id="carrera_select" name="carrera_id" class="form-control" required disabled>
+                                <option value="">Primero seleccione una institución</option>
+                            </select>
+                            <i class="fas fa-spinner fa-spin loading-carreras" style="display: none;"></i>
+                            <div class="no-carreras-message" style="display: none;">No se encontraron carreras para
+                                esta institución</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="email_institucional">Correo institucional:</label>
                     <input type="email" id="email_institucional" name="email_institucional"
@@ -256,38 +261,39 @@ select.form-control {
 
 
                 <h2>Información del Proyecto (Opcional)</h2>
-<div class="form-group">
-    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto">
-    <label for="incluir_proyecto">Asignar a un proyecto</label>
-</div>
+                <div class="form-group">
+                    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto">
+                    <label for="incluir_proyecto">Asignar a un proyecto</label>
+                </div>
 
-<div id="proyecto_fields" style="display: none;">
-    <div class="form-group">
-        <label for="nombre_proyecto">Nombre del Proyecto:</label>
-        <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control" value="{{ old('nombre_proyecto') }}">
-    </div>
-    <div class="form-group">
-        <label for="descripcion_proyecto">Descripción del Proyecto:</label>
-        <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto') }}</textarea>
-    </div>
-    <div class="form-group">
-                    <label for="area_asignada">Área asignada:</label>
-                    <select id="area_asignada" name="area_asignada">
-                        <option value="">Seleccione una opción</option>
-                        <option value="Contraloria">Contraloria</option>
-                        <option value="Ventas">Ventas</option>
-                        <option value="Sistemas">Sistemas</option>
-                        <option value="AyB">AyB</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
-                        <option value="Recursos Humanos">Recursos Humanos</option>
-                        <option value="Dirección">Dirección</option>
-                        <option value="Recepción">Recepción</option>
-                        <option value="Reservaciones">Reservaciones</option>
-                        <option value="Cocina">Cocina</option>
-                        <option value="Ama de llaves">Ama de llaves</option>
-                    </select>
-    </div>
-</div>
+                <div id="proyecto_fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="nombre_proyecto">Nombre del Proyecto:</label>
+                        <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control"
+                            value="{{ old('nombre_proyecto') }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion_proyecto">Descripción del Proyecto:</label>
+                        <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto') }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="area_asignada">Área asignada:</label>
+                        <select id="area_asignada" name="area_asignada">
+                            <option value="">Seleccione una opción</option>
+                            <option value="Contraloria">Contraloria</option>
+                            <option value="Ventas">Ventas</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="AyB">AyB</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Dirección">Dirección</option>
+                            <option value="Recepción">Recepción</option>
+                            <option value="Reservaciones">Reservaciones</option>
+                            <option value="Cocina">Cocina</option>
+                            <option value="Ama de llaves">Ama de llaves</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="form-actions">
                     <button type="submit" class="save-button">Guardar Practicante</button>
                     <button type="button" class="cancel-button">Cancelar</button>
@@ -295,10 +301,10 @@ select.form-control {
 
             </div>
             <script>
-                // Define la variable global antes de cargar tu script
+                // Define la variable global antes de cargar el script
                 window.instituciones = @json($instituciones->pluck('nombre', 'id_institucion'));
             </script>
-            
+
         </form>
     </div>
     <script src="{{ asset('js/registrar_prac.js') }}"></script>
@@ -306,73 +312,74 @@ select.form-control {
     <script src="{{ asset('js/menu_modal.js') }}"></script>
 
     <script>
-document.getElementById('add-image-input').addEventListener('change', function(event) {
-    const previewContainer = document.querySelector('.profile-image-container');
-    const file = event.target.files[0];
-    
-    if (file && file.type.match('image.*')) {
-        // Validar tamaño
-        if (file.size > 2 * 1024 * 1024) {
-            alert('La imagen no debe exceder los 2MB');
-            this.value = '';
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            // Crear elemento img
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.className = 'profile-image-preview';
-            img.alt = 'Vista previa';
-            
-            // Limpiar contenedor y añadir nueva imagen
-            previewContainer.innerHTML = '';
-            previewContainer.appendChild(img);
-            
-            // Verificar relación de aspecto
-            const tempImg = new Image();
-            tempImg.onload = function() {
-                if (Math.abs(this.width - this.height) > this.width * 0.1) { // 10% de tolerancia
-                    alert('La imagen no es perfectamente cuadrada. Se ajustará para mostrarse correctamente.');
-                }
-            };
-            tempImg.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-</script>
-<script>
-    // Lógica para mostrar/ocultar campos de proyecto
-    document.addEventListener('DOMContentLoaded', function() {
-        const incluirProyectoCheckbox = document.getElementById('incluir_proyecto');
-        const proyectoFields = document.getElementById('proyecto_fields');
+        document.getElementById('add-image-input').addEventListener('change', function(event) {
+            const previewContainer = document.querySelector('.profile-image-container');
+            const file = event.target.files[0];
 
-        incluirProyectoCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                proyectoFields.style.display = 'block';
-                // Puedes hacer que los campos sean requeridos aquí si lo deseas:
-                // document.getElementById('nombre_proyecto').setAttribute('required', 'required');
-                // etc.
-            } else {
-                proyectoFields.style.display = 'none';
-                // Limpiar campos y quitar 'required' si estaban marcados
-                document.getElementById('nombre_proyecto').value = '';
-                document.getElementById('descripcion_proyecto').value = '';
-                document.getElementById('area_proyecto').value = '';
-                // document.getElementById('nombre_proyecto').removeAttribute('required');
-                // etc.
+            if (file && file.type.match('image.*')) {
+                // Validar tamaño
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('La imagen no debe exceder los 2MB');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Crear elemento img
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'profile-image';
+                    img.alt = 'Vista previa';
+
+                    // Limpiar contenedor y añadir nueva imagen
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(img);
+
+                    // Verificar relación de aspecto
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        if (Math.abs(this.width - this.height) > this.width * 0.1) { // 10% de tolerancia
+                            alert(
+                                'La imagen no es perfectamente cuadrada. Se ajustará para mostrarse correctamente.');
+                        }
+                    };
+                    tempImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         });
+    </script>
+    <script>
+        // Lógica para mostrar/ocultar campos de proyecto
+        document.addEventListener('DOMContentLoaded', function() {
+            const incluirProyectoCheckbox = document.getElementById('incluir_proyecto');
+            const proyectoFields = document.getElementById('proyecto_fields');
 
-        // Mantener el estado si hubo un error de validación
-        @if(old('incluir_proyecto'))
-            incluirProyectoCheckbox.checked = true;
-            proyectoFields.style.display = 'block';
-        @endif
-    });
-</script>
+            incluirProyectoCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    proyectoFields.style.display = 'block';
+                    // Puedes hacer que los campos sean requeridos aquí si lo deseas:
+                    // document.getElementById('nombre_proyecto').setAttribute('required', 'required');
+                    // etc.
+                } else {
+                    proyectoFields.style.display = 'none';
+                    // Limpiar campos y quitar 'required' si estaban marcados
+                    document.getElementById('nombre_proyecto').value = '';
+                    document.getElementById('descripcion_proyecto').value = '';
+                    document.getElementById('area_proyecto').value = '';
+                    // document.getElementById('nombre_proyecto').removeAttribute('required');
+                    // etc.
+                }
+            });
+
+            // Mantener el estado si hubo un error de validación
+            @if (old('incluir_proyecto'))
+                incluirProyectoCheckbox.checked = true;
+                proyectoFields.style.display = 'block';
+            @endif
+        });
+    </script>
 </body>
 
 </html>

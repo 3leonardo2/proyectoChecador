@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
     <style>
         #monthFilterGroup {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
-}
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 
@@ -56,17 +56,17 @@
                         <label for="filterArea">Área:</label>
                         <select id="filterArea">
                             <option value="">Todas</option>
-                        <option value="Contraloria">Contraloria</option>
-                        <option value="Ventas">Ventas</option>
-                        <option value="Sistemas">Sistemas</option>
-                        <option value="AyB">AyB</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
-                        <option value="Recursos Humanos">Recursos Humanos</option>
-                        <option value="Dirección">Dirección</option>
-                        <option value="Recepción">Recepción</option>
-                        <option value="Reservaciones">Reservaciones</option>
-                        <option value="Cocina">Cocina</option>
-                        <option value="Ama de llaves">Ama de llaves</option>
+                            <option value="Contraloria">Contraloria</option>
+                            <option value="Ventas">Ventas</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="AyB">AyB</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Dirección">Dirección</option>
+                            <option value="Recepción">Recepción</option>
+                            <option value="Reservaciones">Reservaciones</option>
+                            <option value="Cocina">Cocina</option>
+                            <option value="Ama de llaves">Ama de llaves</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -81,29 +81,31 @@
                             <option value="CONCLUIDO">CONCLUIDO</option>
                         </select>
                     </div>
-<div class="filter-group">
-    <label>
-        <input type="checkbox" id="filterProximos30"> Próximos 30 días
-    </label>
-</div>
+                    <div class="filter-group" id="monthFilterGroup">
+                        <label for="filterMes">Seleccionar mes:</label>
+                        <select id="filterMes">
+                            <option value="">Todos</option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for ="filterProximos30">
+                            <input type="checkbox" id="filterProximos30"> Próximos 30 días
+                        </label>
+                    </div>
 
-<div class="filter-group" id="monthFilterGroup">
-    <label for="filterMes">Seleccionar mes:</label>
-    <select id="filterMes">
-        <option value="1">Enero</option>
-        <option value="2">Febrero</option>
-        <option value="3">Marzo</option>
-        <option value="4">Abril</option>
-        <option value="5">Mayo</option>
-        <option value="6">Junio</option>
-        <option value="7">Julio</option>
-        <option value="8">Agosto</option>
-        <option value="9">Septiembre</option>
-        <option value="10">Octubre</option>
-        <option value="11">Noviembre</option>
-        <option value="12">Diciembre</option>
-    </select>
-</div>
+                    
                     <div class="filter-actions">
                         <button class="apply-filter-button">Aplicar Filtros</button>
                         <button class="clear-filter-button">Limpiar Filtros</button>
@@ -140,7 +142,7 @@
                             <td>{{ $practicante->nombre }}</td>
                             <td>{{ $practicante->apellidos }}</td>
                             <td>{{ $practicante->area_asignada }}</td>
-                            <td>{{ $practicante->institucion->nombre }}</td>
+                            <td>{{ $practicante->institucion->acronimo }}</td>
                             <td>
                                 <span class="status-badge {{ strtolower($practicante->estado_practicas) }}">
                                     {{ $practicante->estado_practicas }}

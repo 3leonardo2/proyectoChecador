@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Institucion;
 use App\Models\Carrera;
+use App\Models\Practicante;
 use Illuminate\Support\Facades\DB; // Para usar transacciones
 use Illuminate\Support\Facades\Log; // Para registrar errores
 
@@ -23,7 +24,7 @@ class InstitucionController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('Datos recibidos:', $request->all()); 
+        Log::info('Datos recibidos:', $request->all());
 
         $validatedData = $request->validate([
             'nombre_ins' => 'required|string|max:255|unique:instituciones,nombre',
@@ -45,7 +46,7 @@ class InstitucionController extends Controller
                 'correo' => $request->correo_ins,
             ]);
 
-            Log::info('Datos validados:', $validatedData); 
+            Log::info('Datos validados:', $validatedData);
 
             if ($request->has('carreras')) {
                 foreach ($request->carreras as $carreraData) {
@@ -76,7 +77,7 @@ class InstitucionController extends Controller
                 ->with('success', '¡Institución registrada exitosamente!');
 
         } catch (\Exception $e) {
-            
+
             DB::rollBack();
             Log::error('Error al registrar institución: ' . $e->getMessage());
 
@@ -183,6 +184,59 @@ class InstitucionController extends Controller
 
             return back()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
         }
+    }
+
+    public function destroy(Institucion $institucion)
+    {
+        try {
+            // No necesitamos una verificación aquí si la haremos en JS con confirmación
+            // Pero si la quisieras añadir como una última capa de seguridad:
+            $practicantesCount = $this->getAssociatedPractitionersCount($institucion->id_institucion);
+
+            if ($practicantesCount > 0) {
+                // Opcional: puedes retornar un mensaje de error si no quieres permitir la eliminación
+                // sin confirmación explícita o si el front-end falló en la verificación.
+                // return redirect()->back()->with('error', 'No se puede eliminar la institución porque tiene practicantes asociados. 
+                // Por favor, elimínelos primero o use la confirmación adecuada.');
+            }
+
+            $institucion->delete();
+            return redirect()->route('instituciones.index')->with('success', 'Institución eliminada exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al eliminar la institución: ' . $e->getMessage());
+        }
+    }
+    public function checkPracticantes($id_institucion)
+    {
+        $institucion = Institucion::find($id_institucion);
+
+        if (!$institucion) {
+            return response()->json(['exists' => false, 'count' => 0, 'message' => 'Institución no encontrada'], 404);
+        }
+
+        // Obtener todas las carreras asociadas a esta institución
+        $carrerasIds = $institucion->carreras->pluck('id_carrera');
+
+        // Contar el número de practicantes asociados a esas carreras
+        $practicantesCount = Practicante::whereIn('carrera_id', $carrerasIds)->count();
+
+        return response()->json([
+            'exists' => $practicantesCount > 0,
+            'count' => $practicantesCount,
+            'message' => $practicantesCount > 0 ?
+                "Esta institución tiene {$practicantesCount} practicante(s) asociado(s) a través de sus carreras. Eliminarlos resultará en la eliminación de estos practicantes." :
+                "Esta institución no tiene practicantes asociados."
+        ]);
+    }
+
+    private function getAssociatedPractitionersCount($id_institucion)
+    {
+        $institucion = Institucion::find($id_institucion);
+        if (!$institucion) {
+            return 0;
+        }
+        $carrerasIds = $institucion->carreras->pluck('id_carrera');
+        return Practicante::whereIn('carrera_id', $carrerasIds)->count();
     }
 
 }

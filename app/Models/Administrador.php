@@ -22,4 +22,9 @@ class Administrador extends Authenticatable
     {
         return $this->contrasena;
     }
+
+    public function setCorreoAttribute($value)
+    {
+        $this->attributes['correo'] = strtolower($value);
+    }
 }

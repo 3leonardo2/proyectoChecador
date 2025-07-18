@@ -23,9 +23,10 @@ class Carrera extends Model
 
     public $timestamps = true;
 
-    /**
-     * Relación con la institución
-     */
+    public function practicantes()
+    {
+        return $this->hasMany(Practicante::class, 'id_carrera', 'id_carrera');
+    }
     public function institucion(): BelongsTo
     {
         return $this->belongsTo(Institucion::class, 'id_institucion', 'id_institucion');

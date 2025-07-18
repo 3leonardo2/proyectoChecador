@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('institucion_id');
             $table->unsignedBigInteger('carrera_id');
-            $table->string('email_institucional', 100)->unique()->nullable(); // Añadido desde el form
+            $table->string('email_institucional', 100)->nullable(); // Añadido desde el form
             $table->string('telefono_institucional', 20)->nullable(); // Añadido desde el form
             $table->string('nivel_estudios', 100)->nullable();
 

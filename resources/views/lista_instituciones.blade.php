@@ -49,7 +49,7 @@
                             data-nombre="{{ $institucion->nombre }}" data-codigo="{{ $institucion->id_institucion }}">
                             <td>{{ $index + 1 }}</td>
                             <td>INS-{{ $institucion->id_institucion }}</td>
-                            <td>{{ $institucion->nombre }}</td>
+                            <td>{{ $institucion->acronimo }}</td>
                             <td>{{ $institucion->direccion ?? 'N/A' }}</td>
                             <td>{{ $institucion->telefono ?? 'N/A' }}</td>
                             <td>{{ $institucion->correo ?? 'N/A' }}</td>
@@ -60,7 +60,6 @@
                                 </span>
                                 <div id="carreras-{{ $institucion->id_institucion }}" class="carreras-container">
                                     <ul class="carreras-list">
-                                        <!-- Las carreras se cargarán aquí dinámicamente -->
                                     </ul>
                                 </div>
                             </td>
@@ -69,6 +68,16 @@
                                     class="admin-button">
                                     <i class="fa-solid fa-edit"></i>
                                 </a>
+                                <form action="{{ route('instituciones.destroy', $institucion->id_institucion) }}"
+                                    method="POST"
+                                    onsubmit="return confirmDelete(this, {{ $institucion->id_institucion }});">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="admin-button delete-button"
+                                        title="Eliminar Institución">
+                                        <i class="fa-solid fa-trash-alt"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -77,7 +86,45 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
+    <script>
+        // Función para manejar la confirmación de eliminación
+    function confirmDelete(form, institucionId) {
+        return $.ajax({
+            url: "{{ route('instituciones.checkPracticantes', ['id_institucion' => 'PLACEHOLDER_ID']) }}".replace('PLACEHOLDER_ID', institucionId),// Usamos url() para la ruta
+            method: 'GET',
+            async: false // Importante: hacer la petición síncrona para que el confirm espere
+        }).done(function(response) {
+            let confirmationMessage = '';
+            if (response.exists) {
+                // Mensaje de advertencia si hay practicantes asociados
+                confirmationMessage =
+                    "ADVERTENCIA: Esta institución tiene " + response.count + " practicante(s) asociado(s) a través de sus carreras.\n\n" +
+                    "Si eliminas esta institución es probable que" +
+                    "estos practicantes (y sus registros) se eliminen también.\n\n" +
+                    "¿Desea proceder de todos modos?";
+            } else {
+                // Mensaje de confirmación estándar
+                confirmationMessage = "¿Estás seguro de que deseas eliminar esta institución?";
+            }
+
+            // Mostrar la confirmación al usuario
+            if (confirm(confirmationMessage)) {
+                // Si el usuario confirma, el formulario se envía
+                return true;
+            } else {
+                // Si el usuario cancela, no se envía el formulario
+                return false;
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error al verificar practicantes:", textStatus, errorThrown);
+            // En caso de error en la verificación, mostrar un mensaje genérico
+            alert("Ocurrió un error al verificar la relación. ¿Desea eliminar la institución de todos modos?");
+            return confirm("¿Estás seguro de que deseas eliminar esta institución?"); // Fallback a confirmación simple
+        });
+    }
+    </script>
     <script>
         function toggleCarreras(idInstitucion) {
             const container = document.getElementById(`carreras-${idInstitucion}`);

@@ -30,4 +30,10 @@ class Institucion extends Model
     {
         return $this->hasMany(Carrera::class, 'id_institucion', 'id_institucion');
     }
+
+        public function setCorreoAttribute($value)
+    {
+        $this->attributes['correo'] = strtolower($value);
+    }
+
 }

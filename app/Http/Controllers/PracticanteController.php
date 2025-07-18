@@ -18,11 +18,19 @@ class PracticanteController extends Controller
     public function index()
     {
         $practicantes = Practicante::with('institucion')
-        ->orderBy('created_at', 'desc')
-        ->get(['id_practicante', 'codigo', 'nombre', 'apellidos', 'area_asignada', 
-              'institucion_id', 'estado_practicas', 'fecha_final']); // Asegúrate de incluir fecha_fin
+            ->orderBy('created_at', 'desc')
+            ->get([
+                'id_practicante',
+                'codigo',
+                'nombre',
+                'apellidos',
+                'area_asignada',
+                'institucion_id',
+                'estado_practicas',
+                'fecha_final'
+            ]); // Asegúrate de incluir fecha_fin
 
-    return view('lista_practicantes', compact('practicantes'));
+        return view('lista_practicantes', compact('practicantes'));
     }
     /**
      * Muestra el formulario para crear un nuevo practicante.
@@ -34,10 +42,10 @@ class PracticanteController extends Controller
         $instituciones = Institucion::orderBy('nombre')->get();
         $carreras = Carrera::orderBy('nombre_carr')->get();
 
-        return view('registrar_prac', compact('instituciones', 'carreras','proyectos'));
+        return view('registrar_prac', compact('instituciones', 'carreras', 'proyectos'));
     }
 
-        public function store(Request $request)
+    public function store(Request $request)
     {
         Log::info('Iniciando registro de practicante', ['request' => $request->all()]);
 
@@ -47,9 +55,8 @@ class PracticanteController extends Controller
             'apellidos' => 'required|string|max:100',
             'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
             'fecha_nacimiento' => 'required|date',
-            // Si `institucion_nombre` y `carrera_nombre` son solo para mostrar en la UI
-            // y los IDs son los que se guardan, puedes quitarlos de `required`
-            // o solo validar los IDs. Asumo que los IDs son los importantes para guardar.
+            'sexo' => 'nullable|string|max:20',
+            'direccion' => 'nullable|string|max:255',
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
             'fecha_inicio' => 'required|date',
@@ -60,12 +67,15 @@ class PracticanteController extends Controller
             'num_seguro' => 'nullable|string|max:20',
             'email_institucional' => 'nullable|email',
             'telefono_institucional' => 'nullable|string|max:20',
+            'nivel_estudios' => 'nullable|string|max:255',
+            'estado_practicas' => 'nullable|string|max:50',
             'area_asignada' => 'nullable|string|max:100',
+            'fecha_final' => 'nullable|date',
             'hora_entrada' => 'nullable|string|max:10',
             'hora_salida' => 'nullable|string|max:10',
             'horas_requeridas' => 'nullable|integer|min:0',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'incluir_proyecto' => 'nullable|string', // Aseguramos que este campo se valide
+            'incluir_proyecto' => 'nullable|string',
         ];
 
         if ($request->has('incluir_proyecto') && $request->incluir_proyecto == 'on') {
@@ -152,32 +162,32 @@ class PracticanteController extends Controller
 
 
     public function getByCarrera(Request $request)
-{
-    try {
-        $carreraId = $request->input('carrera_id');
-        
-        if (empty($carreraId)) {
-            return response()->json(['error' => 'ID de carrera no proporcionado'], 400);
+    {
+        try {
+            $carreraId = $request->input('carrera_id');
+
+            if (empty($carreraId)) {
+                return response()->json(['error' => 'ID de carrera no proporcionado'], 400);
+            }
+
+            $carrera = Carrera::find($carreraId);
+
+            if (!$carrera) {
+                return response()->json([], 200);
+            }
+
+            return response()->json([
+                'email_institucional' => $carrera->correo_carr,
+                'telefono_institucional' => $carrera->tel_gerente,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error interno del servidor'], 500);
         }
-
-        $carrera = Carrera::find($carreraId);
-
-        if (!$carrera) {
-            return response()->json([], 200);
-        }
-
-        return response()->json([
-            'email_institucional' => $carrera->correo_carr,
-            'telefono_institucional' => $carrera->tel_gerente,
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Error interno del servidor'], 500);
     }
-}
 
 
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $practicante = Practicante::findOrFail($id);
 
@@ -276,10 +286,10 @@ class PracticanteController extends Controller
                     $practicante->proyecto_id = $proyecto->id_proyecto;
                 }
             } else {
-                 // Si el checkbox no está marcado y no había un proyecto, o si el checkbox se desmarca
-                 // y ya se manejó la eliminación arriba, no hacemos nada con el proyecto_id aquí.
-                 // Si no había proyecto_id y el checkbox no está, simplemente se mantiene null.
-                 // Si se desmarcó y se eliminó el proyecto, ya se estableció a null arriba.
+                // Si el checkbox no está marcado y no había un proyecto, o si el checkbox se desmarca
+                // y ya se manejó la eliminación arriba, no hacemos nada con el proyecto_id aquí.
+                // Si no había proyecto_id y el checkbox no está, simplemente se mantiene null.
+                // Si se desmarcó y se eliminó el proyecto, ya se estableció a null arriba.
             }
 
             // 5. Actualizar los campos directos del practicante
@@ -307,42 +317,42 @@ class PracticanteController extends Controller
     }
 
     public function generarCredencial(Practicante $practicante)
-{
-    $imagenPath = $practicante->profile_image
-        ? storage_path('app/public/' . $practicante->profile_image)
-        : null;
-    $imagenValida = ($imagenPath && file_exists($imagenPath));
-    $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
-    $area = $practicante->area_asignada;
-    $clave = $practicante->codigo;
+    {
+        $imagenPath = $practicante->profile_image
+            ? storage_path('app/public/' . $practicante->profile_image)
+            : null;
+        $imagenValida = ($imagenPath && file_exists($imagenPath));
+        $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
+        $area = $practicante->area_asignada;
+        $clave = $practicante->codigo;
 
-    $logoFrentePath = public_path('images/credencial/logo_presidente3.png');
-    $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
+        $logoFrentePath = public_path('images/credencial/logo_presidente3.png');
+        $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
 
-    $generator = new BarcodeGeneratorPNG();
-    $barcodeImage = base64_encode($generator->getBarcode(
-        $clave,
-        $generator::TYPE_CODE_128,
-        2,
-        33
-    ));
+        $generator = new BarcodeGeneratorPNG();
+        $barcodeImage = base64_encode($generator->getBarcode(
+            $clave,
+                $generator::TYPE_CODE_128,
+            2,
+            33
+        ));
 
-    $data = [
-        'nombreCompleto' => $nombreCompleto,
-        'area' => $area,
-        'clave' => $clave,
-        'logoFrentePath' => $logoFrentePath,
-        'logoDorsoPath' => $logoDorsoPath,
-        'barcodeImage' => $barcodeImage,
-        'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
-    ];
+        $data = [
+            'nombreCompleto' => $nombreCompleto,
+            'area' => $area,
+            'clave' => $clave,
+            'logoFrentePath' => $logoFrentePath,
+            'logoDorsoPath' => $logoDorsoPath,
+            'barcodeImage' => $barcodeImage,
+            'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
+        ];
 
-    $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
-    $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
+        $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
+        $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
 
-    // Cambia download() por stream() para abrir en el navegador
-    return $pdf->stream('credencial-' . $clave . '.pdf');
-}
+        // Cambia download() por stream() para abrir en el navegador
+        return $pdf->stream('credencial-' . $clave . '.pdf');
+    }
 
     public function generarReporte(Request $request, Practicante $practicante)
     {
@@ -388,16 +398,16 @@ class PracticanteController extends Controller
 
     public function show($id)
     {
-        $practicante = Practicante::with(['institucion', 'carrera','proyecto'])->findOrFail($id);
+        $practicante = Practicante::with(['institucion', 'carrera', 'proyecto'])->findOrFail($id);
         return view('detallesprac', compact('practicante'));
     }
     public function edit($id)
     {
-    $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
-    $instituciones = Institucion::orderBy('nombre')->get();
-            $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
+        $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
+        $instituciones = Institucion::orderBy('nombre')->get();
+        $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
 
-    return view('edit_prac', compact('practicante', 'instituciones','proyectos'));
+        return view('edit_prac', compact('practicante', 'instituciones', 'proyectos'));
     }
 
     public function showEvaluaciones($id_practicante)

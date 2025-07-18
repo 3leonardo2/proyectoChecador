@@ -24,42 +24,44 @@ class AuthController extends Controller
     }
 
     // Procesar login
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'correo' => 'required|email',
-            'contrasena' => 'required'
-        ]);
+public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'correo' => 'required|email',
+        'contrasena' => 'required'
+    ]);
+    
+    // Normalizar el correo
+    $correoNormalizado = strtolower($credentials['correo']);
+    $credentials['correo'] = $correoNormalizado; // Actualizar el array de credenciales
 
-        $admin = Administrador::where('correo', $credentials['correo'])->first();
+    $admin = Administrador::where('correo', $correoNormalizado)->first();
 
-        if ($admin && $admin->es_generico) {
-            // Mostrar alerta de seguridad para usuarios genéricos
-            return back()->with(
-                'generic_warning',
-                'Está utilizando una cuenta genérica.'
-            );
-        }
-
-        if (
-            Auth::guard('admin')->attempt([
-                'correo' => $credentials['correo'],
-                'password' => $credentials['contrasena']
-            ])
-        ) {
-            $request->session()->regenerate();
-
-            // Redirección basada en rol
-            return Auth::guard('admin')->user()->rol === 'rh'
-                ? redirect()->intended('/practicantes')
-                : redirect()->intended('/asesor/practicantes');
-        }
-
-        return back()->withErrors(['correo' => 'Credenciales incorrectas']);
+    if ($admin && $admin->es_generico) {
+        return back()->with(
+            'generic_warning',
+            'Está utilizando una cuenta genérica.'
+        );
     }
+
+    if (Auth::guard('admin')->attempt([
+        'correo' => $correoNormalizado, // Usar el correo normalizado aquí
+        'password' => $credentials['contrasena']
+    ])) {
+        $request->session()->regenerate();
+
+        return Auth::guard('admin')->user()->rol === 'rh'
+            ? redirect()->intended('/practicantes')
+            : redirect()->intended('/asesor/practicantes');
+    }
+
+    return back()->withErrors(['correo' => 'Credenciales incorrectas']);
+}
 
     public function index()
     {
+        
+        // Verifica si el usuario está autenticado
         $user = Auth::guard('admin')->user();
 
         // Verifica el rol directamente

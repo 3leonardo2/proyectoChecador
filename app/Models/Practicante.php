@@ -53,6 +53,16 @@ class Practicante extends Model
         'profile_image',
         'proyecto_id',
     ];
+
+    public function setEmailPersonalAttribute($value)
+    {
+        $this->attributes['email_personal'] = strtolower($value);
+    }
+
+    public function setEmailInstitucionalAttribute($value)
+    {
+        $this->attributes['email_institucional'] = $value ? strtolower($value) : null;
+    }
     public function institucion()
     {
         return $this->belongsTo(Institucion::class, 'institucion_id', 'id_institucion');
@@ -66,7 +76,7 @@ class Practicante extends Model
     {
         return $this->hasMany(Evaluacion::class, 'id_practicante');
     }
-        public function proyecto()
+    public function proyecto()
     {
         return $this->belongsTo(Proyecto::class, 'proyecto_id', 'id_proyecto');
     }
