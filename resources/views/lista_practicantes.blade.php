@@ -20,6 +20,7 @@
 </head>
 
 <body>
+            @include('partials.detalles_modal')
     <div class="header">
         <h1>Practicantes</h1>
         <button class="menu-button" id="menuButton">
@@ -155,6 +156,13 @@
                                         class="admin-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>
+                                    <form action="{{ route('practicantes.destroy', $practicante->id_practicante) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a {{ $practicante->nombre }} {{ $practicante->apellidos }}? Esta acción no se puede deshacer.');">
+                                        @csrf
+                                        @method('DELETE') {{-- Esto simula una petición DELETE --}}
+                                        <button type="submit" class="admin-button delete-button" title="Eliminar">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
                                 @endif
                             </td>
                         </tr>
@@ -165,6 +173,41 @@
     </div>
     <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script src="{{ asset('js/lista_prac.js') }}"></script>
+    <script>
+         document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showAlertModal('success', '{{ session('success') }}');
+            @endif
+
+            @if (session('error'))
+                showAlertModal('error', '{{ session('error') }}');
+            @endif
+        });
+
+        function showAlertModal(type, message) {
+            const modal = document.getElementById('alertModal');
+            const icon = document.getElementById('alertModalIcon');
+            const msg = document.getElementById('alertModalMessage');
+
+            // Configura el modal según el tipo
+            modal.className = `alert-modal ${type}`;
+            icon.innerHTML = type === 'success' ?
+                '<i class="fas fa-check-circle"></i>' :
+                '<i class="fas fa-exclamation-circle"></i>';
+            msg.textContent = message;
+
+            // Muestra el modal
+            modal.style.display = 'flex';
+
+            // Cierra automáticamente después de 5 segundos
+            setTimeout(() => {
+                modal.style.animation = 'fadeOut 0.5s ease-out';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
+    </script>
 </body>
 
 </html>

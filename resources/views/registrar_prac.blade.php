@@ -138,7 +138,7 @@
                     <input type="text" id="direccion" name="direccion" placeholder="Dirección...">
                 </div>
                 <div class="form-group">
-                    <label for="email_personal">Correo electrónico personal*:</label>
+                    <label for="email_personal">Correo electrónico personal:</label>
                     <input type="email" id="email_personal" name="email_personal"
                         placeholder="Correo electrónico personal...">
                 </div>
@@ -277,8 +277,8 @@
                         <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto') }}</textarea>
                     </div>
                     <div class="form-group">
-                        <label for="area_asignada">Área asignada:</label>
-                        <select id="area_asignada" name="area_asignada">
+                        <label for="area_proyecto">Área asignada:</label>
+                        <select id="area_proyecto" name="area_proyecto">
                             <option value="">Seleccione una opción</option>
                             <option value="Contraloria">Contraloria</option>
                             <option value="Ventas">Ventas</option>
@@ -359,21 +359,14 @@
             incluirProyectoCheckbox.addEventListener('change', function() {
                 if (this.checked) {
                     proyectoFields.style.display = 'block';
-                    // Puedes hacer que los campos sean requeridos aquí si lo deseas:
-                    // document.getElementById('nombre_proyecto').setAttribute('required', 'required');
-                    // etc.
                 } else {
                     proyectoFields.style.display = 'none';
-                    // Limpiar campos y quitar 'required' si estaban marcados
+
                     document.getElementById('nombre_proyecto').value = '';
                     document.getElementById('descripcion_proyecto').value = '';
                     document.getElementById('area_proyecto').value = '';
-                    // document.getElementById('nombre_proyecto').removeAttribute('required');
-                    // etc.
                 }
             });
-
-            // Mantener el estado si hubo un error de validación
             @if (old('incluir_proyecto'))
                 incluirProyectoCheckbox.checked = true;
                 proyectoFields.style.display = 'block';

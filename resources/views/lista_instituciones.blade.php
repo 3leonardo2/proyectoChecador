@@ -50,7 +50,7 @@
                             <td>{{ $index + 1 }}</td>
                             <td>INS-{{ $institucion->id_institucion }}</td>
                             <td>{{ $institucion->acronimo }}</td>
-                            <td>{{ $institucion->direccion ?? 'N/A' }}</td>
+                            <td>{{ Str::limit($institucion->direccion ?? 'N/A', 30, '...') }}</td>
                             <td>{{ $institucion->telefono ?? 'N/A' }}</td>
                             <td>{{ $institucion->correo ?? 'N/A' }}</td>
                             <td>

@@ -244,8 +244,8 @@
         <textarea id="descripcion_proyecto" name="descripcion_proyecto" class="form-control">{{ old('descripcion_proyecto', $practicante->proyecto->descripcion_proyecto ?? '') }}</textarea>
     </div>
     <div class="form-group">
-                    <label for="area_asignada">Área asignada:</label>
-                    <select id="area_asignada" name="area_asignada">
+                    <label for="area_proyecto">Área asignada:</label>
+                    <select id="area_proyecto" name="area_proyecto">
                         <option value="">Seleccione una opción</option>
                         <option value="Contraloria">Contraloria</option>
                         <option value="Ventas">Ventas</option>

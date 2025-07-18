@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Storage;
 use App\Models\Proyecto;
 use Illuminate\Http\Request;
-use App\Models\Practicante; // Asegúrate de tener los modelos creados
+use App\Models\Practicante;
 use App\Models\Institucion;
 use App\Models\Carrera;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Picqer\Barcode\BarcodeGeneratorPNG;
-use Illuminate\Support\Str; // Para usar funciones de string
+use Illuminate\Support\Str; 
 use Illuminate\Support\Facades\DB; // Para transacciones
 use Illuminate\Support\Facades\Log; // Para logging
 
@@ -60,7 +61,7 @@ class PracticanteController extends Controller
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
             'fecha_inicio' => 'required|date',
-            'email_personal' => 'required|email|unique:practicantes,email_personal',
+            'email_personal' => 'nullable|email|unique:practicantes,email_personal',
             'telefono_personal' => 'nullable|string|max:15',
             'nombre_emergencia' => 'nullable|string|max:100',
             'telefono_emergencia' => 'nullable|string|max:15',
@@ -414,6 +415,38 @@ class PracticanteController extends Controller
     {
         $practicante = Practicante::with('evaluaciones')->findOrFail($id_practicante);
         return view('lista_revisiones', compact('practicante'));
+    }
+
+        public function destroy($id)
+    {
+        try {
+            $practicante = Practicante::findOrFail($id);
+
+            // Opcional: Eliminar la imagen de perfil asociada si existe
+            if ($practicante->profile_image) {
+                Storage::disk('public')->delete($practicante->profile_image);
+            }
+
+            // Elimina el registro del practicante
+            // NOTA: Si tienes restricciones de clave foránea (foreign keys)
+            // en tu base de datos (ej. desde la tabla de proyectos si un proyecto
+            // no puede existir sin un practicante único o viceversa, y no tienes
+            // ON DELETE CASCADE/SET NULL configurado), esto podría fallar.
+            // Asegúrate de que tus migraciones manejen la eliminación en cascada o nulos si es necesario.
+            $practicante->delete();
+
+            return redirect()->route('practicantes.index')->with('success', 'Practicante eliminado exitosamente.');
+
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar practicante: ' . $e->getMessage(), ['id' => $id, 'trace' => $e->getTraceAsString()]);
+
+            // Mensaje de error más específico para violaciones de clave foránea (ej. PostgreSQL 23503)
+            if (Str::contains($e->getMessage(), 'SQLSTATE[23503]')) {
+                return back()->with('error', 'No se puede eliminar el practicante porque está asociado a otros registros (ej. un proyecto o evaluaciones). Desvincula las dependencias primero.');
+            }
+
+            return back()->with('error', 'Error inesperado al eliminar el practicante: ' . $e->getMessage());
+        }
     }
 
 }

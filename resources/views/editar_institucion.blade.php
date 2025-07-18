@@ -37,20 +37,6 @@
             class="registrar_insti-wrapper" enctype="multipart/form-data">
             @csrf
             @method('PUT')
-            <div class="institucion-fixed-elements">
-                <div class="institucion-profile-section">
-                    <div class="profile-image-container">
-                        @if ($institucion->imagen)
-                            <img src="{{ asset('storage/' . $institucion->imagen) }}" alt="ImagenInstitución"
-                                class="profile-image">
-                        @endif
-                    </div>
-                    <input type="file" id="add-image-input" class="add-image-input" name="profile_image"
-                        accept="image/*" style="display: none;">
-                    <label for="add-image-input" class="add-image-button">Cambiar imagen</label>
-                    <div class="mensaje-opcional">(OPCIONAL)</div>
-                </div>
-            </div>
             <div class="institucion-scrollable-content">
                 <h2>Información de la institución</h2>
                 <div class="form-group">

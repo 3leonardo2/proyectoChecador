@@ -49,6 +49,7 @@ Route::prefix('practicantes')->group(function () {
         Route::get('/', [PracticanteController::class, 'show'])->name('practicantes.show');
         Route::get('/edit', [PracticanteController::class, 'edit'])->name('practicantes.edit');
         Route::put('/', [PracticanteController::class, 'update'])->name('practicantes.update');
+        Route::delete('/', [PracticanteController::class, 'destroy'])->name('practicantes.destroy');
 
         // Rutas de evaluaciones para el practicante
         Route::prefix('evaluaciones')->group(function () {

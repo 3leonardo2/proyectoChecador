@@ -44,21 +44,28 @@
                     <label for="departamento">Departamento*:</label>
                     <select id="departamento" name="departamento" required>
                         <option value="">Seleccione un departamento</option>
-                        <option value="Recursos Humanos"
-                            {{ old('departamento', $admin->departamento) == 'Recursos Humanos' ? 'selected' : '' }}>
-                            Recursos Humanos</option>
-                        <option value="Sistemas"
-                            {{ old('departamento', $admin->departamento) == 'Sistemas' ? 'selected' : '' }}>Sistemas
-                        </option>
-                        <option value="Administración"
-                            {{ old('departamento', $admin->departamento) == 'Administración' ? 'selected' : '' }}>
-                            Administración</option>
-                        <option value="Direccion"
-                            {{ old('departamento', $admin->departamento) == 'Direccion' ? 'selected' : '' }}>Dirección
-                        </option>
-                        <option value="Cocina"
-                            {{ old('departamento', $admin->departamento) == 'Cocina' ? 'selected' : '' }}>Cocina
-                        </option>
+                            <option value="Contraloria" {{ old('departamento', $admin->departamento) == 'Contraloria' ? 'selected' : '' }}>
+                                Contraloria</option>
+                            <option value="Ventas" {{ old('departamento', $admin->departamento) == 'Ventas' ? 'selected' : '' }}>
+                                Ventas</option>
+                            <option value="Sistemas" {{ old('departamento', $admin->departamento) == 'Sistemas' ? 'selected' : '' }}>
+                                Sistemas</option>
+                            <option value="AyB" {{ old('departamento', $admin->departamento) == 'AyB' ? 'selected' : '' }}>
+                                AyB</option>
+                            <option value="Mantenimiento" {{ old('departamento', $admin->departamento) == 'Mantenimiento' ? 'selected' : '' }}>
+                                Mantenimiento</option>
+                            <option value="Recursos Humanos" {{ old('departamento', $admin->departamento) == 'Recursos Humanos' ? 'selected' : '' }}>
+                                Recursos Humanos</option>
+                            <option value="Dirección" {{ old('departamento', $admin->departamento) == 'Dirección' ? 'selected' : '' }}>
+                                irección</option>
+                            <option value="Recepción" {{ old('departamento', $admin->departamento) == 'Recepción' ? 'selected' : '' }}>
+                                Recepción</option>
+                            <option value="Reservaciones" {{ old('departamento', $admin->departamento) == 'Reservaciones' ? 'selected' : '' }}>
+                                Reservaciones</option>
+                            <option value="Cocina" {{ old('departamento', $admin->departamento) == 'Cocina' ? 'selected' : '' }}>
+                                Cocina</option>
+                            <option value="Ama de llaves" {{ old('departamento', $admin->departamento) == 'Ama de llaves' ? 'selected' : '' }}>
+                                Ama de llaves</option>
                     </select>
                 </div>
 
