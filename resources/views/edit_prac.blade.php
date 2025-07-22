@@ -271,7 +271,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
-    <script src="{{ asset('js/registrar_prac.js') }}"></script>
+    <script src="{{ asset('js/edit_prac.js') }}"></script>
     <script src="{{ asset('js/getInfoCarrera.js') }}"></script>
 <script>
     // Lógica para mostrar/ocultar campos de proyecto

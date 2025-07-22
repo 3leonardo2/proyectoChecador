@@ -41,12 +41,10 @@ class BitacoraController extends Controller
                 'message' => 'Ingrese un código de practicante válido.'
             ], 400);
         }
-        
         $request->validate([
             'codigo' => 'required|string|exists:practicantes,codigo',
             'tipo' => 'required|in:entrada,entrada_comedor,salida_comedor,salida'
         ]);
-
         
         $tipo = $request->tipo;
         $fechaHoy = Carbon::today()->toDateString();
@@ -170,8 +168,6 @@ class BitacoraController extends Controller
         'salida_comedor' => 'salida',
         default => 'entrada'
     };
-
-    // Puedes agregar validaciones adicionales aquí si lo deseas
 
     // Registrar el evento
     Bitacora::create([
