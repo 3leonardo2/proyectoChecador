@@ -65,7 +65,7 @@ class PracticanteController extends Controller
             'telefono_personal' => 'nullable|string|max:15',
             'nombre_emergencia' => 'nullable|string|max:100',
             'telefono_emergencia' => 'nullable|string|max:15',
-            'num_seguro' => 'nullable|string|max:20',
+            'num_seguro' => 'nullable|string|max:11',
             'email_institucional' => 'nullable|email',
             'telefono_institucional' => 'nullable|string|max:20',
             'nivel_estudios' => 'nullable|string|max:255',
@@ -96,25 +96,26 @@ class PracticanteController extends Controller
             DB::beginTransaction();
 
             // Generar código (esta lógica está bien)
-            $codigo = strtoupper(
-                substr($validated['nombre'], 0, 3) . substr($validated['curp'], -3)
-            );
-
-            $count = Practicante::where('codigo', 'LIKE', $codigo . '%')->count();
-            if ($count > 0) {
-                $codigo = $codigo . ($count + 1);
+            $lastPracticante = Practicante::orderBy('id_practicante', 'desc')->first();
+            $lastCode = $lastPracticante ? $lastPracticante->codigo : 'A000';
+        
+            $prefix = substr($lastCode, 0, 1);
+            $number = (int) substr($lastCode, 1);
+        
+            if ($number >= 999) {
+                $prefix = chr(ord($prefix) + 1);
+                $number = 1;
+            } else {
+                $number++;
             }
+            $codigo = $prefix . str_pad($number, 3, '0', STR_PAD_LEFT);
 
-            // Crear practicante
+            //Crear Practicante
             $practicante = new Practicante();
-            // Llenar el practicante con los datos validados
-            // Asegúrate de que todos los campos del formulario que se mapean directamente
-            // a la tabla practicantes estén en $fillable en el modelo Practicante.
-            $practicante->fill($validated); // Usa $validated en lugar de $request->except()
+            $practicante->fill($validated); 
             $practicante->codigo = $codigo;
             $practicante->horas_registradas = 0; // Se inicializa a 0 al crear
 
-            // Manejo de imagen (esta lógica está bien, pero usa $validated para la ruta)
             if (isset($validated['profile_image'])) { // Verifica si el campo de imagen está presente en los datos validados
                 $imagePath = $validated['profile_image']->store( // Accede al archivo a través de $validated
                     'fotos_practicantes',
@@ -190,6 +191,7 @@ class PracticanteController extends Controller
 
     public function update(Request $request, $id)
     {
+        Log::info('Datos recibidos para actualización:', $request->all());
         $practicante = Practicante::findOrFail($id);
 
         $projectRules = [];
@@ -202,6 +204,7 @@ class PracticanteController extends Controller
             'fecha_nacimiento' => 'required|date',
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
+            'sexo' => 'nullable|string|max:20',
             'fecha_inicio' => 'required|date',
             'email_personal' => 'nullable|email|unique:practicantes,email_personal,' . $practicante->id_practicante . ',id_practicante',
             'telefono_personal' => 'nullable|string|max:15',
@@ -229,10 +232,11 @@ class PracticanteController extends Controller
         }
 
         // ASIGNA el resultado de validate() a $validatedData
-        $validatedData = $request->validate(array_merge($commonRules, $projectRules));
 
-        DB::beginTransaction();
         try {
+            $validatedData = $request->validate(array_merge($commonRules, $projectRules));
+            Log::info('Datos validados:', $validatedData);
+            DB::beginTransaction();
             // No necesitas volver a buscar el practicante aquí, ya lo tienes al principio
             // $practicante = Practicante::findOrFail($id); // <-- Elimina esta línea duplicada
 
@@ -348,8 +352,12 @@ class PracticanteController extends Controller
             'imagen' => $imagenValida ? base64_encode(file_get_contents($imagenPath)) : null,
         ];
 
-        $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
-        $pdf->setPaper([0, 0, 226.77, 340.15], 'portrait');
+         $pdf = Pdf::loadView('credenciales.plantilla_gp', $data);
+        // Corrected: Set the paper to landscape and use appropriate dimensions.
+        // The values 226.77 * 2 and 340.15 seem to be suitable for landscape.
+        // 226.77 points is about 8cm, so 226.77 * 2 = 16cm (width)
+        // 340.15 points is about 12cm (height)
+        $pdf->setPaper([0, 0, 552, 255], 'landscape'); // Changed to 'landscape'
 
         // Cambia download() por stream() para abrir en el navegador
         return $pdf->stream('credencial-' . $clave . '.pdf');
@@ -402,14 +410,14 @@ class PracticanteController extends Controller
         $practicante = Practicante::with(['institucion', 'carrera', 'proyecto'])->findOrFail($id);
         return view('detallesprac', compact('practicante'));
     }
-    public function edit($id)
-    {
-        $practicante = Practicante::with(['institucion', 'carrera'])->findOrFail($id);
-        $instituciones = Institucion::orderBy('nombre')->get();
-        $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
-
-        return view('edit_prac', compact('practicante', 'instituciones', 'proyectos'));
-    }
+public function edit($id)
+{
+    $practicante = Practicante::with(['institucion', 'carrera.institucion', 'proyecto'])->findOrFail($id);
+    $instituciones = Institucion::orderBy('nombre')->get();
+    $proyectos = Proyecto::orderBy('nombre_proyecto')->get();
+    
+    return view('edit_prac', compact('practicante', 'instituciones', 'proyectos'));
+}
 
     public function showEvaluaciones($id_practicante)
     {

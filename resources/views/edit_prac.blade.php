@@ -75,15 +75,15 @@
                     <input type="text" id="curp" name="curp" required
                         value="{{ old('curp', $practicante->curp) }}">
                 </div>
-                <div class="form-group">
-                    <label for="sexo">Sexo:</label>
-                    <select id="sexo" name="sexo">
-                        <option value="">Seleccione una opción</option>
-                        <option value="Hombre" {{ $practicante->sexo == 'Hombre' ? 'selected' : '' }}>Hombre</option>
-                        <option value="Mujer" {{ $practicante->sexo == 'Mujer' ? 'selected' : '' }}>Mujer</option>
-                        <option value="Otro" {{ $practicante->sexo == 'Otro' ? 'selected' : '' }}>Otro</option>
-                    </select>
-                </div>
+<div class="form-group">
+    <label for="sexo">Sexo:</label>
+    <select id="sexo" name="sexo">
+        <option value="">Seleccione una opción</option>
+        <option value="Hombre" {{ old('sexo', $practicante->sexo) == 'Hombre' ? 'selected' : '' }}>Hombre</option>
+        <option value="Mujer" {{ old('sexo', $practicante->sexo) == 'Mujer' ? 'selected' : '' }}>Mujer</option>
+        <option value="Otro" {{ old('sexo', $practicante->sexo) == 'Otro' ? 'selected' : '' }}>Otro</option>
+    </select>
+</div>
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>
                     <input type="text" name="direccion" value="{{ old('direccion', $practicante->direccion) }}">
@@ -131,13 +131,13 @@
 
 <div class="form-group carrera-select-container">
     <label for="carrera_select">Carrera:</label>
-    <select name="carrera_id" id="carrera_select" class="form-control" disabled>
-        <option value="">Primero seleccione una institución</option>
-        {{-- Aquí se cargarán las carreras dinámicamente --}}
-        @if ($practicante->carrera) {{-- Si ya tiene una carrera, precargarla --}}
+    <select name="carrera_id" id="carrera_id" class="form-control" {{ $practicante->institucion_id ? '' : 'disabled' }}>
+        @if ($practicante->carrera)
             <option value="{{ $practicante->carrera->id_carrera }}" selected>
                 {{ $practicante->carrera->nombre_carr }}
             </option>
+        @else
+            <option value="">Primero seleccione una institución</option>
         @endif
     </select>
     <div class="loading-carreras" style="display: none;">Cargando carreras...</div>
@@ -146,13 +146,13 @@
 
 <div class="form-group">
     <label for="email_institucional">Correo Institucional:</label>
-    <input type="email" id="email_institucional" name="correo_institucional_carrera" class="form-control"
-           value="{{ old('correo_institucional_carrera', $practicante->carrera->correo_carr ?? '') }}" readonly>
+    <input type="email" id="email_institucional" name="email_institucional" class="form-control"
+           value="{{ old('email_institucional', $practicante->email_institucional ?? '') }}">
 </div>
 <div class="form-group">
     <label for="telefono_institucional">Teléfono Institucional:</label>
-    <input type="text" id="telefono_institucional" name="telefono_institucional_carrera" class="form-control"
-           value="{{ old('telefono_institucional_carrera', $practicante->carrera->tel_gerente ?? '') }}" readonly>
+    <input type="text" id="telefono_institucional" name="telefono_institucional" class="form-control"
+           value="{{ old('telefono_institucional', $practicante->telefono_institucional ?? '') }}">
 </div>
                 <div class="form-group">
                     <label for="nivel_estudios">Nivel de estudios:</label>
@@ -188,14 +188,25 @@
                             {{ $practicante->estado_practicas == 'SUSPENDIDO' ? 'selected' : '' }}>SUSPENDIDO</option>
                         <option value="FINALIZADO"
                             {{ $practicante->estado_practicas == 'FINALIZADO' ? 'selected' : '' }}>FINALIZADO</option>
-
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="area_asignada">Área asignada:</label>
-                    <input type="text" name="area_asignada" 
-                        value="{{ old('area_asignada', default: $practicante->area_asignada) }}">
-                </div>
+                        <label for="area_asignada">Área asignada:</label>
+                        <select id="area_asignada" name="area_asignada">
+                            <option value="">Seleccione una opción</option>
+                            <option value="Contraloria" {{ $practicante->area_asignada == 'Contraloria' ? 'selected' : '' }}>Contraloria</option>
+                            <option value="Ventas" {{ $practicante->area_asignada == 'Ventas' ? 'selected' : '' }}>Ventas</option>
+                            <option value="Sistemas" {{ $practicante->area_asignada == 'Sistemas' ? 'selected' : '' }}>Sistemas</option>
+                            <option value="AyB" {{ $practicante->area_asignada == 'AyB' ? 'selected' : '' }}>AyB</option>
+                            <option value="Mantenimiento" {{ $practicante->area_asignada == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
+                            <option value="Recursos Humanos" {{ $practicante->area_asignada == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>
+                            <option value="Dirección" {{ $practicante->area_asignada == 'Dirección' ? 'selected' : '' }}>Dirección</option>
+                            <option value="Recepción" {{ $practicante->area_asignada == 'Recepción' ? 'selected' : '' }}>Recepción</option>
+                            <option value="Reservaciones" {{ $practicante->area_asignada == 'Reservaciones' ? 'selected' : '' }}>Reservaciones</option>
+                            <option value="Cocina" {{ $practicante->area_asignada == 'Cocina' ? 'selected' : '' }}>Cocina</option>
+                            <option value="Ama de llaves" {{ $practicante->area_asignada == 'Ama de llaves' ? 'selected' : '' }}>Ama de llaves</option>
+                        </select>
+                    </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha de inicio:</label>
                     <input type="date" name="fecha_inicio" 
@@ -269,10 +280,9 @@
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
     <script src="{{ asset('js/edit_prac.js') }}"></script>
     <script src="{{ asset('js/getInfoCarrera.js') }}"></script>
+    <script src="{{ asset('js/fotosPrac_logica.js') }}"></script>
 <script>
     // Lógica para mostrar/ocultar campos de proyecto
     document.addEventListener('DOMContentLoaded', function() {

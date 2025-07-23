@@ -158,7 +158,7 @@
                         placeholder="Teléfono de emergencia...">
                 </div>
                 <div class="form-group">
-                    <label for="num_seguro">Número de seguro:</label>
+                    <label for="num_seguro">Número de seguro (11 Dígitos):</label>
                     <input type="text" id="num_seguro" name="num_seguro" placeholder="Número de seguro...">
                 </div>
 
@@ -222,7 +222,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="area_asignada">Área asignada:</label>
+                    <label for="area_asignada">Área asignada* :</label>
                     <select id="area_asignada" name="area_asignada">
                         <option value="">Seleccione una opción</option>
                         <option value="Contraloria">Contraloria</option>
