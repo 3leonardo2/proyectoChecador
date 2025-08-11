@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('login');
-});
+})->name('login');
 
+
+Route::post('/', [AuthController::class, 'login'])->name('login');
 Route::group(['middleware' => ['auth:consultor']], function () {
     Route::delete('/administradores/{id}', [AuthController::class, 'destroyAdmin'])
         ->name('administradores.destroy');
