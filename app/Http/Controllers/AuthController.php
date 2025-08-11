@@ -33,7 +33,7 @@ public function login(Request $request)
     
     // Normalizar el correo
     $correoNormalizado = strtolower($credentials['correo']);
-    $credentials['correo'] = $correoNormalizado; // Actualizar el array de credenciales
+    $credentials['correo'] = $correoNormalizado; 
 
     $admin = Administrador::where('correo', $correoNormalizado)->first();
 
@@ -45,10 +45,11 @@ public function login(Request $request)
     }
 
     if (Auth::guard('admin')->attempt([
-        'correo' => $correoNormalizado, // Usar el correo normalizado aquí
+        'correo' => $correoNormalizado,
         'password' => $credentials['contrasena']
     ])) {
         $request->session()->regenerate();
+        $request->session()->regenerateToken();
 
         return Auth::guard('admin')->user()->rol === 'rh'
             ? redirect()->intended('/practicantes')

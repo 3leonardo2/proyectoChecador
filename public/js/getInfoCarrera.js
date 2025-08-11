@@ -1,6 +1,6 @@
 // getInfoCarrera.js (with added console.log statements)
 document.addEventListener('DOMContentLoaded', function() {
-    const carreraSelect = document.getElementById('carrera_select');
+    const carreraSelect = document.getElementById('carrera_id');
     const form = document.querySelector('form.practicante-info-wrapper');
 
     if (!carreraSelect || !form) {

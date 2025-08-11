@@ -15,6 +15,13 @@ Route::get('/', function () {
     return view('login');
 });
 
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'showLoginForm')->name('login');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->name('logout');
+});
+
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/bitacora', [BitacoraController::class, 'index'])->name('bitacora.index');
@@ -30,13 +37,6 @@ Route::prefix('bitacora')->group(function () {
 Route::get('/consulta_horas', function () {
     return view('consulta_horas');
 })->name('consulta_horas');
-
-// Rutas de autenticación
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'showLoginForm')->name('login');
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout')->name('logout');
-});
 
 // Rutas de practicantes
 Route::prefix('practicantes')->group(function () {

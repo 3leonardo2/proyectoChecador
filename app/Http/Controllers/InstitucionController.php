@@ -224,7 +224,7 @@ class InstitucionController extends Controller
             'exists' => $practicantesCount > 0,
             'count' => $practicantesCount,
             'message' => $practicantesCount > 0 ?
-                "Esta institución tiene {$practicantesCount} practicante(s) asociado(s) a través de sus carreras. Eliminarlos resultará en la eliminación de estos practicantes." :
+                "Esta institución cuenta con {$practicantesCount} practicante(s) asociado(s) a través de sus carreras. Eliminarlos resultará en la eliminación de estos practicantes." :
                 "Esta institución no tiene practicantes asociados."
         ]);
     }

@@ -52,7 +52,7 @@ function fetchPracticanteData(codigo) {
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((err) => {
-                    throw new Error(err.message || "Error del servidor");
+                    throw new Error(err.error || "Error al obtener datos del practicante");
                 });
             }
             return response.json();

@@ -101,7 +101,7 @@
                 // Mensaje de advertencia si hay practicantes asociados
                 confirmationMessage =
                     "ADVERTENCIA: Esta institución tiene " + response.count + " practicante(s) asociado(s) a través de sus carreras.\n\n" +
-                    "Si eliminas esta institución es probable que" +
+                    "Si eliminas esta institución es probable que " +
                     "estos practicantes (y sus registros) se eliminen también.\n\n" +
                     "¿Desea proceder de todos modos?";
             } else {

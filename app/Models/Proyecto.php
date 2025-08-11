@@ -22,6 +22,6 @@ public $timestamps = false;
      */
     public function practicantes()
     {
-        return $this->hasMany(Practicante::class, 'proyecto_id', 'id_proyecto');
+        return $this->hasMany(Practicante::class, 'id_proyecto', 'id_practicante');
     }
 }

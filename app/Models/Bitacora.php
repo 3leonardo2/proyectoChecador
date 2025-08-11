@@ -12,7 +12,7 @@ class Bitacora extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'clave_prac',
+        'practicante_id',
         'fecha',
         'hora',
         'tipo',
@@ -22,6 +22,6 @@ class Bitacora extends Model
     // Relación con practicante
     public function practicante(): BelongsTo
     {
-        return $this->belongsTo(Practicante::class, 'clave_prac', 'codigo');
+        return $this->belongsTo(Practicante::class, 'practicante_id', 'id_practicante');
     }
 }

@@ -16,6 +16,14 @@
             margin-bottom: 20px;
             border: 1px solid transparent;
             border-radius: 4px;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
         }
 
         .alert-danger {
@@ -38,8 +46,6 @@
 
         .loading-carreras {
             position: absolute;
-            right: 10px;
-            top: 35px;
             color: #666;
         }
 
@@ -81,13 +87,6 @@
                 </ul>
             </div>
         @endif
-
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
         @if (session('error'))
             <div class="alert alert-danger">
                 {{ session('error') }}
@@ -109,57 +108,62 @@
                 <h2>Datos Generales</h2>
                 <div class="form-group">
                     <label for="nombre">Nombre*:</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Nombre..." required>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre..." required
+                        value="{{ old('nombre') }}">
                 </div>
                 <div class="form-group">
                     <label for="apellidos">Apellidos*:</label>
-                    <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos..." required>
+                    <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos..." required
+                        value="{{ old('apellidos') }}">
                 </div>
                 <div class="form-group">
                     <label for="curp">CURP*:</label>
                     <input type="text" id="curp" name="curp" placeholder="CURP..." required maxlength="18"
-                        minlength="18">
+                        minlength="18" value="{{ old('curp') }}">
                 </div>
                 <div class="form-group">
                     <label for="fecha_nacimiento">Fecha de nacimiento*:</label>
-                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" required
+                        value="{{ old('fecha_nacimiento') }}">
                 </div>
                 <div class="form-group">
                     <label for="sexo">Sexo:</label>
                     <select id="sexo" name="sexo">
                         <option value="">Seleccione una opción</option>
-                        <option value="Hombre">Hombre</option>
-                        <option value="Mujer">Mujer</option>
-                        <option value="Otro">Otro</option>
+                        <option value="Hombre" {{ old('sexo') == 'Hombre' ? 'selected' : '' }}>Hombre</option>
+                        <option value="Mujer" {{ old('sexo') == 'Mujer' ? 'selected' : '' }}>Mujer</option>
+                        <option value="Otro" {{ old('sexo') == 'Otro' ? 'selected' : '' }}>Otro</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="direccion">Dirección:</label>
-                    <input type="text" id="direccion" name="direccion" placeholder="Dirección...">
+                    <input type="text" id="direccion" name="direccion" placeholder="Dirección..."
+                        value="{{ old('direccion') }}">
                 </div>
                 <div class="form-group">
                     <label for="email_personal">Correo electrónico personal:</label>
                     <input type="email" id="email_personal" name="email_personal"
-                        placeholder="Correo electrónico personal...">
+                        placeholder="Correo electrónico personal..." value="{{ old('email_personal') }}">
                 </div>
                 <div class="form-group">
                     <label for="telefono_personal">Teléfono personal:</label>
                     <input type="tel" id="telefono_personal" name="telefono_personal"
-                        placeholder="Teléfono personal...">
+                        placeholder="Teléfono personal..." value="{{ old('telefono_personal') }}">
                 </div>
                 <div class="form-group">
                     <label for="nombre_emergencia">Nombre de emergencia:</label>
                     <input type="text" id="nombre_emergencia" name="nombre_emergencia"
-                        placeholder="Nombre contacto...">
+                        placeholder="Nombre contacto..." value="{{ old('nombre_emergencia') }}">
                 </div>
                 <div class="form-group">
                     <label for="telefono_emergencia">Teléfono de emergencia:</label>
                     <input type="tel" id="telefono_emergencia" name="telefono_emergencia"
-                        placeholder="Teléfono de emergencia...">
+                        placeholder="Teléfono de emergencia..." value="{{ old('telefono_emergencia') }}">
                 </div>
                 <div class="form-group">
-                    <label for="num_seguro">Número de seguro (11 Dígitos):</label>
-                    <input type="text" id="num_seguro" name="num_seguro" placeholder="Número de seguro...">
+                    <label for="num_seguro">Número de seguro (11 Dígitos)*:</label>
+                    <input type="text" id="num_seguro" name="num_seguro" placeholder="Número de seguro..."
+                        value="{{ old('num_seguro') }}">
                 </div>
 
                 <h2>Información institucional:</h2>
@@ -170,7 +174,9 @@
                             <select id="institucion_select" name="institucion_id" class="form-control" required>
                                 <option value="">Seleccione una institución</option>
                                 @foreach ($instituciones as $institucion)
-                                    <option value="{{ $institucion->id_institucion }}">{{ $institucion->nombre }}
+                                    <option value="{{ $institucion->id_institucion }}"
+                                        {{ old('institucion_id') == $institucion->id_institucion ? 'selected' : '' }}>
+                                        {{ $institucion->nombre }}
                                     </option>
                                 @endforeach
                             </select>
@@ -192,23 +198,29 @@
                 <div class="form-group">
                     <label for="email_institucional">Correo institucional:</label>
                     <input type="email" id="email_institucional" name="email_institucional"
-                        placeholder="Correo institucional...">
+                        placeholder="Correo institucional..." value="{{ old('email_institucional') }}">
                 </div>
                 <div class="form-group">
                     <label for="telefono_institucional">Teléfono institucional:</label>
                     <input type="tel" id="telefono_institucional" name="telefono_institucional"
-                        placeholder="Teléfono institucional...">
+                        placeholder="Teléfono institucional..." value="{{ old('telefono_institucional') }}">
                 </div>
                 <div class="form-group">
                     <label for="nivel_estudios">Nivel de estudios:</label>
                     <select id="nivel_estudios" name="nivel_estudios">
                         <option value="">Seleccione una opción</option>
-                        <option value="Bachillerato">Bachillerato</option>
-                        <option value="Licenciatura">Licenciatura</option>
-                        <option value="Técnico">Técnico</option>
-                        <option value="Ingenieria">Ingenieria</option>
-                        <option value="Maestría">Maestría</option>
-                        <option value="Doctorado">Doctorado</option>
+                        <option value="Bachillerato" {{ old('nivel_estudios') == 'Bachillerato' ? 'selected' : '' }}>
+                            Bachillerato</option>
+                        <option value="Licenciatura" {{ old('nivel_estudios') == 'Licenciatura' ? 'selected' : '' }}>
+                            Licenciatura</option>
+                        <option value="Técnico" {{ old('nivel_estudios') == 'Técnico' ? 'selected' : '' }}>Técnico
+                        </option>
+                        <option value="Ingenieria" {{ old('nivel_estudios') == 'Ingenieria' ? 'selected' : '' }}>
+                            Ingenieria</option>
+                        <option value="Maestría" {{ old('nivel_estudios') == 'Maestría' ? 'selected' : '' }}>Maestría
+                        </option>
+                        <option value="Doctorado" {{ old('nivel_estudios') == 'Doctorado' ? 'selected' : '' }}>
+                            Doctorado</option>
                     </select>
                 </div>
 
@@ -216,57 +228,79 @@
                 <div class="form-group">
                     <label for="estado_practicas">Estado:</label>
                     <select id="estado_practicas" name="estado_practicas">
-                        <option value="ACTIVO">ACTIVO</option>
-                        <option value="INACTIVO">INACTIVO</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
+                        <option value="ACTIVO" {{ old('estado_practicas') == 'ACTIVO' ? 'selected' : '' }}>ACTIVO
+                        </option>
+                        <option value="INACTIVO" {{ old('estado_practicas') == 'INACTIVO' ? 'selected' : '' }}>
+                            INACTIVO</option>
+                        <option value="FINALIZADO" {{ old('estado_practicas') == 'FINALIZADO' ? 'selected' : '' }}>
+                            FINALIZADO</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="area_asignada">Área asignada* :</label>
                     <select id="area_asignada" name="area_asignada">
                         <option value="">Seleccione una opción</option>
-                        <option value="Contraloria">Contraloria</option>
-                        <option value="Ventas">Ventas</option>
-                        <option value="Sistemas">Sistemas</option>
-                        <option value="AyB">AyB</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
-                        <option value="Recursos Humanos">Recursos Humanos</option>
-                        <option value="Dirección">Dirección</option>
-                        <option value="Recepción">Recepción</option>
-                        <option value="Reservaciones">Reservaciones</option>
-                        <option value="Cocina">Cocina</option>
-                        <option value="Ama de llaves">Ama de llaves</option>
+                        <option value="Contraloria" {{ old('area_asignada') == 'Contraloria' ? 'selected' : '' }}>
+                            Contraloria</option>
+                        <option value="Ventas" {{ old('area_asignada') == 'Ventas' ? 'selected' : '' }}>Ventas
+                        </option>
+                        <option value="Sistemas" {{ old('area_asignada') == 'Sistemas' ? 'selected' : '' }}>Sistemas
+                        </option>
+                        <option value="AyB" {{ old('area_asignada') == 'AyB' ? 'selected' : '' }}>AyB</option>
+                        <option value="Mantenimiento" {{ old('area_asignada') == 'Mantenimiento' ? 'selected' : '' }}>
+                            Mantenimiento</option>
+                        <option value="Recursos Humanos"
+                            {{ old('area_asignada') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos
+                        </option>
+                        <option value="Dirección" {{ old('area_asignada') == 'Dirección' ? 'selected' : '' }}>
+                            Dirección</option>
+                        <option value="Recepción" {{ old('area_asignada') == 'Recepción' ? 'selected' : '' }}>
+                            Recepción</option>
+                        <option value="Reservaciones" {{ old('area_asignada') == 'Reservaciones' ? 'selected' : '' }}>
+                            Reservaciones</option>
+                        <option value="Cocina" {{ old('area_asignada') == 'Cocina' ? 'selected' : '' }}>Cocina
+                        </option>
+                        <option value="Ama de llaves" {{ old('area_asignada') == 'Ama de llaves' ? 'selected' : '' }}>
+                            Ama de llaves</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="fecha_inicio">Fecha de inicio*:</label>
-                    <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+                    <input type="date" id="fecha_inicio" name="fecha_inicio" required
+                        value="{{ old('fecha_inicio') }}">
                 </div>
                 <div class="form-group">
                     <label for="fecha_final">Fecha de cierre:</label>
-                    <input type="date" id="fecha_final" name="fecha_final">
+                    <input type="date" id="fecha_final" name="fecha_final" value="{{ old('fecha_final') }}">
                 </div>
                 <div class="form-group">
                     <label for="hora_entrada">Hora de entrada:</label>
-                    <input type="time" id="hora_entrada" name="hora_entrada">
+                    <input type="time" id="hora_entrada" name="hora_entrada" value="{{ old('hora_entrada') }}">
                 </div>
                 <div class="form-group">
                     <label for="hora_salida">Hora de salida:</label>
-                    <input type="time" id="hora_salida" name="hora_salida">
+                    <input type="time" id="hora_salida" name="hora_salida" value="{{ old('hora_salida') }}">
                 </div>
                 <div class="form-group">
                     <label for="horas_requeridas">Horas requeridas:</label>
-                    <input type="number" id="horas_requeridas" name="horas_requeridas" min="0">
+                    <input type="number" id="horas_requeridas" name="horas_requeridas" min="0"
+                        value="{{ old('horas_requeridas') }}">
+                </div>
+                <div class="form-group">
+                    <label for="acceso_comedor">Habilitar acceso a comedor:</label>
+                    <input type="checkbox" id="acceso_comedor" name="acceso_comedor" value="1"
+                        {{ old('acceso_comedor') ? 'checked' : '' }}>
                 </div>
 
 
                 <h2>Información del Proyecto (Opcional)</h2>
                 <div class="form-group">
-                    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto">
                     <label for="incluir_proyecto">Asignar a un proyecto</label>
+                    <input type="checkbox" id="incluir_proyecto" name="incluir_proyecto"
+                        {{ old('incluir_proyecto') ? 'checked' : '' }}>
                 </div>
 
-                <div id="proyecto_fields" style="display: none;">
+                <div id="proyecto_fields" style="display: {{ old('incluir_proyecto') ? 'block' : 'none' }};">
                     <div class="form-group">
                         <label for="nombre_proyecto">Nombre del Proyecto:</label>
                         <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control"
@@ -280,17 +314,28 @@
                         <label for="area_proyecto">Área asignada:</label>
                         <select id="area_proyecto" name="area_proyecto">
                             <option value="">Seleccione una opción</option>
-                            <option value="Contraloria">Contraloria</option>
-                            <option value="Ventas">Ventas</option>
-                            <option value="Sistemas">Sistemas</option>
-                            <option value="AyB">AyB</option>
-                            <option value="Mantenimiento">Mantenimiento</option>
-                            <option value="Recursos Humanos">Recursos Humanos</option>
-                            <option value="Dirección">Dirección</option>
-                            <option value="Recepción">Recepción</option>
-                            <option value="Reservaciones">Reservaciones</option>
-                            <option value="Cocina">Cocina</option>
-                            <option value="Ama de llaves">Ama de llaves</option>
+                            <option value="Contraloria" {{ old('area_proyecto') == 'Contraloria' ? 'selected' : '' }}>
+                                Contraloria</option>
+                            <option value="Ventas" {{ old('area_proyecto') == 'Ventas' ? 'selected' : '' }}>Ventas
+                            </option>
+                            <option value="Sistemas" {{ old('area_proyecto') == 'Sistemas' ? 'selected' : '' }}>
+                                Sistemas</option>
+                            <option value="AyB" {{ old('area_proyecto') == 'AyB' ? 'selected' : '' }}>AyB</option>
+                            <option value="Mantenimiento"
+                                {{ old('area_proyecto') == 'Mantenimiento' ? 'selected' : '' }}>Mantenimiento</option>
+                            <option value="Recursos Humanos"
+                                {{ old('area_proyecto') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos
+                            </option>
+                            <option value="Dirección" {{ old('area_proyecto') == 'Dirección' ? 'selected' : '' }}>
+                                Dirección</option>
+                            <option value="Recepción" {{ old('area_proyecto') == 'Recepción' ? 'selected' : '' }}>
+                                Recepción</option>
+                            <option value="Reservaciones"
+                                {{ old('area_proyecto') == 'Reservaciones' ? 'selected' : '' }}>Reservaciones</option>
+                            <option value="Cocina" {{ old('area_proyecto') == 'Cocina' ? 'selected' : '' }}>Cocina
+                            </option>
+                            <option value="Ama de llaves"
+                                {{ old('area_proyecto') == 'Ama de llaves' ? 'selected' : '' }}>Ama de llaves</option>
                         </select>
                     </div>
                 </div>
@@ -301,7 +346,6 @@
 
             </div>
             <script>
-                // Define la variable global antes de cargar el script
                 window.instituciones = @json($instituciones->pluck('nombre', 'id_institucion'));
             </script>
 
@@ -312,47 +356,67 @@
     <script src="{{ asset('js/menu_modal.js') }}"></script>
 
     <script>
-        document.getElementById('add-image-input').addEventListener('change', function(event) {
-            const previewContainer = document.querySelector('.profile-image-container');
-            const file = event.target.files[0];
-
-            if (file && file.type.match('image.*')) {
-                // Validar tamaño
-                if (file.size > 2 * 1024 * 1024) {
-                    alert('La imagen no debe exceder los 2MB');
-                    this.value = '';
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Crear elemento img
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'profile-image';
-                    img.alt = 'Vista previa';
-
-                    // Limpiar contenedor y añadir nueva imagen
-                    previewContainer.innerHTML = '';
-                    previewContainer.appendChild(img);
-
-                    // Verificar relación de aspecto
-                    const tempImg = new Image();
-                    tempImg.onload = function() {
-                        if (Math.abs(this.width - this.height) > this.width * 0.1) { // 10% de tolerancia
-                            alert(
-                                'La imagen no es perfectamente cuadrada. Se ajustará para mostrarse correctamente.');
-                        }
-                    };
-                    tempImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    </script>
-    <script>
-        // Lógica para mostrar/ocultar campos de proyecto
         document.addEventListener('DOMContentLoaded', function() {
+            // Script para ocultar el anuncio de error después de 6 segundos
+            const alert = document.querySelector('.alert-danger');
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 1s ease-in-out';
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 6000);
+                }, 6000);
+            }
+
+            // Script para mantener la selección de institución y cargar carreras al recargar la página
+            const institucionSelect = document.getElementById('institucion_select');
+            const carreraSelect = document.getElementById('carrera_select');
+            const oldInstitucionId = "{{ old('institucion_id') }}";
+            const oldCarreraId = "{{ old('carrera_id') }}";
+
+            if (oldInstitucionId) {
+                // Al cargar la página, si hay una institución seleccionada previamente
+                // disparamos el evento 'change' para cargar las carreras
+                const event = new Event('change');
+                institucionSelect.dispatchEvent(event);
+            }
+
+            // Script para la imagen
+            document.getElementById('add-image-input').addEventListener('change', function(event) {
+                const previewContainer = document.querySelector('.profile-image-container');
+                const file = event.target.files[0];
+
+                if (file && file.type.match('image.*')) {
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('La imagen no debe exceder los 2MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'profile-image';
+                        img.alt = 'Vista previa';
+                        previewContainer.innerHTML = '';
+                        previewContainer.appendChild(img);
+
+                        const tempImg = new Image();
+                        tempImg.onload = function() {
+                            if (Math.abs(this.width - this.height) > this.width * 0.1) {
+                                alert(
+                                    'La imagen no es perfectamente cuadrada. Se ajustará para mostrarse correctamente.');
+                            }
+                        };
+                        tempImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Lógica para mostrar/ocultar campos de proyecto
             const incluirProyectoCheckbox = document.getElementById('incluir_proyecto');
             const proyectoFields = document.getElementById('proyecto_fields');
 
@@ -361,16 +425,15 @@
                     proyectoFields.style.display = 'block';
                 } else {
                     proyectoFields.style.display = 'none';
-
                     document.getElementById('nombre_proyecto').value = '';
                     document.getElementById('descripcion_proyecto').value = '';
                     document.getElementById('area_proyecto').value = '';
                 }
             });
-            @if (old('incluir_proyecto'))
-                incluirProyectoCheckbox.checked = true;
+            // Mantener el estado del checkbox y los campos del proyecto al recargar
+            if (incluirProyectoCheckbox.checked) {
                 proyectoFields.style.display = 'block';
-            @endif
+            }
         });
     </script>
 </body>

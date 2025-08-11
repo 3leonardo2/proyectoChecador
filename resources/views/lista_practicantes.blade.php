@@ -20,7 +20,7 @@
 </head>
 
 <body>
-            @include('partials.detalles_modal')
+    @include('partials.detalles_modal')
     <div class="header">
         <h1>Practicantes</h1>
         <button class="menu-button" id="menuButton">
@@ -30,12 +30,6 @@
     @include('partials.menu_modal')
 
     <div class="main-container">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="search-filter-section">
             <div class="search-bar-container">
                 <input type="text" id="searchInput" class="search-input"
@@ -106,7 +100,7 @@
                         </label>
                     </div>
 
-                    
+
                     <div class="filter-actions">
                         <button class="apply-filter-button">Aplicar Filtros</button>
                         <button class="clear-filter-button">Limpiar Filtros</button>
@@ -156,7 +150,12 @@
                                         class="admin-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>
-                                    <form action="{{ route('practicantes.destroy', $practicante->id_practicante) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a {{ $practicante->nombre }} {{ $practicante->apellidos }}? Esta acción no se puede deshacer.');">
+                                    @php
+                                        $nombreCompleto = $practicante->nombre . ' ' . $practicante->apellidos;
+                                    @endphp
+                                    <form action="{{ route('practicantes.destroy', $practicante->id_practicante) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('¿Estás seguro de que quieres eliminar a {{ addslashes($nombreCompleto) }}? Esta acción no se puede deshacer.');">
                                         @csrf
                                         @method('DELETE') {{-- Esto simula una petición DELETE --}}
                                         <button type="submit" class="admin-button delete-button" title="Eliminar">
@@ -174,13 +173,13 @@
     <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script src="{{ asset('js/lista_prac.js') }}"></script>
     <script>
-         document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             @if (session('success'))
-                showAlertModal('success', '{{ session('success') }}');
+                showAlertModal('success', {!! json_encode(session('success')) !!});
             @endif
 
             @if (session('error'))
-                showAlertModal('error', '{{ session('error') }}');
+                showAlertModal('error', {!! json_encode(session('error')) !!});
             @endif
         });
 

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Practicante;
 use App\Models\Administrador;
 use App\Models\Evaluacion;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +38,6 @@ class AsesorController extends Controller
 
     public function store(Request $request)
     {
-        \Log::info('Iniciando registro de administrador', ['request' => $request->all()]);
 
         try {
             // Validación común para ambos tipos
@@ -91,7 +90,6 @@ class AsesorController extends Controller
             return $response;
 
         } catch (\Exception $e) {
-            \Log::error('Error en registro: ' . $e->getMessage());
             return redirect()->route('admin.create')
                 ->with('error', 'Error al registrar: ' . $e->getMessage())
                 ->withInput();

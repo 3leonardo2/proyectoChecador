@@ -38,6 +38,8 @@ return new class extends Migration
             $table->time('hora_salida')->nullable();
             $table->integer('horas_requeridas')->nullable(); // Renombrado para coincidir
             $table->integer('horas_registradas')->default(0); // Renombrado para coincidir
+            $table->boolean('acceso_comedor')->default(false); // Añadido para el acceso al comedor
+
             $table->unsignedBigInteger('proyecto_id')->nullable();
             $table->foreign('institucion_id')->references('id_institucion')->on('instituciones');
             $table->foreign('carrera_id')->references('id_carrera')->on('carreras');

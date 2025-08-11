@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('bitacora', function (Blueprint $table) {
             $table->increments('id_evento'); // SERIAL en PostgreSQL
             $table->string('clave_prac', 50)->notNullable(); // Si refencia el código del practicante
+            
             // ALTERNATIVA si refencia el ID numérico: $table->integer('id_practicante')->notNullable();
             $table->date('fecha')->default(DB::raw('CURRENT_DATE'))->notNullable();
             $table->time('hora')->default(DB::raw('CURRENT_TIME'))->notNullable();

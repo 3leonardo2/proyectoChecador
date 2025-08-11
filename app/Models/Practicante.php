@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Practicante extends Model
 {
     use HasFactory;
@@ -52,6 +53,7 @@ class Practicante extends Model
         'horas_registradas',
         'profile_image',
         'proyecto_id',
+        'acceso_comedor',
     ];
 
     public function setEmailPersonalAttribute($value)
@@ -80,5 +82,12 @@ class Practicante extends Model
     {
         return $this->belongsTo(Proyecto::class, 'proyecto_id', 'id_proyecto');
     }
-
+    public function bitacora()
+    {
+        return $this->hasMany(Bitacora::class, 'practicante_id', 'id_practicante');
+    }
+    public function proyectos(): BelongsToMany
+    {
+        return $this->belongsToMany(Proyecto::class, 'practicantes_proyectos', 'id_practicante', 'id_proyecto');
+    }
 }
