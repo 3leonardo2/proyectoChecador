@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="{{ asset('css/lista_practicantes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
+    <style>
+        .delete-button {
+    color: #dc3545;
+    margin-left: 5px;
+}
+
+.delete-button:hover {
+    color: #bb2d3b;
+}
+    </style>
 </head>
 <body>
     <div class="header">
@@ -101,12 +111,20 @@
                                     {{ $admin->rol === 'rh' ? 'Administrador de aplicación' : 'Asesor de departamento' }}
                                 </span>
                             </td>
-                            <td>
-                                <a href="{{ route('administradores.edit', $admin->id_admin) }}" class="admin-button" title="Editar">
-                                    <i class="fa-solid fa-user-pen"></i>
-                                </a>
-                                {{-- Puedes agregar más acciones aquí, como eliminar --}}
-                            </td>
+<td>
+    <a href="{{ route('administradores.edit', $admin->id_admin) }}" class="admin-button" title="Editar">
+        <i class="fa-solid fa-user-pen"></i>
+    </a>
+    @auth('consultor')
+        <form action="{{ route('administradores.destroy', $admin->id_admin) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="admin-button delete-button" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este administrador?')">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
+    @endauth
+</td>
                         </tr>
                     @endforeach
                 </tbody>

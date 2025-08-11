@@ -173,15 +173,21 @@
     <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script src="{{ asset('js/lista_prac.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            @if (session('success'))
-                showAlertModal('success', {!! json_encode(session('success')) !!});
-            @endif
+    document.addEventListener('DOMContentLoaded', function() {
+        @if (session('success'))
+            showAlertModal('success', '{{ session('success') }}');
+        @endif
 
-            @if (session('error'))
-                showAlertModal('error', {!! json_encode(session('error')) !!});
-            @endif
-        });
+        @if (session('error'))
+            showAlertModal('error', '{{ session('error') }}');
+        @endif
+        const mostrarActivos = @json($mostrarActivos ?? false);
+        
+        if (mostrarActivos) {
+            document.getElementById('filterEstado').value = 'ACTIVO';
+            document.querySelector('.apply-filter-button').click();
+        }
+    });
 
         function showAlertModal(type, message) {
             const modal = document.getElementById('alertModal');

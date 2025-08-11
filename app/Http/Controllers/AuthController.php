@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Consultor;
+use Illuminate\Support\Facades\Log;
 use App\Models\Administrador;
 use App\Models\Practicante;
 
@@ -24,24 +26,28 @@ class AuthController extends Controller
     }
 
     // Procesar login
-public function login(Request $request)
+ public function login(Request $request)
 {
     $credentials = $request->validate([
-        'correo' => 'required|email',
+        'correo' => 'required|string',
         'contrasena' => 'required'
     ]);
-    
+
     // Normalizar el correo
     $correoNormalizado = strtolower($credentials['correo']);
     $credentials['correo'] = $correoNormalizado; 
-
-    $admin = Administrador::where('correo', $correoNormalizado)->first();
-
-    if ($admin && $admin->es_generico) {
-        return back()->with(
-            'generic_warning',
-            'Está utilizando una cuenta genérica.'
-        );
+    Log::debug('Intento de login', [
+        'input' => $credentials,
+        'consultor' => Consultor::where('nombre', $credentials['correo'])->first(),
+        'admin' => Administrador::where('correo', strtolower($credentials['correo']))->first()
+    ]);
+    // Autenticación como consultor
+    $consultor = Consultor::where('nombre', $credentials['correo'])->first();
+    
+    if ($consultor && Hash::check($credentials['contrasena'], $consultor->contrasena)) {
+        Auth::guard('consultor')->login($consultor, $request->filled('remember'));
+        $request->session()->regenerate();
+        return redirect()->intended('/administradores');
     }
 
     if (Auth::guard('admin')->attempt([
@@ -51,14 +57,31 @@ public function login(Request $request)
         $request->session()->regenerate();
         $request->session()->regenerateToken();
 
-        return Auth::guard('admin')->user()->rol === 'rh'
-            ? redirect()->intended('/practicantes')
-            : redirect()->intended('/asesor/practicantes');
+    // Autenticación como admin
+    $correoNormalizado = strtolower($credentials['correo']);
+    
+    if (filter_var($correoNormalizado, FILTER_VALIDATE_EMAIL)) {
+        $admin = Administrador::where('correo', $correoNormalizado)->first();
+
+        if ($admin) {
+            if ($admin->es_generico) {
+                return back()->with('generic_warning', 'Está utilizando una cuenta genérica.');
+            }
+
+            if (Hash::check($credentials['contrasena'], $admin->contrasena)) {
+                Auth::guard('admin')->login($admin, $request->filled('remember'));
+                $request->session()->regenerate();
+
+                return $admin->rol === 'rh'
+                    ? redirect()->intended('/practicantes')
+                    : redirect()->intended('/asesor/practicantes');
+            }
+        }
     }
 
     return back()->withErrors(['correo' => 'Credenciales incorrectas']);
+    }
 }
-
     public function index()
     {
         
@@ -78,7 +101,19 @@ public function login(Request $request)
 
         return view('asesor.lista_practicantes_asesor', compact('practicantes'));
     }
+public function destroyAdmin($id)
+{
+    // Solo consultores pueden eliminar administradores
+    if (!Auth::guard('consultor')->check()) {
+        abort(403, 'No tienes permiso para esta acción');
+    }
 
+    $admin = Administrador::findOrFail($id);
+    $admin->delete();
+
+    return redirect()->route('administradores.lista')
+        ->with('success', 'Administrador eliminado exitosamente');
+}
 
     // Procesar registro
     public function register(Request $request)
@@ -108,11 +143,14 @@ public function login(Request $request)
     }
 
     // Cerrar sesión
-    public function logout(Request $request)
-    {
-        Auth::guard('admin')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
-    }
+public function logout(Request $request)
+{
+    Auth::guard('admin')->logout();
+    Auth::guard('consultor')->logout();
+    
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    
+    return redirect()->route('login');
+}
 }

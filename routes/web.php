@@ -9,18 +9,31 @@ use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ImagenAvisoController;
 use App\Http\Controllers\AsesorController;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('login');
 });
 
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'showLoginForm')->name('login');
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout')->name('logout');
+Route::group(['middleware' => ['auth:consultor']], function () {
+    Route::delete('/administradores/{id}', [AuthController::class, 'destroyAdmin'])
+        ->name('administradores.destroy');
 });
 
+Route::get('/test-login', function() {
+    $consultor = \App\Models\Consultor::where('nombre', 'admin')->first();
+    
+    if (!$consultor) {
+        return "No existe consultor con nombre 'admin'";
+    }
+    
+    if (\Hash::check('1nt3rc0nt1.', $consultor->contrasena)) {
+        return "Contraseña correcta!";
+    } else {
+        return "Contraseña incorrecta";
+    }
+});
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

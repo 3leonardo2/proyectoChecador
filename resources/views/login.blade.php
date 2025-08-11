@@ -36,11 +36,11 @@
                 <h2 class="text-center mb-4">Iniciar sesión</h2>
                 <form method="POST" action="{{ route('login') }}" class="form-pills mx-auto" style="max-width: 400px;">
                     @csrf
-                    <div class="mb-3">
-                        <label for="correo" class="form-label">Correo</label>
-                        <input type="email" class="form-control" name="correo" id="correo"
-                            placeholder="example@gmail.com" required>
-                    </div>
+<div class="mb-3">
+    <label for="correo" class="form-label">Nombre de usuario o Correo</label>
+    <input type="text" class="form-control" name="correo" id="correo"
+        placeholder="tu@correo.com" required>
+</div>
 
                     <div class="mb-4">
                         <label for="contrasena" class="form-label">Contraseña</label>

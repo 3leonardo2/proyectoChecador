@@ -10,14 +10,15 @@ use App\Models\Institucion;
 use App\Models\Carrera;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Picqer\Barcode\BarcodeGeneratorPNG;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB; // Para transacciones
+use Illuminate\Support\Str; 
+use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log; // Para logging
 
 class PracticanteController extends Controller
 {
     public function index()
     {
+        $mostrarActivos = true;
         $practicantes = Practicante::with('institucion')
             ->orderBy('created_at', 'desc')
             ->get([
@@ -29,9 +30,8 @@ class PracticanteController extends Controller
                 'institucion_id',
                 'estado_practicas',
                 'fecha_final'
-            ]); // Asegúrate de incluir fecha_fin
-
-        return view('lista_practicantes', compact('practicantes'));
+            ]); 
+        return view('lista_practicantes', compact('practicantes','mostrarActivos'));
     }
     /**
      * Muestra el formulario para crear un nuevo practicante.

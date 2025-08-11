@@ -35,17 +35,22 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins', // Debes definir este provider también
-        ],
+'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
+    
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'administradores',
+    ],
+    
+    'consultor' => [
+        'driver' => 'session',
+        'provider' => 'consultores',
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -64,17 +69,17 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
-
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Administrador::class, // Cambia esto por el modelo de tu admin
-        ],
+'providers' => [
+    'administradores' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Administrador::class,
     ],
+    
+    'consultores' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Consultor::class,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
