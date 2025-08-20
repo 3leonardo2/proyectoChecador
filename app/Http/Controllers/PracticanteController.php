@@ -76,7 +76,7 @@ class PracticanteController extends Controller
             'hora_salida' => 'nullable|string|max:10',
             'acceso_comedor' => 'nullable|in:0,1',
             'horas_requeridas' => 'nullable|integer|min:0',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'incluir_proyecto' => 'nullable|string',
         ];
 
@@ -238,7 +238,7 @@ class PracticanteController extends Controller
             'horas_registradas' => 'nullable|integer|min:0',
             'acceso_comedor' => 'nullable|in:0,1',
 
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'incluir_proyecto' => 'nullable|string',
         ];
 
