@@ -72,7 +72,7 @@
                 </div>
                 <div class="form-group">
                     <label for="curp">CURP*:</label>
-                    <input type="text" id="curp" name="curp" required
+                    <input type="text" id="curp" name="curp"
                         value="{{ old('curp', $practicante->curp) }}">
                 </div>
                 <div class="form-group">

@@ -54,7 +54,7 @@ class PracticanteController extends Controller
         $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp',
+            'curp' => 'string|min:18|max:18|unique:practicantes,curp',
             'fecha_nacimiento' => 'required|date',
             'sexo' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
@@ -88,16 +88,9 @@ class PracticanteController extends Controller
             ];
         }
 
-        // Mensajes personalizados para campos únicos
-        $messages = [
-            'curp.unique' => 'La CURP ingresada ya está registrada.',
-            'email_personal.unique' => 'El correo personal ingresado ya está registrado.',
-            'num_seguro.unique' => 'El número de seguro ingresado ya está registrado.',
-        ];
-
         try {
             Log::info('Validando datos...');
-            $validated = $request->validate(array_merge($commonRules, $projectRules), $messages);
+            $validated = $request->validate(array_merge($commonRules, $projectRules));
             Log::info('Datos validados correctamente:', $validated);
 
             // Convertir campos vacíos a null
@@ -167,15 +160,7 @@ class PracticanteController extends Controller
             ]);
             DB::rollBack();
 
-            $errorMsg = $e->getMessage();
-
-            if (str_contains($errorMsg, 'practicantes_curp_unique')) {
-                $msg = 'La CURP ingresada ya está registrada.';
-            } else {
-                $msg = 'Error al registrar: ' . $e->getMessage();
-            }
-
-            return back()->with('error', $msg)->withInput();
+            return back()->with('error')->withInput();
         }
     }
 
@@ -215,7 +200,7 @@ class PracticanteController extends Controller
         $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'required|string|min:18|max:18|unique:practicantes,curp,' . $practicante->id_practicante . ',id_practicante',
+            'curp' => 'string|min:18|max:18' . $practicante->id_practicante . ',id_practicante',
             'fecha_nacimiento' => 'required|date',
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
