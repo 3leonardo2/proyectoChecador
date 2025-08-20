@@ -43,7 +43,7 @@
         }
         .frente {
             background-color: #58585a;
-            color: white;
+            color: white;            
         }
 
         .logo-frente {
@@ -100,6 +100,8 @@
             margin-top: 2pt;
             background-color: white;
             color: black; /* Ensure text is black for dorso */
+            transform: rotate(180deg);
+            transform-origin: 59.9% 56%;
             
         }
 

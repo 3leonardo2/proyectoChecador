@@ -39,9 +39,11 @@ $(document).ready(function () {
                         );
                     });
                     // Restaurar selección previa si existe
-                    if (tempCarreraId) {
-                        $carreraSelect.val(tempCarreraId);
-                    }
+                    setTimeout(function() {
+                        if (tempCarreraId) {
+                            $carreraSelect.val(tempCarreraId);
+                        }
+                    }, 0); // Forzar a que el valor se asigne justo después de poblar
                 } else {
                     $carreraSelect.append('<option value="">No hay carreras disponibles</option>');
                     $noCarrerasMessage.show();
