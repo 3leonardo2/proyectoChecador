@@ -92,8 +92,13 @@
                 {{ session('error') }}
             </div>
         @endif
-        <form action="{{ route('practicantes.store') }}" method="POST" class="practicante-info-wrapper"
-            enctype="multipart/form-data" data-carrera-route="{{ route('practicantes.getByCarrera') }}">
+        <form action="{{ route('practicantes.store') }}" 
+              method="POST" class="practicante-info-wrapper"
+              enctype="multipart/form-data" 
+              data-carrera-route="{{ route('practicantes.getByCarrera') }}"
+              data-old-institucion-id="{{ old('institucion_id') }}"
+              data-old-carrera-id="{{ old('carrera_id') }}"
+        >
             @csrf <div class="practicante-fixed-elements">
                 <div class="practicante-profile-section">
                     <div class="profile-image-container"></div>
@@ -161,7 +166,7 @@
                         placeholder="Teléfono de emergencia..." value="{{ old('telefono_emergencia') }}">
                 </div>
                 <div class="form-group">
-                    <label for="num_seguro">Número de seguro (11 Dígitos)*:</label>
+                    <label for="num_seguro">Número de seguro (11 Dígitos):</label>
                     <input type="text" id="num_seguro" name="num_seguro" placeholder="Número de seguro..."
                         value="{{ old('num_seguro') }}">
                 </div>
@@ -186,7 +191,7 @@
                     <div class="form-group">
                         <label for="carrera_select" required>Carrera:</label>
                         <div class="carrera-select-container">
-                            <select id="carrera_select" name="carrera_id" class="form-control" required disabled>
+                            <select id="carrera_select" name="carrera_id" class="form-control" required>
                                 <option value="">Primero seleccione una institución</option>
                             </select>
                             <i class="fas fa-spinner fa-spin loading-carreras" style="display: none;"></i>
@@ -375,13 +380,6 @@
             const oldInstitucionId = "{{ old('institucion_id') }}";
             const oldCarreraId = "{{ old('carrera_id') }}";
 
-            if (oldInstitucionId) {
-                // Al cargar la página, si hay una institución seleccionada previamente
-                // disparamos el evento 'change' para cargar las carreras
-                const event = new Event('change');
-                institucionSelect.dispatchEvent(event);
-            }
-
             // Script para la imagen
             document.getElementById('add-image-input').addEventListener('change', function(event) {
                 const previewContainer = document.querySelector('.profile-image-container');
@@ -434,6 +432,19 @@
             if (incluirProyectoCheckbox.checked) {
                 proyectoFields.style.display = 'block';
             }
+        });
+    </script>
+    @if (session('success'))
+    <script>
+        localStorage.removeItem('institucion_id');
+        localStorage.removeItem('carrera_id');
+    </script>
+    @endif
+    <script>
+        $('.cancel-button').on('click', function() {
+            localStorage.removeItem('institucion_id');
+            localStorage.removeItem('carrera_id');
+            window.location.reload(); // O redirige a donde desees
         });
     </script>
 </body>

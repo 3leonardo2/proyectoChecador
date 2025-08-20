@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('bitacora', function (Blueprint $table) {
             $table->increments('id_evento'); // SERIAL en PostgreSQL
-            $table->string('clave_prac', 50)->notNullable(); // Si refencia el código del practicante
+            $table->unsignedBigInteger('practicante_id'); 
+            // Si refencia el código del practicante
             
             // ALTERNATIVA si refencia el ID numérico: $table->integer('id_practicante')->notNullable();
             $table->date('fecha')->default(DB::raw('CURRENT_DATE'))->notNullable();
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('tipo', 50)->notNullable();
             $table->text('descripcion')->nullable();
 
-            $table->foreign('clave_prac')->references('codigo')->on('practicantes');
+            $table->foreign('practicante_id')->references('id_practicante')->on('practicantes');
             // ALTERNATIVA: $table->foreign('id_practicante')->references('id_practicante')->on('practicantes');
             // $table->timestamps();
         });
