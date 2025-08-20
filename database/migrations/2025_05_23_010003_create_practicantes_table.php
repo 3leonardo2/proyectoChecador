@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('telefono_personal', 20)->nullable(); // Renombrado para claridad
             $table->string('nombre_emergencia', 200)->nullable();
             $table->string('telefono_emergencia', 20)->nullable();
-            $table->string('num_seguro', 11)->unique()->nullable();
+            $table->string('num_seguro', 11)->nullable();
             $table->string('profile_image')->nullable(); // Añadido para la imagen de perfil
 
             $table->unsignedBigInteger('institucion_id');

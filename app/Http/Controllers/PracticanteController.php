@@ -168,11 +168,8 @@ class PracticanteController extends Controller
             DB::rollBack();
 
             $errorMsg = $e->getMessage();
-            if (str_contains($errorMsg, 'practicantes_num_seguro_unique')) {
-                $msg = 'El número de seguro ingresado ya está registrado.';
-            } elseif (str_contains($errorMsg, 'practicantes_email_personal_unique')) {
-                $msg = 'El correo personal ingresado ya está registrado.';
-            } elseif (str_contains($errorMsg, 'practicantes_curp_unique')) {
+
+            if (str_contains($errorMsg, 'practicantes_curp_unique')) {
                 $msg = 'La CURP ingresada ya está registrada.';
             } else {
                 $msg = 'Error al registrar: ' . $e->getMessage();
