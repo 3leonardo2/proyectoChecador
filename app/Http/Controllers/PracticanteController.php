@@ -54,7 +54,7 @@ class PracticanteController extends Controller
         $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'string|min:18|max:18|unique:practicantes,curp',
+            'curp' => 'nullable|string|max:18',
             'fecha_nacimiento' => 'required|date',
             'sexo' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
@@ -94,7 +94,7 @@ class PracticanteController extends Controller
             Log::info('Datos validados correctamente:', $validated);
 
             // Convertir campos vacíos a null
-            foreach (['email_personal', 'email_institucional', 'telefono_personal', 'telefono_institucional', 'nombre_emergencia', 'telefono_emergencia', 'direccion'] as $campo) {
+            foreach (['curp','email_personal', 'email_institucional', 'telefono_personal', 'telefono_institucional', 'nombre_emergencia', 'telefono_emergencia', 'direccion'] as $campo) {
                 if (isset($validated[$campo]) && $validated[$campo] === '') {
                     $validated[$campo] = null;
                 }
@@ -200,7 +200,7 @@ class PracticanteController extends Controller
         $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'string|min:18|max:18' . $practicante->id_practicante . ',id_practicante',
+            'curp' => 'nullable|string|max:18' . $practicante->id_practicante . ',id_practicante',
             'fecha_nacimiento' => 'required|date',
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
