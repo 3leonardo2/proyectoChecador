@@ -76,6 +76,10 @@
                     <p>{{ $practicante->sexo }}</p>
                 </div>
                 <div class="data-item">
+                    <label>CURP:</label>
+                    <p>{{ $practicante->curp }}</p>
+                </div>
+                <div class="data-item">
                     <label>Correo electrónico personal:</label>
                     <p>{{ $practicante->email_personal }}</p>
                 </div>
@@ -153,12 +157,12 @@
                     <label>Horas acumuladas:</label>
                     <p>{{ $practicante->horas_registradas }}</p>
                 </div>
-                @if($practicante->acceso_comedor)
+                @if ($practicante->acceso_comedor)
                     <div class="data-item">
                         <label>Acceso al comedor:</label>
                         <p>Sí</p>
                     </div>
-                    @else
+                @else
                     <div class="data-item">
                         <label>Acceso al comedor:</label>
                         <p>No</p>

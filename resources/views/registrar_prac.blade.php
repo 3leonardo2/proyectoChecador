@@ -122,9 +122,9 @@
                         value="{{ old('apellidos') }}">
                 </div>
                 <div class="form-group">
-                    <label for="curp">CURP*:</label>
+                    <label for="curp">CURP:</label>
                     <input type="text" id="curp" name="curp" placeholder="CURP..." maxlength="18"
-                        minlength="18" value="{{ old('curp') }}">
+                        value="{{ old('curp') }}">
                 </div>
                 <div class="form-group">
                     <label for="fecha_nacimiento">Fecha de nacimiento*:</label>

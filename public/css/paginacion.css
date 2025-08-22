@@ -1,0 +1,79 @@
+/* PAGINACION.CSS - Estilos específicos para paginación */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 15px 0;
+    width: 100%;
+}
+
+.pagination-container .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-container .pagination li {
+    display: inline-block;
+}
+
+.pagination-container .pagination li a,
+.pagination-container .pagination li span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 18px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 36px;
+    height: 36px;
+    box-sizing: border-box;
+}
+
+.pagination-container .pagination li a {
+    background-color: #f6e8d0;
+    color: #583811;
+    border: 1px solid #d3bc68;
+}
+
+.pagination-container .pagination li a:hover {
+    background-color: #d3bc68;
+    color: white;
+    transform: scale(1.05);
+}
+
+.pagination-container .pagination li span {
+    background-color: #d3bc68;
+    color: white;
+    border: 1px solid #d3bc68;
+}
+
+.pagination-container .pagination li.disabled span {
+    background-color: #f0f0f0;
+    color: #888;
+    border-color: #ddd;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination-container .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
+    
+    .pagination-container .pagination li a,
+    .pagination-container .pagination li span {
+        min-width: 32px;
+        height: 32px;
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+}

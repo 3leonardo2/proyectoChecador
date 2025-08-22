@@ -10,8 +10,8 @@ use App\Models\Institucion;
 use App\Models\Carrera;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Picqer\Barcode\BarcodeGeneratorPNG;
-use Illuminate\Support\Str; 
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log; // Para logging
 
 class PracticanteController extends Controller
@@ -21,17 +21,8 @@ class PracticanteController extends Controller
         $mostrarActivos = true;
         $practicantes = Practicante::with('institucion')
             ->orderBy('created_at', 'desc')
-            ->get([
-                'id_practicante',
-                'codigo',
-                'nombre',
-                'apellidos',
-                'area_asignada',
-                'institucion_id',
-                'estado_practicas',
-                'fecha_final'
-            ]); 
-        return view('lista_practicantes', compact('practicantes','mostrarActivos'));
+            ->paginate(7); // <-- Cambia aquí
+        return view('lista_practicantes', compact('practicantes', 'mostrarActivos'));
     }
     /**
      * Muestra el formulario para crear un nuevo practicante.
@@ -61,7 +52,7 @@ class PracticanteController extends Controller
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
             'fecha_inicio' => 'required|date',
-            'email_personal' => 'nullable|email|unique:practicantes,email_personal',
+            'email_personal' => 'nullable|email',
             'telefono_personal' => 'nullable|string|max:15',
             'nombre_emergencia' => 'nullable|string|max:100',
             'telefono_emergencia' => 'nullable|string|max:15',
@@ -94,7 +85,7 @@ class PracticanteController extends Controller
             Log::info('Datos validados correctamente:', $validated);
 
             // Convertir campos vacíos a null
-            foreach (['curp','email_personal', 'email_institucional', 'telefono_personal', 'telefono_institucional', 'nombre_emergencia', 'telefono_emergencia', 'direccion'] as $campo) {
+            foreach (['curp', 'email_personal', 'email_institucional', 'telefono_personal', 'telefono_institucional', 'nombre_emergencia', 'telefono_emergencia', 'direccion'] as $campo) {
                 if (isset($validated[$campo]) && $validated[$campo] === '') {
                     $validated[$campo] = null;
                 }
@@ -200,7 +191,7 @@ class PracticanteController extends Controller
         $commonRules = [
             'nombre' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
-            'curp' => 'nullable|string|max:18' . $practicante->id_practicante . ',id_practicante',
+            'curp' => 'nullable|string|min:max:18' . $practicante->id_practicante . ',id_practicante',
             'fecha_nacimiento' => 'required|date',
             'institucion_id' => 'required|exists:instituciones,id_institucion',
             'carrera_id' => 'required|exists:carreras,id_carrera',
@@ -321,7 +312,7 @@ class PracticanteController extends Controller
         $logoDorsoPath = public_path('images/credencial/logo_presidente2.png');
 
         $generator = new BarcodeGeneratorPNG();
-        
+
         $barcodeImage = base64_encode($generator->getBarcode(
             $clave,
             $generator::TYPE_CODE_128,

@@ -6,16 +6,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Practicantes</title>
-    <link rel="stylesheet" href="{{ asset('css/listadoprac.css') }}">
     <link rel="stylesheet" href="{{ asset('css/lista_practicantes.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/paginacion.css') }}"> <!-- Añade esta línea -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
     <style>
-        #monthFilterGroup {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-        }
+            .acciones-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #7f4e20;
+        color: white;
+        text-decoration: none;
+        margin: 0 3px;
+        transition: all 0.3s ease;
+    }
+
+    .acciones-button:hover {
+        background-color: white;
+        transform: scale(1.1);
+        color: #7f4e20;
+    }
+
+    .borrar-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #7f4e20;
+        color: white;
+        text-decoration: none;
+        margin: 0 3px;
+        transition: all 0.3s ease;
+        background-color: #e74c3c;
+    }
+
+    .borrar-button:hover {
+        background-color: #c0392b;
+        transform: scale(1.1);
+    }
     </style>
 </head>
 
@@ -147,7 +181,7 @@
                             <td>
                                 @if (isset($practicante->id_practicante))
                                     <a href="{{ route('practicantes.show', parameters: $practicante->id_practicante) }}"
-                                        class="admin-button">
+                                        class="acciones-button">
                                         <i class="fa-solid fa-user-gear"></i>
                                     </a>
                                     @php
@@ -158,7 +192,7 @@
                                         onsubmit="return confirm('¿Estás seguro de que quieres eliminar a {{ addslashes($nombreCompleto) }}? Esta acción no se puede deshacer.');">
                                         @csrf
                                         @method('DELETE') {{-- Esto simula una petición DELETE --}}
-                                        <button type="submit" class="admin-button delete-button" title="Eliminar">
+                                        <button type="submit" class=" borrar-button" title="Eliminar">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </form>
@@ -168,26 +202,56 @@
                     @endforeach
                 </tbody>
             </table>
+
         </div>
+        @if ($practicantes->hasPages())
+            <div class="pagination-container">
+                <ul class="pagination">
+                    {{-- Enlace anterior --}}
+                    @if ($practicantes->onFirstPage())
+                        <li class="disabled"><span>&laquo; Anterior</span></li>
+                    @else
+                        <li><a href="{{ $practicantes->previousPageUrl() }}" rel="prev">&laquo; Anterior</a></li>
+                    @endif
+
+                    {{-- Elementos de paginación --}}
+                    @foreach ($practicantes->getUrlRange(1, $practicantes->lastPage()) as $page => $url)
+                        @if ($page == $practicantes->currentPage())
+                            <li class="active"><span>{{ $page }}</span></li>
+                        @else
+                            <li><a href="{{ $url }}">{{ $page }}</a></li>
+                        @endif
+                    @endforeach
+
+                    {{-- Enlace siguiente --}}
+                    @if ($practicantes->hasMorePages())
+                        <li><a href="{{ $practicantes->nextPageUrl() }}" rel="next">Siguiente &raquo;</a></li>
+                    @else
+                        <li class="disabled"><span>Siguiente &raquo;</span></li>
+                    @endif
+                </ul>
+            </div>
+        @endif
     </div>
+
     <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script src="{{ asset('js/lista_prac.js') }}"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if (session('success'))
-            showAlertModal('success', '{{ session('success') }}');
-        @endif
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                showAlertModal('success', '{{ session('success') }}');
+            @endif
 
-        @if (session('error'))
-            showAlertModal('error', '{{ session('error') }}');
-        @endif
-        const mostrarActivos = @json($mostrarActivos ?? false);
-        
-        if (mostrarActivos) {
-            document.getElementById('filterEstado').value = 'ACTIVO';
-            document.querySelector('.apply-filter-button').click();
-        }
-    });
+            @if (session('error'))
+                showAlertModal('error', '{{ session('error') }}');
+            @endif
+            const mostrarActivos = @json($mostrarActivos ?? false);
+
+            if (mostrarActivos) {
+                document.getElementById('filterEstado').value = 'ACTIVO';
+                document.querySelector('.apply-filter-button').click();
+            }
+        });
 
         function showAlertModal(type, message) {
             const modal = document.getElementById('alertModal');

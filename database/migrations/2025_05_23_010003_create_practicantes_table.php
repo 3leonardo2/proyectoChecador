@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('apellidos', 100);
             $table->date('fecha_nacimiento')->nullable();
             $table->string('sexo', 10)->nullable(); // "Hombre", "Mujer", "Otro"
-            $table->string('curp', 18)->unique();
+            $table->string('curp', 18)->nullable()->unique();
             $table->string('direccion', 255)->nullable(); // Añadido desde el form
             $table->string('email_personal', 100)->unique()->nullable(); // Añadido desde el form
             $table->string('telefono_personal', 20)->nullable(); // Renombrado para claridad
