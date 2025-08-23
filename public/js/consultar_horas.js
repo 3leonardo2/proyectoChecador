@@ -226,58 +226,59 @@ function displayRegistros(registros) {
         return;
     }
 
-    // Ordenar registros de más reciente a más antiguo
-    registros.sort((a, b) => {
-        // Ordenar por fecha de forma descendente
-        const dateComparison = new Date(b.fecha) - new Date(a.fecha);
-        if (dateComparison !== 0) {
-            return dateComparison;
+    // Paso 1: Agrupar registros por fecha
+    const registrosPorDia = {};
+    registros.forEach((registro) => {
+        const fecha = new Date(registro.fecha).toISOString().split('T')[0];
+        if (!registrosPorDia[fecha]) {
+            registrosPorDia[fecha] = [];
         }
-        // Si las fechas son iguales, ordenar por hora de forma ascendente
-        return a.hora.localeCompare(b.hora);
+        registrosPorDia[fecha].push(registro);
     });
 
-    registros.forEach((registro) => {
+    // Paso 2: Obtener fechas ordenadas de más reciente a más antigua
+    const fechasOrdenadas = Object.keys(registrosPorDia).sort((a, b) => new Date(b) - new Date(a));
+
+    // Paso 3: Iterar sobre cada día y crear una fila consolidada
+    fechasOrdenadas.forEach((fecha) => {
+        const eventosDia = registrosPorDia[fecha];
         const tr = document.createElement("tr");
-        const fechaFormateada = new Date(registro.fecha + 'T00:00:00-06:00').toLocaleDateString('es-ES', {
+
+        // Inicializar un objeto para guardar las horas del día
+        const horasDia = {
+            entrada: '-',
+            entrada_comedor: '-',
+            salida_comedor: '-',
+            salida: '-',
+        };
+
+        // Rellenar las horas con los datos reales
+        eventosDia.forEach(evento => {
+            const tipoEvento = evento.tipo;
+            if (horasDia.hasOwnProperty(tipoEvento)) {
+                horasDia[tipoEvento] = formatTime(evento.hora);
+            }
+        });
+
+        // Formatear la fecha para la visualización
+        const fechaFormateada = new Date(fecha + 'T00:00:00-06:00').toLocaleDateString('es-ES', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
         });
 
-        // Inicializa todas las columnas con '-'
-        let entrada = "<span>-</span>";
-        let entradaComedor = "<span>-</span>";
-        let salidaComedor = "<span>-</span>";
-        let salida = "<span>-</span>";
-
-        // Asigna el tiempo a la columna correcta según el tipo de evento
-        switch (registro.tipo) {
-            case "entrada":
-                entrada = formatTime(registro.hora);
-                break;
-            case "entrada_comedor":
-                entradaComedor = formatTime(registro.hora);
-                break;
-            case "salida_comedor":
-                salidaComedor = formatTime(registro.hora);
-                break;
-            case "salida":
-                salida = formatTime(registro.hora);
-                break;
-        }
-
+        // Construir la fila HTML
         tr.innerHTML = `
             <td class="date-cell">${fechaFormateada}</td>
-            <td>${entrada}</td>
-            <td>${entradaComedor}</td>
-            <td>${salidaComedor}</td>
-            <td>${salida}</td>
+            <td>${horasDia.entrada}</td>
+            <td>${horasDia.entrada_comedor}</td>
+            <td>${horasDia.salida_comedor}</td>
+            <td>${horasDia.salida}</td>
         `;
+
         tbody.appendChild(tr);
     });
 }
-
 function showError(message) {
     const errorElement = document.getElementById("errorMessage");
 
