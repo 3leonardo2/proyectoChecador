@@ -1,6 +1,7 @@
 {{-- filepath: resources/views/lista_administradores.blade.php --}}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <meta charset="UTF-8">
@@ -12,15 +13,16 @@
     <link rel="stylesheet" href="{{ asset('css/menu_modal.css') }}">
     <style>
         .delete-button {
-    color: #dc3545;
-    margin-left: 5px;
-}
+            color: #dc3545;
+            margin-left: 5px;
+        }
 
-.delete-button:hover {
-    color: #bb2d3b;
-}
+        .delete-button:hover {
+            color: #bb2d3b;
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Administradores</h1>
@@ -39,8 +41,7 @@
 
         <div class="search-filter-section">
             <div class="search-bar-container">
-                <input type="text" id="searchInput" class="search-input"
-                    placeholder="Buscar por nombre o correo...">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar por nombre o correo...">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
             </div>
             <button class="filter-button" id="filterButton">
@@ -54,17 +55,17 @@
                         <label for="filterDepartamento">Departamento:</label>
                         <select id="filterDepartamento">
                             <option value="">Todos</option>
-                        <option value="Contraloria">Contraloria</option>
-                        <option value="Ventas">Ventas</option>
-                        <option value="Sistemas">Sistemas</option>
-                        <option value="AyB">Alimentos y Bebidas</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
-                        <option value="RH"> Recursos Humanos</option>
-                        <option value="Dirección">Dirección</option>
-                        <option value="Recepción">Recepción</option>
-                        <option value="Reservaciones">Reservaciones</option>
-                        <option value="Cocina">Cocina</option>
-                        <option value="Ama de llaves">Ama de llaves</option>
+                            <option value="Contraloria">Contraloria</option>
+                            <option value="Ventas">Ventas</option>
+                            <option value="Sistemas">Sistemas</option>
+                            <option value="AyB">Alimentos y Bebidas</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                            <option value="RH"> Recursos Humanos</option>
+                            <option value="Dirección">Dirección</option>
+                            <option value="Recepción">Recepción</option>
+                            <option value="Reservaciones">Reservaciones</option>
+                            <option value="Cocina">Cocina</option>
+                            <option value="Ama de llaves">Ama de llaves</option>
                         </select>
                     </div>
                     <div class="filter-group">
@@ -97,11 +98,8 @@
                 </thead>
                 <tbody>
                     @foreach ($administradores as $index => $admin)
-                        <tr class="admin-row"
-                            data-name="{{ $admin->nombre }}"
-                            data-correo="{{ $admin->correo }}"
-                            data-departamento="{{ $admin->departamento }}"
-                            data-rol="{{ $admin->rol }}">
+                        <tr class="admin-row" data-name="{{ $admin->nombre }}" data-correo="{{ $admin->correo }}"
+                            data-departamento="{{ $admin->departamento }}" data-rol="{{ $admin->rol }}">
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $admin->nombre }}</td>
                             <td>{{ $admin->correo }}</td>
@@ -111,20 +109,23 @@
                                     {{ $admin->rol === 'rh' ? 'Administrador de aplicación' : 'Asesor de departamento' }}
                                 </span>
                             </td>
-<td>
-    <a href="{{ route('administradores.edit', $admin->id_admin) }}" class="admin-button" title="Editar">
-        <i class="fa-solid fa-user-pen"></i>
-    </a>
-    @auth('consultor')
-        <form action="{{ route('administradores.destroy', $admin->id_admin) }}" method="POST" style="display: inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="admin-button delete-button" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este administrador?')">
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        </form>
-    @endauth
-</td>
+                            <td>
+                                <a href="{{ route('administradores.edit', $admin->id_admin) }}" class="acciones-button"
+                                    title="Editar">
+                                    <i class="fa-solid fa-user-pen"></i>
+                                </a>
+                                @auth('consultor')
+                                    <form action="{{ route('administradores.destroy', $admin->id_admin) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="admin-button delete-button" title="Eliminar"
+                                            onclick="return confirm('¿Estás seguro de eliminar este administrador?')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @endauth
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -134,4 +135,5 @@
     <script src="{{ asset('js/menu_modal.js') }}"></script>
     <script src="{{ asset('js/lista_asesor.js') }}"></script>
 </body>
+
 </html>

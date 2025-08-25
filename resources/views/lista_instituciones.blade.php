@@ -65,7 +65,7 @@
                             </td>
                             <td>
                                 <a href="{{ route('instituciones.edit', $institucion->id_institucion) }}"
-                                    class="admin-button">
+                                    class="acciones-button">
                                     <i class="fa-solid fa-edit"></i>
                                 </a>
                                 <form action="{{ route('instituciones.destroy', $institucion->id_institucion) }}"
@@ -73,7 +73,7 @@
                                     onsubmit="return confirmDelete(this, {{ $institucion->id_institucion }});">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="admin-button delete-button"
+                                    <button type="submit" class="borrar-button delete-button"
                                         title="Eliminar Institución">
                                         <i class="fa-solid fa-trash-alt"></i>
                                     </button>
